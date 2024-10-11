@@ -1,6 +1,0 @@
-# Ignorar todas las carpetas excepto lib
-/* linguist-vendored
-
-# Permitir la carpeta lib para la detección de lenguajes
-lib/* linguist-detectable=true
-lib/* linguist-language=Dart
