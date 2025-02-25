@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "326077060221",
+    "project_id": "worldshiftfilter",
+    "storage_bucket": "worldshiftfilter.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:326077060221:android:178d7cce0b7b7c77860d14",
+        "android_client_info": {
+          "package_name": "com.example.worldshift_filter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBcv1cpo03icrGoLa8wN2Q4fF5-Qv8H8xw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

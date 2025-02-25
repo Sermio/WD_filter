@@ -1,0 +1,3 @@
+50320	3	Tribes	MUTANT_SHAMAN	Sacred Stream of Power	Shaman	Shaman purify_psicost = -8%
+47080	3	Aliens	ALIEN_MASTER	Sub Zero Sidereal Bulwark	Master	Master shield_percentabsorbtion = 1
+51370	4	Aliens	ALIEN_ARBITER	Sub Zero Energy Infuser	Arbiter	Arbiter psi_gen = 57	
