@@ -19,8 +19,8 @@ class CardListScreen extends StatelessWidget {
       // Llamar a la función para procesar el archivo y subir a Firestore
       // await processFileAndUpload();
       await processAndUploadItems(
-        'assets/tsvFiles/loot.txt',
-        'assets/tsvFiles/items_extra_data.txt',
+        'assets/tsvFiles/loot_complete.txt',
+        'assets/tsvFiles/items_extra_data_complete.txt',
       );
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Datos subidos correctamente.')),
@@ -59,16 +59,46 @@ class CardListScreen extends StatelessWidget {
             itemBuilder: (context, index) {
               var itemData = items[index].data() as Map<String, dynamic>;
               int id = itemData['id'] ?? 'No ID';
-              String location = itemData['location'] ?? 'No location';
+              String map = itemData['map'] ?? 'No map';
               String name = itemData['name'] ?? 'No name';
 
               return Card(
                 margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
                 child: ListTile(
                   title: Text(name),
-                  subtitle: Text(location),
-                  leading: const Icon(Icons.label),
-                  trailing: const Icon(Icons.arrow_forward),
+                  subtitle: Text(map),
+                  // leading: const Icon(Icons.label),
+                  leading: Image.asset(
+                      'assets/images/worldshift/items/item_sample.png'),
+                  trailing: GestureDetector(
+                    child: const Icon(
+                      Icons.info_outline,
+                    ),
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (ctx) => AlertDialog(
+                          title: Text(
+                            name,
+                          ),
+                          content: Column(
+                            children: [
+                              Text(itemData['map']),
+                              Text(itemData['race']),
+                              Text(itemData['rarity']),
+                              Text(itemData['slot']),
+                            ],
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text('Accept'),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
                   onTap: () {
                     // Acción al hacer clic en la tarjeta
                     ScaffoldMessenger.of(context).showSnackBar(
