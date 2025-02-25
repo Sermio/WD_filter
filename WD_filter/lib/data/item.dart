@@ -1,17 +1,20 @@
 class Item {
   final int id;
   final int lootTable;
-  final String location;
+  final String map;
+  final String droppedBy;
   final String name;
   final String rarity;
   final String race;
   final String slot;
-  final Map<String, String> attributes; // Cambiado a Map<String, String>
+  final Map<String, Map<String, String>>
+      attributes; // Cambiado a Map<String, Map<String, String>>
 
   Item({
     required this.id,
     required this.lootTable,
-    required this.location,
+    required this.map,
+    required this.droppedBy,
     required this.name,
     required this.rarity,
     required this.race,
@@ -25,11 +28,13 @@ class Item {
       'id': id,
       'lootTable': lootTable,
       'name': name,
-      'location': location,
+      'map': map,
+      'droppedBy': droppedBy,
       'rarity': rarity,
       'race': race,
       'slot': slot,
-      'attributes': attributes, // Ya no se necesita el .toMap()
+      'attributes':
+          attributes, // Ahora atributos es un Map<String, Map<String, String>>
     };
   }
 
@@ -38,12 +43,45 @@ class Item {
     return Item(
       id: json['id'] as int,
       lootTable: json['lootTable'] as int,
-      location: json['location'] as String,
+      map: json['map'] as String,
+      droppedBy: json['droppedBy'] as String,
       name: json['name'] as String,
       rarity: json['rarity'] as String,
       race: json['race'] as String,
       slot: json['slot'] as String,
-      attributes: Map<String, String>.from(json['attributes'] ?? {}),
+      attributes: Map<String, Map<String, String>>.from(json['attributes'] ??
+          {}), // Adaptado para Map<String, Map<String, String>>
     );
   }
 }
+
+// Lista de tropas clasificadas por raza y en lowercase.
+final List<String> units = [
+  'Commander',
+  'Assassin',
+  'Constructor',
+  'Judge',
+  'Surgeon',
+  'Trooper',
+  'Ripper',
+  'AssaultBot',
+  'Hellfire',
+  'HighPriest',
+  'Guardian',
+  'Shaman',
+  'Sorcerer',
+  'StoneGhost',
+  'Warrior',
+  'Brute',
+  'AncientShade',
+  'HowlingHorror',
+  'Master',
+  'Arbiter',
+  'Dominator',
+  'Harvester',
+  'Manipulator',
+  'Trisat',
+  'Tritech',
+  'Shifter',
+  'Overseer',
+];
