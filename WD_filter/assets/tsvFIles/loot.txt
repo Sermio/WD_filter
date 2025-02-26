@@ -1,3 +1,5 @@
+310	CF 1st encounter	53590			Field Tachyon Slugs
+10	PVP GENERIC	40130			Intelligent Targeting Core
 90	Safari - Bill Hard	51370			Sub Zero Energy Infuser
 60	Safari - Mech 0	47080			Sub Zero Sidereal Bulwark
 120	DTB - Frank	50320			Sacred Stream of Power

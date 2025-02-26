@@ -2,7 +2,7 @@ class Item {
   final int id;
   final int lootTable;
   final String map;
-  final String droppedBy;
+  final String obtainedFrom;
   final String name;
   final String rarity;
   final String race;
@@ -14,7 +14,7 @@ class Item {
     required this.id,
     required this.lootTable,
     required this.map,
-    required this.droppedBy,
+    required this.obtainedFrom,
     required this.name,
     required this.rarity,
     required this.race,
@@ -29,7 +29,7 @@ class Item {
       'lootTable': lootTable,
       'name': name,
       'map': map,
-      'droppedBy': droppedBy,
+      'obtainedFrom': obtainedFrom,
       'rarity': rarity,
       'race': race,
       'slot': slot,
@@ -44,7 +44,7 @@ class Item {
       id: json['id'] as int,
       lootTable: json['lootTable'] as int,
       map: json['map'] as String,
-      droppedBy: json['droppedBy'] as String,
+      obtainedFrom: json['obtainedFrom'] as String,
       name: json['name'] as String,
       rarity: json['rarity'] as String,
       race: json['race'] as String,

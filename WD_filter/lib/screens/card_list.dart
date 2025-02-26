@@ -110,7 +110,17 @@ class _ExpandableCardState extends State<ExpandableCard> {
         children: [
           ListTile(
             title: Text(widget.name),
-            subtitle: Text(widget.map),
+            subtitle: Text(
+              (widget.map.isNotEmpty &&
+                      widget.itemData['obtainedFrom'] != null &&
+                      widget.itemData['obtainedFrom'].isNotEmpty)
+                  ? "${widget.map} - ${widget.itemData['obtainedFrom']}"
+                  : widget.map.isNotEmpty
+                      ? widget.map
+                      : widget.itemData['obtainedFrom']?.isNotEmpty ?? false
+                          ? widget.itemData['obtainedFrom']
+                          : 'Unknown',
+            ),
             leading: Image.asset(
               'assets/images/worldshift/items/item_sample.png',
               width: 50,
@@ -158,7 +168,7 @@ class _ExpandableCardState extends State<ExpandableCard> {
               padding: const EdgeInsets.all(8.0),
               child: ItemDescription(
                 itemName: widget.itemData['name'],
-                description: widget.itemData['slot'],
+                rarity: widget.itemData['rarity'],
                 slot: widget.itemData['slot'],
                 attributes: widget.itemData['attributes'],
               ),
