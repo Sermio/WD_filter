@@ -20,6 +20,18 @@ String getAttributeValue(String key) {
   )['value']!;
 }
 
+String getUnitValue(String key) {
+  final unit = units.firstWhere(
+    (unit) => unit['key'] == key,
+    orElse: () => {
+      'key': key,
+      'value': key
+    }, // En caso de que no lo encuentre, devuelve el mismo key.
+  );
+  return unit['value'] ??
+      key; // Si no encuentra el valor, devuelve el mismo key.
+}
+
 String getSlotValueOrDescription(String key, {bool getDescription = false}) {
   return slots.firstWhere(
     (slot) => slot['key'] == key,

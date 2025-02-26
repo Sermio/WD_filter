@@ -1,5 +1,6 @@
 import 'package:adv_basics/data/data.dart';
 import 'package:adv_basics/models/item_filters_model.dart';
+import 'package:adv_basics/utils/utils.dart';
 import 'package:adv_basics/widgets/expandable_card.dart';
 import 'package:adv_basics/widgets/multi_chip.dart';
 import 'package:adv_basics/widgets/rarity_indicator.dart';
@@ -40,17 +41,20 @@ class _CardListScreenState extends State<CardListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.refresh),
-        onPressed: () {
-          setState(() {
-            _itemsFuture = _fetchItems();
-          });
-        },
-      ),
+      backgroundColor: Colors.white,
+      // floatingActionButton: FloatingActionButton(
+      //   child: const Icon(Icons.refresh),
+      //   onPressed: () {
+      //     setState(() {
+      //       _itemsFuture = _fetchItems();
+      //     });
+      //   },
+      // ),
       appBar: AppBar(
         backgroundColor: Colors.blue.shade800,
-        title: const Text('Card List'),
+        title: const Text(
+          'Card List',
+        ),
         actions: [
           IconButton(
             icon: Icon(_isFilterVisible ? Icons.close : Icons.filter_list),
