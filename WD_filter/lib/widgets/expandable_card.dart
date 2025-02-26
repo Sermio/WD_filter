@@ -1,3 +1,4 @@
+import 'package:adv_basics/utils/utils.dart';
 import 'package:adv_basics/widgets/item_description_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -33,7 +34,7 @@ class _ExpandableCardState extends State<ExpandableCard> {
         borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withOpacity(0.3),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
@@ -42,7 +43,12 @@ class _ExpandableCardState extends State<ExpandableCard> {
       child: Column(
         children: [
           ListTile(
-            title: Text(widget.name),
+            title: Text(
+              widget.name,
+              style: TextStyle(
+                  color: getRarityColor(widget.itemData['rarity']),
+                  fontWeight: FontWeight.bold),
+            ),
             subtitle: Text(
               (widget.map.isNotEmpty &&
                       widget.itemData['obtainedFrom'] != null &&
@@ -54,18 +60,29 @@ class _ExpandableCardState extends State<ExpandableCard> {
                           ? widget.itemData['obtainedFrom']
                           : 'Unknown',
             ),
-            leading: Image.asset(
-              'assets/images/worldshift/items/item_sample.png',
-              width: 50,
-              height: 50,
-            ),
+            leading: widget.itemData['slot'] == 'ALIEN_MASTER'
+                ? Image.asset(
+                    'assets/images/worldshift/items/item.png',
+                    width: 50,
+                    height: 50,
+                  )
+                : Image.asset(
+                    'assets/images/worldshift/items/item_sample.png',
+                    width: 50,
+                    height: 50,
+                  ),
             trailing: GestureDetector(
               child: const Icon(Icons.info_outline),
               onTap: () {
                 showDialog(
                   context: context,
                   builder: (ctx) => AlertDialog(
-                    title: Text(widget.name),
+                    title: Text(
+                      widget.name,
+                      style: TextStyle(
+                          color: getRarityColor(widget.itemData['rarity']),
+                          fontWeight: FontWeight.bold),
+                    ),
                     content: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [

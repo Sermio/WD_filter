@@ -66,7 +66,7 @@ class ItemDescription extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          entry.key,
+                          getUnitValue(entry.key),
                           style: const TextStyle(
                             color: Colors.orange,
                             fontSize: 14,
