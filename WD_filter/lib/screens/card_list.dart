@@ -1,32 +1,33 @@
-import 'package:adv_basics/utils/utils.dart';
-import 'package:adv_basics/widgets/item_description_widget.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:adv_basics/data/data.dart';
+import 'package:adv_basics/models/item_filters_model.dart';
+import 'package:adv_basics/widgets/expandable_card.dart';
+import 'package:adv_basics/widgets/multi_chip.dart';
+import 'package:adv_basics/widgets/rarity_indicator.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class CardListScreen extends StatelessWidget {
+import 'package:provider/provider.dart';
+
+class CardListScreen extends StatefulWidget {
   const CardListScreen({super.key});
 
-  Future<String> loadFileFromAssets(String path) async {
-    final data = await rootBundle.load(path);
-    final bytes = data.buffer.asUint8List();
-    return String.fromCharCodes(bytes);
+  @override
+  _CardListScreenState createState() => _CardListScreenState();
+}
+
+class _CardListScreenState extends State<CardListScreen> {
+  late Future<List<QueryDocumentSnapshot>> _itemsFuture;
+  bool _isFilterVisible = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _itemsFuture = _fetchItems();
   }
 
-  Future<void> _uploadItems(BuildContext context) async {
-    try {
-      await processAndUploadItems(
-        'assets/tsvFiles/loot_complete.txt',
-        'assets/tsvFiles/items_extra_data_complete.txt',
-      );
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Datos subidos correctamente.')),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
-    }
+  Future<List<QueryDocumentSnapshot>> _fetchItems() async {
+    final snapshot = await FirebaseFirestore.instance.collection('items').get();
+    return snapshot.docs;
   }
 
   @override
@@ -34,150 +35,189 @@ class CardListScreen extends StatelessWidget {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.refresh),
-        onPressed: () => _uploadItems(context),
-      ),
-      appBar: AppBar(title: const Text('Card List')),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('items').snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          }
-
-          final items = snapshot.data!.docs;
-
-          return ListView.builder(
-            itemCount: items.length,
-            itemBuilder: (context, index) {
-              var itemData = items[index].data() as Map<String, dynamic>;
-              String name = itemData['name'] ?? 'No name';
-              String map = itemData['map'] ?? 'No map';
-
-              return ExpandableCard(
-                name: name,
-                map: map,
-                itemData: itemData,
-              );
-            },
-          );
+        onPressed: () {
+          setState(() {
+            _itemsFuture = _fetchItems();
+          });
         },
       ),
-    );
-  }
-}
-
-class ExpandableCard extends StatefulWidget {
-  final String name;
-  final String map;
-  final Map<String, dynamic> itemData;
-
-  const ExpandableCard({
-    Key? key,
-    required this.name,
-    required this.map,
-    required this.itemData,
-  }) : super(key: key);
-
-  @override
-  _ExpandableCardState createState() => _ExpandableCardState();
-}
-
-class _ExpandableCardState extends State<ExpandableCard> {
-  bool _isExpanded = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 300),
-      margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          ListTile(
-            title: Text(widget.name),
-            subtitle: Text(
-              (widget.map.isNotEmpty &&
-                      widget.itemData['obtainedFrom'] != null &&
-                      widget.itemData['obtainedFrom'].isNotEmpty)
-                  ? "${widget.map} - ${widget.itemData['obtainedFrom']}"
-                  : widget.map.isNotEmpty
-                      ? widget.map
-                      : widget.itemData['obtainedFrom']?.isNotEmpty ?? false
-                          ? widget.itemData['obtainedFrom']
-                          : 'Unknown',
-            ),
-            leading: Image.asset(
-              'assets/images/worldshift/items/item_sample.png',
-              width: 50,
-              height: 50,
-            ),
-            // leading: Image.asset(
-            //   'assets/images/worldshift/items/item_sample.png',
-            //   width: 50,
-            //   height: 50,
-            // ),
-            trailing: GestureDetector(
-              child: const Icon(Icons.info_outline),
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (ctx) => AlertDialog(
-                    title: Text(widget.name),
-                    content: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(widget.itemData['map']),
-                        Text(widget.itemData['race']),
-                        Text(widget.itemData['rarity']),
-                        Text(widget.itemData['slot']),
-                      ],
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text('Accept'),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-            onTap: () {
+      appBar: AppBar(
+        backgroundColor: Colors.blue.shade800,
+        title: const Text('Card List'),
+        actions: [
+          IconButton(
+            icon: Icon(_isFilterVisible ? Icons.filter_list : Icons.close),
+            onPressed: () {
               setState(() {
-                _isExpanded = !_isExpanded;
+                _isFilterVisible = !_isFilterVisible;
+                if (!_isFilterVisible) {
+                  Provider.of<FilterProvider>(context, listen: false)
+                      .clearFilters();
+                }
               });
             },
           ),
-          if (_isExpanded)
+        ],
+      ),
+      body: Column(
+        children: [
+          if (!_isFilterVisible)
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: ItemDescription(
-                itemName: widget.itemData['name'],
-                rarity: widget.itemData['rarity'],
-                slot: widget.itemData['slot'],
-                attributes: widget.itemData['attributes'],
+              child: Column(
+                children: [
+                  TextField(
+                    controller: TextEditingController(
+                        text: Provider.of<FilterProvider>(context).nameFilter),
+                    onChanged: (value) {
+                      Provider.of<FilterProvider>(context, listen: false)
+                          .setNameFilter(value.toLowerCase());
+                    },
+                    decoration: const InputDecoration(labelText: 'Item Name'),
+                  ),
+                  TextField(
+                    controller: TextEditingController(
+                        text: Provider.of<FilterProvider>(context)
+                            .attributeFilter),
+                    onChanged: (value) {
+                      Provider.of<FilterProvider>(context, listen: false)
+                          .setAttributeFilter(value.toLowerCase());
+                    },
+                    decoration: const InputDecoration(labelText: 'Attribute'),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  MultiSelectChip(
+                    labels: races,
+                  ),
+                  SizedBox(
+                    width: 200,
+                    child: DropdownButton<String>(
+                      isExpanded: true,
+                      alignment: Alignment.centerLeft,
+                      menuMaxHeight: 300,
+                      value: Provider.of<FilterProvider>(context).selectedMap,
+                      hint: const Text('Select Map'),
+                      onChanged: (newValue) {
+                        Provider.of<FilterProvider>(context, listen: false)
+                            .setSelectedMap(newValue);
+                      },
+                      items: maps
+                          .map((map) => DropdownMenuItem<String>(
+                                value: map['value'],
+                                child: Text(map['value']!),
+                              ))
+                          .toList(),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 200,
+                    child: DropdownButton<String>(
+                      isExpanded: true,
+                      alignment: Alignment.centerLeft,
+                      menuMaxHeight: 300,
+                      value: Provider.of<FilterProvider>(context).selectedSlot,
+                      hint: const Text('Select Slot'),
+                      onChanged: (newValue) {
+                        Provider.of<FilterProvider>(context, listen: false)
+                            .setSelectedSlot(newValue);
+                      },
+                      items: slots
+                          .map((slot) => DropdownMenuItem<String>(
+                                value: slot['key'],
+                                child: Text(slot['value']!),
+                              ))
+                          .toList(),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 200,
+                    child: DropdownButton<String>(
+                      isExpanded: true,
+                      alignment: Alignment.centerLeft,
+                      menuMaxHeight: 300,
+                      hint: const Text('Select Rarity'),
+                      value:
+                          Provider.of<FilterProvider>(context).selectedRarity,
+                      items: ['1', '2', '3', '4', '5'].map((rarity) {
+                        return DropdownMenuItem<String>(
+                          value: rarity,
+                          child: RarityIndicator(rarity: rarity),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        Provider.of<FilterProvider>(context, listen: false)
+                            .setSelectedRarity(value);
+                      },
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Provider.of<FilterProvider>(context, listen: false)
+                          .clearFilters();
+                    },
+                    child: const Text('Clear Filters'),
+                  ),
+                  const Divider()
+                ],
               ),
-              // child: Image.asset(
-              //   'assets/images/worldshift/items/item1.png',
-              //   fit: BoxFit.cover,
-              //   height: 150,
-              // ),
             ),
+          Expanded(
+            child: FutureBuilder<List<QueryDocumentSnapshot>>(
+              future: _itemsFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                }
+                final items = snapshot.data ?? [];
+                return ListView.builder(
+                  itemCount: items.length,
+                  itemBuilder: (context, index) {
+                    var itemData = items[index].data() as Map<String, dynamic>;
+                    String name = itemData['name'] ?? '';
+                    String rarity = itemData['rarity'] ?? 'unknown';
+                    if ((Provider.of<FilterProvider>(context).nameFilter.isNotEmpty && !name.toLowerCase().contains(Provider.of<FilterProvider>(context).nameFilter)) ||
+                        (Provider.of<FilterProvider>(context)
+                                .attributeFilter
+                                .isNotEmpty &&
+                            !itemData['attributes']
+                                .toString()
+                                .toLowerCase()
+                                .contains(Provider.of<FilterProvider>(context)
+                                    .attributeFilter)) ||
+                        (Provider.of<FilterProvider>(context).selectedMap != null &&
+                            itemData['map'] !=
+                                Provider.of<FilterProvider>(context)
+                                    .selectedMap) ||
+                        (Provider.of<FilterProvider>(context)
+                                .selectedRaces
+                                .isNotEmpty &&
+                            !Provider.of<FilterProvider>(context)
+                                .selectedRaces
+                                .contains(itemData['race'])) ||
+                        (Provider.of<FilterProvider>(context).selectedSlot != null &&
+                            itemData['slot'] !=
+                                Provider.of<FilterProvider>(context)
+                                    .selectedSlot) ||
+                        (Provider.of<FilterProvider>(context).selectedRarity != null &&
+                            rarity != Provider.of<FilterProvider>(context).selectedRarity)) {
+                      return const SizedBox();
+                    }
+                    return ExpandableCard(
+                      name: name,
+                      map: itemData['map'] ?? '',
+                      rarity: rarity,
+                      itemData: itemData,
+                    );
+                  },
+                );
+              },
+            ),
+          ),
         ],
       ),
     );

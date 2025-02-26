@@ -27,45 +27,58 @@ String getSlotValueOrDescription(String key, {bool getDescription = false}) {
   )[getDescription ? 'description' : 'value']!;
 }
 
-// Limpiar caracteres no válidos
 String cleanString(String input) {
-  return input.replaceAll(
-      RegExp(r'[^\x00-\x7F]'), "'"); // Limpiar caracteres no ASCII
+  return input.replaceAll(RegExp(r'[^\x00-\x7F]'), "'");
 }
 
 Color getRarityColor(String value) {
   switch (value) {
     case "1":
-      return Colors.white60; // Rojo
+      return Colors.grey;
     case "2":
-      return Colors.greenAccent.shade400; // Verde
+      return Colors.greenAccent.shade400;
     case "3":
-      return Colors.yellow.shade600; // Azul
+      return Colors.yellow.shade600;
     case "4":
-      return Colors.purple; // Naranja
+      return Colors.purple;
     case "5":
-      return Colors.orange.shade400; // Morado
+      return Colors.orange.shade400;
     default:
-      return Colors.grey; // Por defecto gris si el valor no es reconocido
+      return Colors.grey;
   }
 }
 
-// Cargar archivo desde los assets
+String rarityToString(BuildContext context, String rarity) {
+  switch (rarity) {
+    case '1':
+      return 'Very Common';
+    case '2':
+      return 'Common';
+    case '3':
+      return 'Uncommon';
+    case '4':
+      return 'Rare';
+    case '5':
+      return 'Legendary';
+    default:
+      return 'Unknown';
+  }
+}
+
 Future<String> loadFileFromAssets(String path) async {
   final data = await rootBundle.load(path);
   final bytes = data.buffer.asUint8List();
   return String.fromCharCodes(bytes);
 }
 
-// Cargar archivo desde los assets
 Future<void> parseLootFile1(String path) async {
   String fileContent = await loadFileFromAssets(path);
   List<String> lines = fileContent.split(RegExp(r'\r?\n'));
 
-  itemsFile1.clear(); // Limpiar antes de llenarla
+  itemsFile1.clear();
 
   for (var line in lines) {
-    if (line.trim().isEmpty) continue; // Ignorar líneas vacías
+    if (line.trim().isEmpty) continue;
     print('Línea 1: $line');
 
     RegExp regex = RegExp(r'^(\d+)\s+(.+?)\s+(\d{5,})\s+(.+?)$');
@@ -78,32 +91,27 @@ Future<void> parseLootFile1(String path) async {
         int itemId = int.parse(match.group(3) ?? '0');
         String itemName = match.group(4) ?? '';
 
-        // Inicializar variables de mapa y obtainedFrom
         String map = '';
         String obtainedFrom = '';
 
-        // Buscar si la location tiene un mapa y un obtenido
         bool isMapFound = false;
         for (var mapEntry in maps) {
           if (location.startsWith(mapEntry['key']!)) {
             map = mapEntry['key']!;
-            obtainedFrom = location.substring(map.length).replaceFirst(
-                RegExp(r'^[\s-]+'),
-                ''); // Eliminar guiones y espacios al principio
+            obtainedFrom = location
+                .substring(map.length)
+                .replaceFirst(RegExp(r'^[\s-]+'), '');
 
             isMapFound = true;
             break;
           }
         }
 
-        // Si no se encontró el mapa, asignar "Unknown" y tomar la location como obtainedFrom
         if (!isMapFound) {
           map = '';
-          obtainedFrom = location.replaceFirst(RegExp(r'^[\s-]+'),
-              ''); // Elimina guiones y espacios al principio
+          obtainedFrom = location.replaceFirst(RegExp(r'^[\s-]+'), '');
         }
 
-        // Traducir el mapa
         String translatedMap = map;
         for (var mapEntry in maps) {
           if (mapEntry['key'] == map) {
@@ -112,7 +120,6 @@ Future<void> parseLootFile1(String path) async {
           }
         }
 
-        // Crear el item
         itemsFile1.add(Item(
           id: itemId,
           lootTable: lootTable,
@@ -136,39 +143,28 @@ Future<void> parseLootFile1(String path) async {
 Map<String, Map<String, String>> parseAttributes(String attributeString) {
   Map<String, Map<String, String>> result = {};
 
-  // Dividimos el string en partes usando espacios y saltos de línea
   List<String> parts = attributeString.split(RegExp(r'\s+'));
 
   String currentUnit = '';
 
-  // Set para almacenar las claves únicas
-
   for (int i = 0; i < parts.length; i++) {
     String part = parts[i].trim();
 
-    // Si encontramos una unidad válida
     if (unitsFlat.contains(part)) {
       currentUnit = part;
       result.putIfAbsent(currentUnit, () => {});
-    }
-    // Si encontramos un patrón de atributo "clave = valor"
-    else if (i + 2 < parts.length && parts[i + 1] == '=') {
+    } else if (i + 2 < parts.length && parts[i + 1] == '=') {
       String key = part;
       String value = parts[i + 2].trim();
 
       if (currentUnit.isNotEmpty) {
         result[currentUnit]![key] = value;
-        attributeKeys.add(key); // Almacenamos la clave en el set
+        attributeKeys.add(key);
       }
 
       i += 2;
     }
   }
-
-  // Escribir las claves únicas en un archivo .txt
-  // print(attributeKeys.join('\n'));
-  // File file = File('attribute_keys.txt');
-  // file.writeAsStringSync(attributeKeys.join('\n'));
 
   return result;
 }
@@ -182,7 +178,6 @@ Future<void> parseLootFile2(String path) async {
   for (var line in lines) {
     print('Línea 2: $line');
 
-    // Expresión regular para capturar ID, rareza, raza, slot, name y atributos
     RegExp regex = RegExp(r'^(\d+)\s+(\d+)\s+(.+?)\s+(\S+)\s+(.*)$');
     Match? match = regex.firstMatch(line);
 
@@ -194,58 +189,46 @@ Future<void> parseLootFile2(String path) async {
       String attributes = match.group(5)?.trim() ?? '';
       slotsSet.add(slot);
 
-      // Empezamos a buscar el nombre después del slot
       int startIndex = line.indexOf(slot) + slot.length;
       String name = '';
       String attributeString = '';
 
-      // Buscamos las palabras entre el slot y el primer unit
-      List<String> words = line
-          .substring(startIndex)
-          .split(RegExp(r'\s+')); // Divide las palabras por espacios
+      List<String> words = line.substring(startIndex).split(RegExp(r'\s+'));
       bool foundUnit = false;
 
       for (var word in words) {
         if (unitsFlat.contains(word)) {
-          // Si encontramos un unit, terminamos de capturar el nombre
           foundUnit = true;
           break;
         }
-        name += '$word '; // Añadimos la palabra al nombre
+        name += '$word ';
       }
 
-      name = name.trim(); // Limpiamos los posibles espacios adicionales
+      name = name.trim();
 
-      // El resto es el atributo
       if (foundUnit) {
-        // A partir de donde terminamos con el nombre, el resto es el atributo
         int nameEndIndex = line.indexOf(name) + name.length;
         attributeString = line.substring(nameEndIndex).trim();
 
-        // Ahora eliminamos la primera palabra (el nombre de la unidad) de attributeString
         List<String> attributeParts = attributeString.split(RegExp(r'\s+'));
         if (attributeParts.isNotEmpty) {
-          attributeParts.removeAt(0); // Elimina la primera palabra
-          attributeString = attributeParts
-              .join(' '); // Reconstruye el string sin la primera palabra
+          attributeParts.removeAt(0);
+          attributeString = attributeParts.join(' ');
         }
       } else {
-        // Si no encontramos un unit, todo lo que queda es el atributo
         attributeString = line.substring(startIndex).trim();
       }
 
-      // Procesamos los atributos de la misma manera que antes
       itemsFile2.add(Item(
         id: itemId,
         lootTable: 0,
         map: '',
         obtainedFrom: '',
-        name: name, // Nombre capturado
+        name: name,
         rarity: rarity,
         race: race,
         slot: slot,
-        attributes: parseAttributes(
-            attributeString), // Procesamos los atributos correctamente
+        attributes: parseAttributes(attributeString),
       ));
     } else {
       print('No se pudo parsear la línea: $line');
@@ -253,7 +236,6 @@ Future<void> parseLootFile2(String path) async {
   }
 }
 
-// Función para combinar la información de ambos archivos
 Future<List<Item>> combineLootData(String pathFile1, String pathFile2) async {
   await parseLootFile1(pathFile1);
   await parseLootFile2(pathFile2);
@@ -265,12 +247,10 @@ Future<List<Item>> combineLootData(String pathFile1, String pathFile2) async {
 
   List<Item> combinedItems = [];
 
-  // Insertar todos los elementos de itemFile1, combinados con la información de itemFile2
   for (var item1 in itemsFile1) {
     var matchingItem = itemMapFile2[item1.id];
 
     if (matchingItem != null) {
-      // Si existe en itemFile2, combinamos la información
       combinedItems.add(Item(
         id: item1.id,
         lootTable: item1.lootTable,
@@ -283,7 +263,6 @@ Future<List<Item>> combineLootData(String pathFile1, String pathFile2) async {
         attributes: matchingItem.attributes,
       ));
     } else {
-      // Si no existe en itemFile2, se añade con la información de itemFile1
       combinedItems.add(Item(
         id: item1.id,
         lootTable: item1.lootTable,
@@ -298,10 +277,8 @@ Future<List<Item>> combineLootData(String pathFile1, String pathFile2) async {
     }
   }
 
-  // Insertar los elementos de itemFile2 que no están en itemFile1
   for (var item2 in itemsFile2) {
     if (!itemsFile1.any((item1) => item1.id == item2.id)) {
-      // Solo los elementos que no estén en itemFile1
       combinedItems.add(Item(
         id: item2.id,
         lootTable: item2.lootTable,
@@ -319,7 +296,6 @@ Future<List<Item>> combineLootData(String pathFile1, String pathFile2) async {
   return combinedItems;
 }
 
-// Subir items a Firebase
 Future<void> uploadItemsToFirebase(List<Item> items) async {
   try {
     final firestore = FirebaseFirestore.instance;
@@ -345,7 +321,6 @@ Future<void> uploadItemsToFirebase(List<Item> items) async {
   }
 }
 
-// Procesar archivos y subir items a Firebase
 Future<void> processAndUploadItems(String pathFile1, String pathFile2) async {
   try {
     await Firebase.initializeApp();
