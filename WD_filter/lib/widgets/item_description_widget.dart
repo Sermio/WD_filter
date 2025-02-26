@@ -1,7 +1,19 @@
+import 'package:adv_basics/utils/utils.dart';
 import 'package:flutter/material.dart';
 
 class ItemDescription extends StatelessWidget {
-  const ItemDescription({super.key});
+  final String itemName;
+  final String subheader;
+  final Map<String, dynamic> attributes;
+  final String description;
+
+  const ItemDescription({
+    super.key,
+    required this.itemName,
+    required this.subheader,
+    required this.attributes,
+    required this.description,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -20,9 +32,9 @@ class ItemDescription extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(8),
               color: Colors.black,
-              child: const Text(
-                'Pinhole Rifle "Widowmaker"',
-                style: TextStyle(
+              child: Text(
+                itemName,
+                style: const TextStyle(
                   color: Colors.purpleAccent,
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
@@ -34,9 +46,9 @@ class ItemDescription extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(vertical: 4),
               color: Colors.grey.shade800,
-              child: const Text(
-                '(Nanotechnology)',
-                style: TextStyle(
+              child: Text(
+                subheader,
+                style: const TextStyle(
                   color: Colors.grey,
                   fontStyle: FontStyle.italic,
                   fontSize: 14,
@@ -46,40 +58,55 @@ class ItemDescription extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             // Attributes
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8.0),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Trooper',
-                    style: TextStyle(
-                        color: Colors.orange,
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    '+3 Damage\n+3 Armor',
-                    style: TextStyle(color: Colors.greenAccent, fontSize: 14),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    'Judge',
-                    style: TextStyle(
-                        color: Colors.orange,
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    '+9% Power',
-                    style: TextStyle(color: Colors.greenAccent, fontSize: 14),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    'Battle points cost: ' '90',
-                    style: TextStyle(color: Colors.red, fontSize: 14),
-                  ),
-                ],
+                children: attributes.entries.map((entry) {
+                  final value = entry.value;
+
+                  // Comprobar si el valor es un mapa anidado
+                  if (value is Map<String, dynamic>) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          entry.key,
+                          style: const TextStyle(
+                            color: Colors.orange,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: value.entries.map((innerEntry) {
+                            return Text(
+                              '${getAttributeValue(innerEntry.key)}: ${innerEntry.value.startsWith('-') ? innerEntry.value : '+${innerEntry.value}'}',
+                              style: const TextStyle(
+                                color: Colors.greenAccent,
+                                fontSize: 14,
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                        const SizedBox(height: 8),
+                      ],
+                    );
+                  } else {
+                    // Si no es un mapa, mostrar el valor directamente
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                      child: Text(
+                        '${entry.key}: $value',
+                        style: const TextStyle(
+                          color: Colors.greenAccent,
+                          fontSize: 14,
+                        ),
+                      ),
+                    );
+                  }
+                }).toList(),
               ),
             ),
             const SizedBox(height: 8),
@@ -87,11 +114,12 @@ class ItemDescription extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Text(
-                'This item is related to Nanotechnology, one of\nthe scientific disciplines of the Humans.',
+                description,
                 style: TextStyle(
-                    color: Colors.grey.shade400,
-                    fontStyle: FontStyle.italic,
-                    fontSize: 12),
+                  color: Colors.grey.shade400,
+                  fontStyle: FontStyle.italic,
+                  fontSize: 12,
+                ),
               ),
             ),
             const SizedBox(height: 8),
