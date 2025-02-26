@@ -154,9 +154,14 @@ class _ExpandableCardState extends State<ExpandableCard> {
             },
           ),
           if (_isExpanded)
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: ItemDescription(),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ItemDescription(
+                itemName: widget.itemData['name'],
+                description: 'description',
+                subheader: widget.itemData['slot'],
+                attributes: widget.itemData['attributes'],
+              ),
               // child: Image.asset(
               //   'assets/images/worldshift/items/item1.png',
               //   fit: BoxFit.cover,

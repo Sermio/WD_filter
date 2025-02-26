@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:adv_basics/data/data.dart';
 import 'package:adv_basics/data/item.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -6,6 +7,24 @@ import 'package:flutter/services.dart';
 
 List<Item> itemsFile1 = [];
 List<Item> itemsFile2 = [];
+Set<String> attributeKeys = {};
+Set<String> mapsSet = {};
+Set<String> slotsSet = {};
+Set<int> lootTableSet = {};
+
+String getAttributeValue(String key) {
+  return attributeList.firstWhere(
+    (attribute) => attribute['key'] == key,
+    orElse: () => {'value': 'Unknown Attribute'},
+  )['value']!;
+}
+
+String getSlotAttribute(String key, {bool returnValue = true}) {
+  return slots.firstWhere(
+    (slot) => slot['key'] == key,
+    orElse: () => {'value': 'Unknown', 'description': 'Unknown'},
+  )[returnValue ? 'value' : 'description']!;
+}
 
 // Limpiar caracteres no válidos
 String cleanString(String input) {
@@ -43,6 +62,8 @@ Future<void> parseLootFile1(String path) async {
 
         List<String> locationParts = location.split(RegExp(r'\s+-\s*'));
         String map = locationParts.isNotEmpty ? locationParts[0] : '';
+        mapsSet.add(map);
+        lootTableSet.add(lootTable);
         String droppedBy = locationParts.length > 1
             ? locationParts.sublist(1).join(' ')
             : ''; // Para unir las palabras restantes
@@ -70,13 +91,12 @@ Future<void> parseLootFile1(String path) async {
 Map<String, Map<String, String>> parseAttributes(String attributeString) {
   Map<String, Map<String, String>> result = {};
 
-  // Lista de unidades válidas
-  // List<String> units = ['Shaman', 'Master', 'Arbiter', 'Trisat', 'Overseer'];
-
   // Dividimos el string en partes usando espacios y saltos de línea
   List<String> parts = attributeString.split(RegExp(r'\s+'));
 
   String currentUnit = '';
+
+  // Set para almacenar las claves únicas
 
   for (int i = 0; i < parts.length; i++) {
     String part = parts[i].trim();
@@ -84,8 +104,6 @@ Map<String, Map<String, String>> parseAttributes(String attributeString) {
     // Si encontramos una unidad válida
     if (units.contains(part)) {
       currentUnit = part;
-
-      // Si la unidad no existe aún en el resultado, se inicializa
       result.putIfAbsent(currentUnit, () => {});
     }
     // Si encontramos un patrón de atributo "clave = valor"
@@ -93,71 +111,22 @@ Map<String, Map<String, String>> parseAttributes(String attributeString) {
       String key = part;
       String value = parts[i + 2].trim();
 
-      // Guardamos el atributo si hay una unidad activa
       if (currentUnit.isNotEmpty) {
         result[currentUnit]![key] = value;
+        attributeKeys.add(key); // Almacenamos la clave en el set
       }
 
-      // Saltamos las siguientes dos partes ya procesadas ("=" y el valor)
       i += 2;
     }
   }
 
+  // Escribir las claves únicas en un archivo .txt
+  // print(attributeKeys.join('\n'));
+  // File file = File('attribute_keys.txt');
+  // file.writeAsStringSync(attributeKeys.join('\n'));
+
   return result;
 }
-
-// Map<String, Map<String, String>> parseAttributes(String attributeString) {
-//   Map<String, Map<String, String>> result = {};
-
-//   // Primero, dividimos el string en palabras para separar el nombre de la unidad
-//   List<String> parts = attributeString.split(RegExp(r'\s+'));
-
-//   if (parts.isNotEmpty) {
-//     // La primera palabra es el nombre de la unidad
-//     String unitName = parts[0];
-
-//     // Comprobamos que tenemos más palabras y que la estructura sea válida
-//     if (parts.length >= 4) {
-//       // Nos aseguramos de que haya al menos 4 elementos
-//       Map<String, String> attributesMap = {};
-
-//       // Recorrer las palabras restantes y buscar atributos en el formato "atributo = valor"
-//       for (int i = 1; i < parts.length; i++) {
-//         print('Procesando parte: "${parts[i]}"'); // Depuración
-
-//         // Verificamos si la palabra contiene el signo '='
-//         if (parts[i] == "=") {
-//           // Limpiar espacios antes de dividir
-//           String key = parts[i - 1].trim(); // Clave del atributo
-//           String value = parts[i + 1].trim(); // Valor del atributo
-
-//           print('Atributo encontrado: $key = $value'); // Depuración
-
-//           // Verificamos que la clave y el valor no estén vacíos
-//           if (key.isNotEmpty && value.isNotEmpty) {
-//             attributesMap[key] = value;
-//           } else {
-//             print('Atributo vacío encontrado para $unitName: $key = $value');
-//           }
-//         }
-//       }
-
-//       // Solo añadimos la unidad al resultado si tiene atributos válidos
-//       if (attributesMap.isNotEmpty) {
-//         print('Atributos válidos para $unitName: $attributesMap');
-//         result[unitName] = attributesMap;
-//       } else {
-//         print('No se encontraron atributos válidos para $unitName');
-//       }
-//     } else {
-//       print('No se encontraron suficientes partes para $unitName');
-//     }
-//   } else {
-//     print('Cadena vacía o mal formateada para $attributeString');
-//   }
-
-//   return result;
-// }
 
 Future<void> parseLootFile2(String path) async {
   String fileContent = await loadFileFromAssets(path);
@@ -178,6 +147,7 @@ Future<void> parseLootFile2(String path) async {
       String race = match.group(3) ?? '';
       String slot = match.group(4) ?? '';
       String attributes = match.group(5)?.trim() ?? '';
+      slotsSet.add(slot);
 
       // Empezamos a buscar el nombre después del slot
       int startIndex = line.indexOf(slot) + slot.length;
@@ -317,7 +287,11 @@ Future<void> processAndUploadItems(String pathFile1, String pathFile2) async {
     List<Item> combinedItems = await combineLootData(pathFile1, pathFile2);
 
     if (combinedItems.isNotEmpty) {
-      await uploadItemsToFirebase(combinedItems);
+      print(attributeKeys);
+      print(mapsSet);
+      print(slotsSet);
+      print(lootTableSet);
+      // await uploadItemsToFirebase(combinedItems);
       print('Todos los items han sido subidos correctamente.');
     } else {
       print('No se encontraron items para subir.');
