@@ -19,11 +19,11 @@ String getAttributeValue(String key) {
   )['value']!;
 }
 
-String getSlotAttribute(String key, {bool returnValue = true}) {
+String getSlotValueOrDescription(String key, {bool getDescription = false}) {
   return slots.firstWhere(
     (slot) => slot['key'] == key,
     orElse: () => {'value': 'Unknown', 'description': 'Unknown'},
-  )[returnValue ? 'value' : 'description']!;
+  )[getDescription ? 'description' : 'value']!;
 }
 
 // Limpiar caracteres no válidos
@@ -62,7 +62,7 @@ Future<void> parseLootFile1(String path) async {
 
         List<String> locationParts = location.split(RegExp(r'\s+-\s*'));
         String map = locationParts.isNotEmpty ? locationParts[0] : '';
-        mapsSet.add(map);
+        mapsSet.add(location);
         lootTableSet.add(lootTable);
         String droppedBy = locationParts.length > 1
             ? locationParts.sublist(1).join(' ')
@@ -102,7 +102,7 @@ Map<String, Map<String, String>> parseAttributes(String attributeString) {
     String part = parts[i].trim();
 
     // Si encontramos una unidad válida
-    if (units.contains(part)) {
+    if (unitsFlat.contains(part)) {
       currentUnit = part;
       result.putIfAbsent(currentUnit, () => {});
     }
@@ -161,7 +161,7 @@ Future<void> parseLootFile2(String path) async {
       bool foundUnit = false;
 
       for (var word in words) {
-        if (units.contains(word)) {
+        if (unitsFlat.contains(word)) {
           // Si encontramos un unit, terminamos de capturar el nombre
           foundUnit = true;
           break;

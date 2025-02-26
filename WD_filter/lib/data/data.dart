@@ -128,6 +128,36 @@ List<String> attributesList = [
   "emissive"
 ];
 
+List<Map<String, String>> units = [
+  {'key': 'Commander', 'value': 'Lord Commander'},
+  {'key': 'Assassin', 'value': 'Assassin'},
+  {'key': 'Constructor', 'value': 'Constructor'},
+  {'key': 'Judge', 'value': 'Judge'},
+  {'key': 'Surgeon', 'value': 'Surgeon'},
+  {'key': 'Trooper', 'value': 'Trooper'},
+  {'key': 'Ripper', 'value': 'Ripper'},
+  {'key': 'AssaultBot', 'value': 'Assault Bot'},
+  {'key': 'Hellfire', 'value': 'Hellfire'},
+  {'key': 'HighPriest', 'value': 'High Priest'},
+  {'key': 'Guardian', 'value': 'Guardian'},
+  {'key': 'Shaman', 'value': 'Shaman'},
+  {'key': 'Sorcerer', 'value': 'Sorcerer'},
+  {'key': 'StoneGhost', 'value': 'Stone Ghost'},
+  {'key': 'Warrior', 'value': 'Warrior'},
+  {'key': 'Brute', 'value': 'Brute'},
+  {'key': 'AncientShade', 'value': 'Ancient Shade'},
+  {'key': 'HowlingHorror', 'value': 'Howling Horror'},
+  {'key': 'Master', 'value': 'Master'},
+  {'key': 'Arbiter', 'value': 'Arbiter'},
+  {'key': 'Dominator', 'value': 'Dominator'},
+  {'key': 'Harvester', 'value': 'Harvester'},
+  {'key': 'Manipulator', 'value': 'Manipulator'},
+  {'key': 'Trisat', 'value': 'Trisat'},
+  {'key': 'Tritech', 'value': 'Tritech'},
+  {'key': 'Shifter', 'value': 'Shifter'},
+  {'key': 'Overseer', 'value': 'Field Overseer'}
+];
+
 List<String> maps = [
   "PVP GENERIC",
   "Common Hard Boss",
@@ -164,33 +194,77 @@ List<String> maps = [
   "BRD Start",
   "BRD Lan Zealot"
 ];
+// 67710
 
-// List<String> slots = [
-//   "MUTANT_HIGHPRIEST",
-//   "HUMAN_WEAPONS",
-//   "ALIEN_HARVESTER",
-//   "ALIEN_MANIPULATOR",
-//   "HUMAN_ASSASSIN",
-//   "HUMAN_COMMANDER",
-//   "MUTANT_GUARDIAN",
-//   "HUMAN_DEFENCE",
-//   "ALIEN_MASTER",
-//   "ALIEN_CORRUPTION",
-//   "MUTANT_STONEGHOST",
-//   "MUTANT_BLOOD",
-//   "ALIEN_DOGMA",
-//   "MUTANT_MIND",
-//   "HUMAN_JUDGE",
-//   "MUTANT_SHAMAN",
-//   "MUTANT_NATURE",
-//   "HUMAN_SURGEON",
-//   "HUMAN_CONSTRUCTOR",
-//   "MUTANT_ADEPT",
-//   "HUMAN_IMPLANTS",
-//   "ALIEN_POWER",
-//   "ALIEN_ARBITER",
-//   "ALIEN_DOMINATOR"
-// ];
+List<Map<String, String>> maps2 = [
+  {'key': 'PVP', 'value': ''},
+  {'key': 'PvP', 'value': ''},
+  {'key': 'Common', 'value': ''},
+  {'key': 'Mission', 'value': ''},
+  {'key': 'Safari', 'value': 'Deadly safari'},
+  {'key': 'DTB', 'value': 'Dunetown base'},
+  {'key': 'BSA', 'value': 'Bloodsport Arena'},
+  {'key': 'ROM', 'value': 'ROM base'},
+  {'key': 'AC', 'value': 'Ancient corridors'},
+  {'key': 'Kharum', 'value': 'Kharum'},
+  {'key': 'JY', 'value': 'Junkyard'},
+  {'key': 'CF', 'value': 'Corrupted fields'},
+  {'key': 'RH', 'value': "The renegades' hideout"},
+  {'key': 'BRD', 'value': 'Bridge of trial'},
+];
+
+// "PVP GENERIC"
+// "Common Hard Boss"
+// "Common Dungeon"
+// "PvP Rewards"
+// "Safari"
+// "DTB"
+// "BSA"
+// "ROM"
+// "Kharum"
+// "JY 3min Reward"
+// "JY 3rd Side"
+// "JY Gorgar"
+// "JY Gorgar Hard"
+// "JY Ditz Left Side Hard"
+// "JY Ditz"
+// "JY Xessk"
+// "Common Low Boss"
+// "Mission Rewards"
+// "CF 1st encounter"
+// "CF 2nd encounter"
+// "CF Village 1"
+// "CF Village 2"
+// "CF Boss"
+// "CF Boss Extra 1"
+// "CF Boss Extra 2"
+// "AC West"
+// "AC East"
+// "AC Last"
+// "AC Hard"
+// "RH Officers"
+// "RH Zul Thark"
+// "RH Final Master"
+// "BRD Start"
+// "BRD Lan Zealot"
+// "Safari - Queen"
+// "Safari - Mech 0"
+// "Safari - Jack"
+// "Safari - Bill"
+// "Safari - Bill Hard"
+// "DTB - Cages"
+// "DTB - Adam"
+// "DTB - Frank"
+// "BSA - Horror"
+// "BSA - Yamu"
+// "BSA - Champions"
+// "ROM - HF1337"
+// "ROM - Cannon"
+// "Kharum - Village"
+// "Kharum - Retaliate"
+// "Kharum - Device"
+// "Kharum - Ulf"
+// "BRD Lan Zealot - Hard"
 
 List<int> lootTable = [
   10,
@@ -387,130 +461,130 @@ List<Map<String, String>> attributeList = [
 List<Map<String, String>> slots = [
   {
     'key': 'ALIEN_MASTER',
-    'value': '',
+    'value': 'Master',
     'description': 'This item improves the statistics of your Master.'
   },
   {
     'key': 'ALIEN_ARBITER',
-    'value': '',
+    'value': 'Arbiter',
     'description': 'This item improves the statistics of your Arbiters.'
   },
   {
     'key': 'ALIEN_DOMINATOR',
-    'value': '',
+    'value': 'Dominator',
     'description': 'This item improves the statistics of your Dominators.'
   },
   {
     'key': 'ALIEN_HARVESTER',
-    'value': '',
+    'value': 'Harvester',
     'description': 'This item improves the statistics of your Harvesters.'
   },
   {
     'key': 'ALIEN_MANIPULATOR',
-    'value': '',
+    'value': 'Manipulator',
     'description': 'This item improves the statistics of your Manipulators.'
   },
   {
     'key': 'ALIEN_POWER',
-    'value': '',
+    'value': 'Power',
     'description':
         'This item is related to Power, one of the aspects of the Cult.'
   },
   {
     'key': 'ALIEN_CORRUPTION',
-    'value': '',
+    'value': 'Corruption',
     'description':
         'This item is related to Corruption, one of the aspects of the Cult.'
   },
   {
     'key': 'ALIEN_DOGMA',
-    'value': '',
+    'value': 'Dogma',
     'description':
         'This item is related to Dogma, one of the aspects of the Cult.'
   },
   {
     'key': 'HUMAN_COMMANDER',
-    'value': '',
+    'value': 'Lord Commander',
     'description': 'This item improves the statistics of your Lord Commander.'
   },
   {
     'key': 'HUMAN_ASSASSIN',
-    'value': '',
+    'value': 'Assassin',
     'description': 'This item improves the statistics of your Assassins.'
   },
   {
     'key': 'HUMAN_CONSTRUCTOR',
-    'value': '',
+    'value': 'Constructor',
     'description': 'This item improves the statistics of your Constructors.'
   },
   {
     'key': 'HUMAN_JUDGE',
-    'value': '',
+    'value': 'Judge',
     'description': 'This item improves the statistics of your Judges.'
   },
   {
     'key': 'HUMAN_SURGEON',
-    'value': '',
+    'value': 'Surgeon',
     'description': 'This item improves the statistics of your Surgeons.'
   },
   {
     'key': 'HUMAN_DEFENCE',
-    'value': '',
+    'value': 'Xenotronics',
     'description':
         'This item is related to Xenotronics, one of the scientific disciplines of the Humans.'
   },
   {
     'key': 'HUMAN_IMPLANTS',
-    'value': '',
+    'value': 'Nanotechnology',
     'description':
         'This item is related to Nanotechnology, one of the scientific disciplines of the Humans.'
   },
   {
     'key': 'HUMAN_WEAPONS',
-    'value': '',
+    'value': 'Metachemistry',
     'description':
         'This item is related to Metachemistry, one of the scientific disciplines of the Humans.'
   },
   {
     'key': 'MUTANT_HIGHPRIEST',
-    'value': '',
+    'value': 'High Priest',
     'description': 'This item improves the statistics of your High Priest.'
   },
   {
     'key': 'MUTANT_ADEPT',
-    'value': '',
+    'value': 'Sorcerer',
     'description': 'This item improves the statistics of your Sorcerers.'
   },
   {
     'key': 'MUTANT_GUARDIAN',
-    'value': '',
+    'value': 'Guardian',
     'description': 'This item improves the statistics of your Guardians.'
   },
   {
     'key': 'MUTANT_SHAMAN',
-    'value': '',
+    'value': 'Shaman',
     'description': 'This item improves the statistics of your Shamans.'
   },
   {
     'key': 'MUTANT_STONEGHOST',
-    'value': '',
+    'value': 'Stone Ghost',
     'description': 'This item improves the statistics of your Stone Ghosts.'
   },
   {
     'key': 'MUTANT_BLOOD',
-    'value': '',
+    'value': 'Blood',
     'description':
         'This item is related to Blood, one of the aspects of the Tribes.'
   },
   {
     'key': 'MUTANT_MIND',
-    'value': '',
+    'value': 'Mind',
     'description':
         'This item is related to Mind, one of the aspects of the Tribes.'
   },
   {
     'key': 'MUTANT_NATURE',
-    'value': '',
+    'value': 'Nature',
     'description':
         'This item is related to Nature, one of the aspects of the Tribes.'
   },
