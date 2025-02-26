@@ -56,7 +56,7 @@ class Item {
 }
 
 // Lista de tropas clasificadas por raza y en lowercase.
-final List<String> units = [
+final List<String> unitsFlat = [
   'Commander',
   'Assassin',
   'Constructor',

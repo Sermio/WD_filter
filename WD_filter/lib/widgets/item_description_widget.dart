@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 
 class ItemDescription extends StatelessWidget {
   final String itemName;
-  final String subheader;
+  final String slot;
   final Map<String, dynamic> attributes;
   final String description;
 
   const ItemDescription({
     super.key,
     required this.itemName,
-    required this.subheader,
+    required this.slot,
     required this.attributes,
     required this.description,
   });
@@ -42,15 +42,14 @@ class ItemDescription extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
             ),
-            // Subheader with the technology
+            // Slot with the technology
             Container(
               padding: const EdgeInsets.symmetric(vertical: 4),
               color: Colors.grey.shade800,
               child: Text(
-                subheader,
+                '(${getSlotValueOrDescription(slot)})',
                 style: const TextStyle(
                   color: Colors.grey,
-                  fontStyle: FontStyle.italic,
                   fontSize: 14,
                 ),
                 textAlign: TextAlign.center,
@@ -91,6 +90,9 @@ class ItemDescription extends StatelessWidget {
                           }).toList(),
                         ),
                         const SizedBox(height: 8),
+                        const Divider(
+                          color: Color.fromARGB(229, 52, 51, 51),
+                        ),
                       ],
                     );
                   } else {
@@ -114,7 +116,7 @@ class ItemDescription extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Text(
-                description,
+                getSlotValueOrDescription(description, getDescription: true),
                 style: TextStyle(
                   color: Colors.grey.shade400,
                   fontStyle: FontStyle.italic,

@@ -158,8 +158,8 @@ class _ExpandableCardState extends State<ExpandableCard> {
               padding: const EdgeInsets.all(8.0),
               child: ItemDescription(
                 itemName: widget.itemData['name'],
-                description: 'description',
-                subheader: widget.itemData['slot'],
+                description: widget.itemData['slot'],
+                slot: widget.itemData['slot'],
                 attributes: widget.itemData['attributes'],
               ),
               // child: Image.asset(
