@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 
 class ItemDescription extends StatelessWidget {
   final String itemName;
+  final String rarity;
   final String slot;
   final Map<String, dynamic> attributes;
-  final String description;
 
   const ItemDescription({
     super.key,
     required this.itemName,
+    required this.rarity,
     required this.slot,
     required this.attributes,
-    required this.description,
   });
 
   @override
@@ -34,8 +34,8 @@ class ItemDescription extends StatelessWidget {
               color: Colors.black,
               child: Text(
                 itemName,
-                style: const TextStyle(
-                  color: Colors.purpleAccent,
+                style: TextStyle(
+                  color: getRarityColor(rarity),
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
                 ),
@@ -116,7 +116,7 @@ class ItemDescription extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Text(
-                getSlotValueOrDescription(description, getDescription: true),
+                getSlotValueOrDescription(slot, getDescription: true),
                 style: TextStyle(
                   color: Colors.grey.shade400,
                   fontStyle: FontStyle.italic,

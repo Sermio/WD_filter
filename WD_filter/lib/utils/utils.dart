@@ -3,6 +3,7 @@ import 'package:adv_basics/data/data.dart';
 import 'package:adv_basics/data/item.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 List<Item> itemsFile1 = [];
@@ -32,6 +33,23 @@ String cleanString(String input) {
       RegExp(r'[^\x00-\x7F]'), "'"); // Limpiar caracteres no ASCII
 }
 
+Color getRarityColor(String value) {
+  switch (value) {
+    case "1":
+      return Colors.white60; // Rojo
+    case "2":
+      return Colors.greenAccent.shade400; // Verde
+    case "3":
+      return Colors.yellow.shade600; // Azul
+    case "4":
+      return Colors.purple; // Naranja
+    case "5":
+      return Colors.orange.shade400; // Morado
+    default:
+      return Colors.grey; // Por defecto gris si el valor no es reconocido
+  }
+}
+
 // Cargar archivo desde los assets
 Future<String> loadFileFromAssets(String path) async {
   final data = await rootBundle.load(path);
@@ -39,7 +57,7 @@ Future<String> loadFileFromAssets(String path) async {
   return String.fromCharCodes(bytes);
 }
 
-// Función para leer el primer archivo (formato 1)
+// Cargar archivo desde los assets
 Future<void> parseLootFile1(String path) async {
   String fileContent = await loadFileFromAssets(path);
   List<String> lines = fileContent.split(RegExp(r'\r?\n'));
@@ -60,19 +78,46 @@ Future<void> parseLootFile1(String path) async {
         int itemId = int.parse(match.group(3) ?? '0');
         String itemName = match.group(4) ?? '';
 
-        List<String> locationParts = location.split(RegExp(r'\s+-\s*'));
-        String map = locationParts.isNotEmpty ? locationParts[0] : '';
-        mapsSet.add(location);
-        lootTableSet.add(lootTable);
-        String droppedBy = locationParts.length > 1
-            ? locationParts.sublist(1).join(' ')
-            : ''; // Para unir las palabras restantes
+        // Inicializar variables de mapa y obtainedFrom
+        String map = '';
+        String obtainedFrom = '';
 
+        // Buscar si la location tiene un mapa y un obtenido
+        bool isMapFound = false;
+        for (var mapEntry in maps) {
+          if (location.startsWith(mapEntry['key']!)) {
+            map = mapEntry['key']!;
+            obtainedFrom = location.substring(map.length).replaceFirst(
+                RegExp(r'^[\s-]+'),
+                ''); // Eliminar guiones y espacios al principio
+
+            isMapFound = true;
+            break;
+          }
+        }
+
+        // Si no se encontró el mapa, asignar "Unknown" y tomar la location como obtainedFrom
+        if (!isMapFound) {
+          map = '';
+          obtainedFrom = location.replaceFirst(RegExp(r'^[\s-]+'),
+              ''); // Elimina guiones y espacios al principio
+        }
+
+        // Traducir el mapa
+        String translatedMap = map;
+        for (var mapEntry in maps) {
+          if (mapEntry['key'] == map) {
+            translatedMap = mapEntry['value'] ?? map;
+            break;
+          }
+        }
+
+        // Crear el item
         itemsFile1.add(Item(
           id: itemId,
           lootTable: lootTable,
-          map: map,
-          droppedBy: droppedBy,
+          map: translatedMap,
+          obtainedFrom: obtainedFrom,
           name: itemName,
           rarity: '',
           race: '',
@@ -80,7 +125,7 @@ Future<void> parseLootFile1(String path) async {
           attributes: {},
         ));
 
-        print('Mapa: $map, DroppedBy: $droppedBy');
+        print('Mapa: $translatedMap, ObtainedFrom: $obtainedFrom');
       } catch (e) {
         print('Error al procesar la línea: $line');
       }
@@ -194,7 +239,7 @@ Future<void> parseLootFile2(String path) async {
         id: itemId,
         lootTable: 0,
         map: '',
-        droppedBy: '',
+        obtainedFrom: '',
         name: name, // Nombre capturado
         rarity: rarity,
         race: race,
@@ -220,15 +265,17 @@ Future<List<Item>> combineLootData(String pathFile1, String pathFile2) async {
 
   List<Item> combinedItems = [];
 
+  // Insertar todos los elementos de itemFile1, combinados con la información de itemFile2
   for (var item1 in itemsFile1) {
     var matchingItem = itemMapFile2[item1.id];
 
     if (matchingItem != null) {
+      // Si existe en itemFile2, combinamos la información
       combinedItems.add(Item(
         id: item1.id,
         lootTable: item1.lootTable,
         map: item1.map,
-        droppedBy: item1.droppedBy,
+        obtainedFrom: item1.obtainedFrom,
         name: item1.name,
         rarity: matchingItem.rarity,
         race: matchingItem.race,
@@ -236,16 +283,35 @@ Future<List<Item>> combineLootData(String pathFile1, String pathFile2) async {
         attributes: matchingItem.attributes,
       ));
     } else {
+      // Si no existe en itemFile2, se añade con la información de itemFile1
       combinedItems.add(Item(
         id: item1.id,
         lootTable: item1.lootTable,
         map: item1.map,
-        droppedBy: item1.droppedBy,
+        obtainedFrom: item1.obtainedFrom,
         name: item1.name,
         rarity: '',
         race: '',
         slot: '',
         attributes: {},
+      ));
+    }
+  }
+
+  // Insertar los elementos de itemFile2 que no están en itemFile1
+  for (var item2 in itemsFile2) {
+    if (!itemsFile1.any((item1) => item1.id == item2.id)) {
+      // Solo los elementos que no estén en itemFile1
+      combinedItems.add(Item(
+        id: item2.id,
+        lootTable: item2.lootTable,
+        map: item2.map,
+        obtainedFrom: item2.obtainedFrom,
+        name: item2.name,
+        rarity: item2.rarity,
+        race: item2.race,
+        slot: item2.slot,
+        attributes: item2.attributes,
       ));
     }
   }
@@ -263,7 +329,7 @@ Future<void> uploadItemsToFirebase(List<Item> items) async {
         'id': item.id,
         'lootTable': item.lootTable,
         'map': item.map,
-        'droppedBy': item.droppedBy,
+        'obtainedFrom': item.obtainedFrom,
         'name': item.name,
         'rarity': item.rarity,
         'race': item.race,
@@ -292,7 +358,8 @@ Future<void> processAndUploadItems(String pathFile1, String pathFile2) async {
       print(slotsSet);
       print(lootTableSet);
       // await uploadItemsToFirebase(combinedItems);
-      print('Todos los items han sido subidos correctamente.');
+      print(
+          'Todos los items han sido subidos correctamente. Cantidad: ${combinedItems.length}');
     } else {
       print('No se encontraron items para subir.');
     }
