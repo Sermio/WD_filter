@@ -28,7 +28,6 @@ class ItemDescription extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Header with the item name
             Container(
               padding: const EdgeInsets.all(8),
               color: Colors.black,
@@ -42,7 +41,6 @@ class ItemDescription extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
             ),
-            // Slot with the technology
             Container(
               padding: const EdgeInsets.symmetric(vertical: 4),
               color: Colors.grey.shade800,
@@ -56,7 +54,6 @@ class ItemDescription extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            // Attributes
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Column(
@@ -64,7 +61,6 @@ class ItemDescription extends StatelessWidget {
                 children: attributes.entries.map((entry) {
                   final value = entry.value;
 
-                  // Comprobar si el valor es un mapa anidado
                   if (value is Map<String, dynamic>) {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -96,7 +92,6 @@ class ItemDescription extends StatelessWidget {
                       ],
                     );
                   } else {
-                    // Si no es un mapa, mostrar el valor directamente
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 4.0),
                       child: Text(
@@ -112,7 +107,6 @@ class ItemDescription extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            // Description
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Text(

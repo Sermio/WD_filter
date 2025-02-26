@@ -196,6 +196,8 @@ List<Map<String, String>> units = [
 // ];
 // 67710
 
+List<String> races = ['Humans', 'Tribes', 'Aliens'];
+
 List<Map<String, String>> maps = [
   {'key': 'Safari', 'value': 'Deadly safari'},
   {'key': 'DTB', 'value': 'Dunetown base'},

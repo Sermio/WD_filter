@@ -7,8 +7,7 @@ class Item {
   final String rarity;
   final String race;
   final String slot;
-  final Map<String, Map<String, String>>
-      attributes; // Cambiado a Map<String, Map<String, String>>
+  final Map<String, Map<String, String>> attributes;
 
   Item({
     required this.id,
@@ -22,7 +21,6 @@ class Item {
     required this.attributes,
   });
 
-  // Convertir a un mapa para actualizar Firestore
   Map<String, dynamic> toMap() {
     return {
       'id': id,
@@ -33,12 +31,10 @@ class Item {
       'rarity': rarity,
       'race': race,
       'slot': slot,
-      'attributes':
-          attributes, // Ahora atributos es un Map<String, Map<String, String>>
+      'attributes': attributes,
     };
   }
 
-  // Factory para crear un 'Item' desde un Map (por ejemplo, desde Firestore o JSON)
   factory Item.fromJson(Map<String, dynamic> json) {
     return Item(
       id: json['id'] as int,
@@ -49,13 +45,12 @@ class Item {
       rarity: json['rarity'] as String,
       race: json['race'] as String,
       slot: json['slot'] as String,
-      attributes: Map<String, Map<String, String>>.from(json['attributes'] ??
-          {}), // Adaptado para Map<String, Map<String, String>>
+      attributes:
+          Map<String, Map<String, String>>.from(json['attributes'] ?? {}),
     );
   }
 }
 
-// Lista de tropas clasificadas por raza y en lowercase.
 final List<String> unitsFlat = [
   'Commander',
   'Assassin',
