@@ -19,10 +19,17 @@ class _CardListScreenState extends State<CardListScreen> {
   late Future<List<QueryDocumentSnapshot>> _itemsFuture;
   bool _isFilterVisible = false;
 
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _attributeController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
     _itemsFuture = _fetchItems();
+    _nameController.text =
+        Provider.of<FilterProvider>(context, listen: false).nameFilter;
+    _attributeController.text =
+        Provider.of<FilterProvider>(context, listen: false).attributeFilter;
   }
 
   Future<List<QueryDocumentSnapshot>> _fetchItems() async {
@@ -46,13 +53,15 @@ class _CardListScreenState extends State<CardListScreen> {
         title: const Text('Card List'),
         actions: [
           IconButton(
-            icon: Icon(_isFilterVisible ? Icons.filter_list : Icons.close),
+            icon: Icon(_isFilterVisible ? Icons.close : Icons.filter_list),
             onPressed: () {
               setState(() {
                 _isFilterVisible = !_isFilterVisible;
                 if (!_isFilterVisible) {
                   Provider.of<FilterProvider>(context, listen: false)
                       .clearFilters();
+                  _nameController.clear();
+                  _attributeController.clear();
                 }
               });
             },
@@ -61,14 +70,13 @@ class _CardListScreenState extends State<CardListScreen> {
       ),
       body: Column(
         children: [
-          if (!_isFilterVisible)
+          if (_isFilterVisible)
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
                   TextField(
-                    controller: TextEditingController(
-                        text: Provider.of<FilterProvider>(context).nameFilter),
+                    controller: _nameController,
                     onChanged: (value) {
                       Provider.of<FilterProvider>(context, listen: false)
                           .setNameFilter(value.toLowerCase());
@@ -76,9 +84,7 @@ class _CardListScreenState extends State<CardListScreen> {
                     decoration: const InputDecoration(labelText: 'Item Name'),
                   ),
                   TextField(
-                    controller: TextEditingController(
-                        text: Provider.of<FilterProvider>(context)
-                            .attributeFilter),
+                    controller: _attributeController,
                     onChanged: (value) {
                       Provider.of<FilterProvider>(context, listen: false)
                           .setAttributeFilter(value.toLowerCase());
@@ -221,5 +227,12 @@ class _CardListScreenState extends State<CardListScreen> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _attributeController.dispose();
+    super.dispose();
   }
 }
