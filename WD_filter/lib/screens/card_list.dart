@@ -50,12 +50,15 @@ class _CardListScreenState extends State<CardListScreen> {
       ),
       appBar: AppBar(
         backgroundColor: Colors.blue.shade800,
-        title: const Text(
-          'Card List',
+        title: const Center(
+          child: Text(
+            'Items',
+          ),
         ),
         actions: [
           IconButton(
             icon: Icon(_isFilterVisible ? Icons.close : Icons.filter_list),
+            color: Colors.black,
             onPressed: () {
               setState(() {
                 _isFilterVisible = !_isFilterVisible;
@@ -219,6 +222,7 @@ class _CardListScreenState extends State<CardListScreen> {
                       name: name,
                       map: itemData['map'] ?? '',
                       rarity: rarity,
+                      obtainedFrom: itemData['obtainedFrom'],
                       itemData: itemData,
                     );
                   },

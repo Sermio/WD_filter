@@ -6,6 +6,7 @@ class ExpandableCard extends StatefulWidget {
   final String name;
   final String map;
   final String rarity;
+  final String obtainedFrom;
   final Map<String, dynamic> itemData;
 
   const ExpandableCard({
@@ -13,6 +14,7 @@ class ExpandableCard extends StatefulWidget {
     required this.name,
     required this.map,
     required this.rarity,
+    required this.obtainedFrom,
     required this.itemData,
   }) : super(key: key);
 
@@ -60,47 +62,11 @@ class _ExpandableCardState extends State<ExpandableCard> {
                           ? widget.itemData['obtainedFrom']
                           : 'Unknown',
             ),
-            leading: widget.itemData['slot'] == 'ALIEN_MASTER'
-                ? SizedBox(
-                    width: 60,
-                    height: 60,
-                    child: Stack(
-                      children: [
-                        Image.asset(
-                          'assets/images/worldshift/items/item.png',
-                          scale: 1.4,
-                          width: 60,
-                          height: 60,
-                        ),
-                        const BorderRarityColor(),
-                        Image.asset(
-                          'assets/images/items/humans/sprite_5_2.png',
-                          width: 60,
-                          height: 60,
-                        ),
-                      ],
-                    ),
-                  )
-                : SizedBox(
-                    width: 60,
-                    height: 60,
-                    child: Stack(
-                      children: [
-                        Image.asset(
-                          'assets/images/worldshift/items/item_sample.png',
-                          scale: 1.4,
-                          width: 60,
-                          height: 60,
-                        ),
-                        const BorderRarityColor(),
-                        Image.asset(
-                          'assets/images/items/humans/sprite_5_2.png',
-                          width: 60,
-                          height: 60,
-                        ),
-                      ],
-                    ),
-                  ),
+            leading: ItemCompleteFrame(
+              slot: widget.itemData['slot'],
+              race: widget.itemData['race'],
+              rarity: widget.rarity,
+            ),
             trailing: GestureDetector(
               child: const Icon(Icons.info_outline),
               onTap: () {
@@ -113,15 +79,23 @@ class _ExpandableCardState extends State<ExpandableCard> {
                           color: getRarityColor(widget.itemData['rarity']),
                           fontWeight: FontWeight.bold),
                     ),
-                    content: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(widget.itemData['map']),
-                        Text(widget.itemData['race']),
-                        Text(widget.itemData['rarity']),
-                        Text(widget.itemData['slot']),
-                      ],
+                    content: SingleChildScrollView(
+                      child: ItemDescription(
+                          itemName: widget.name,
+                          rarity: widget.rarity,
+                          slot: widget.itemData['slot'],
+                          obtainedFrom: widget.obtainedFrom,
+                          attributes: widget.itemData['attributes']),
                     ),
+                    // content: Column(
+                    //   mainAxisSize: MainAxisSize.min,
+                    //   children: [
+                    //     Text(widget.itemData['map']),
+                    //     Text(widget.itemData['race']),
+                    //     Text(widget.itemData['rarity']),
+                    //     Text(widget.itemData['slot']),
+                    //   ],
+                    // ),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.pop(context),
@@ -145,6 +119,7 @@ class _ExpandableCardState extends State<ExpandableCard> {
                 itemName: widget.itemData['name'],
                 rarity: widget.itemData['rarity'],
                 slot: widget.itemData['slot'],
+                obtainedFrom: widget.obtainedFrom,
                 attributes: widget.itemData['attributes'],
               ),
             ),
@@ -154,9 +129,53 @@ class _ExpandableCardState extends State<ExpandableCard> {
   }
 }
 
+class ItemCompleteFrame extends StatelessWidget {
+  final String slot;
+  final String race;
+  final String rarity;
+
+  const ItemCompleteFrame({
+    super.key,
+    required this.slot,
+    required this.race,
+    required this.rarity,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final String basePath = getImagePath(race);
+
+    return SizedBox(
+      width: 60,
+      height: 60,
+      child: Stack(
+        children: [
+          Image.asset(
+            'assets/images/items/$basePath/${slot.toUpperCase()}.png',
+            scale: 1.5,
+            width: 60,
+            height: 60,
+          ),
+          BorderRarityColor(
+            rarity: rarity,
+          ),
+          Image.asset(
+            'assets/images/items/$basePath/${slot.toUpperCase()}_frame.png',
+            width: 60,
+            height: 60,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class BorderRarityColor extends StatelessWidget {
+  final String rarity;
+
   const BorderRarityColor({
     super.key,
+    required this.rarity,
   });
 
   @override
@@ -165,53 +184,105 @@ class BorderRarityColor extends StatelessWidget {
       top: 5.5,
       left: 8,
       child: Container(
-        width: 45,
-        height: 45,
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
             colors: [
-              Colors.purple.shade700,
+              getRarityColor(rarity),
               Colors.transparent,
             ],
-            stops: const [0.07, 0.2],
+            stops: const [0.12, 0.2],
           ),
         ),
         child: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
+              begin: Alignment.topRight,
+              end: Alignment.bottomLeft,
               colors: [
-                Colors.purple.shade700,
+                getRarityColor(rarity),
                 Colors.transparent,
               ],
-              stops: const [0.07, 0.2],
+              stops: const [0.12, 0.2],
             ),
           ),
           child: Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
+                begin: Alignment.bottomLeft,
+                end: Alignment.topRight,
                 colors: [
-                  Colors.purple.shade700,
+                  getRarityColor(rarity),
                   Colors.transparent,
                 ],
-                stops: const [0.07, 0.2],
+                stops: const [0.12, 0.2],
               ),
             ),
             child: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  begin: Alignment.centerRight,
-                  end: Alignment.centerLeft,
+                  begin: Alignment.bottomRight,
+                  end: Alignment.topLeft,
                   colors: [
-                    Colors.purple.shade700,
+                    getRarityColor(rarity),
                     Colors.transparent,
                   ],
-                  stops: const [0.07, 0.2],
+                  stops: const [0.2, 0.3],
+                ),
+              ),
+              child: Container(
+                width: 45,
+                height: 45,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      getRarityColor(rarity),
+                      Colors.transparent,
+                    ],
+                    stops: const [0.05, 0.25],
+                  ),
+                ),
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                      colors: [
+                        getRarityColor(rarity),
+                        Colors.transparent,
+                      ],
+                      stops: const [0.05, 0.25],
+                    ),
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.bottomCenter,
+                        end: Alignment.topCenter,
+                        colors: [
+                          getRarityColor(rarity),
+                          Colors.transparent,
+                        ],
+                        stops: const [0.05, 0.25],
+                      ),
+                    ),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.centerRight,
+                          end: Alignment.centerLeft,
+                          colors: [
+                            getRarityColor(rarity),
+                            Colors.transparent,
+                          ],
+                          stops: const [0.05, 0.3],
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),

@@ -70,7 +70,9 @@ flutter:
     # - assets/images/quiz-logo.png
     - assets/images/worldshift/items/
     - assets/images/
+    - assets/images/items/aliens/
     - assets/images/items/humans/
+    - assets/images/items/tribes/
     - assets/csvFiles/
     - assets/tsvFiles/
 
