@@ -23,16 +23,18 @@ class ItemDescription extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Container(
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.black),
-          borderRadius: BorderRadius.circular(8),
-          color: Colors.grey.shade900,
+          borderRadius: BorderRadius.circular(10),
+          color: Colors.black.withOpacity(0.75),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Container(
               padding: const EdgeInsets.all(8),
-              color: Colors.black,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.black,
+              ),
               child: Text(
                 itemName,
                 style: TextStyle(
@@ -45,11 +47,33 @@ class ItemDescription extends StatelessWidget {
             ),
             Container(
               padding: const EdgeInsets.symmetric(vertical: 4),
-              color: Colors.grey.shade800,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: [
+                    Colors.transparent, // Muy claro y transparente
+                    Colors.grey.shade300
+                        .withOpacity(0.4), // Gris claro y menos transparente
+                    Colors.grey.shade300
+                        .withOpacity(0.45), // Gris claro y menos transparente
+                    Colors.grey.shade300
+                        .withOpacity(0.4), // Gris claro y menos transparente
+                    Colors.transparent, // Transparente hacia la derecha
+                  ],
+                  stops: const [
+                    0.0,
+                    0.3,
+                    0.5,
+                    0.7,
+                    1.0
+                  ], // Define en qué punto cambia el color
+                ),
+              ),
               child: Text(
                 '(${getSlotValueOrDescription(slot)})',
                 style: const TextStyle(
-                  color: Colors.grey,
+                  color: Colors.black,
                   fontSize: 14,
                 ),
                 textAlign: TextAlign.center,
@@ -78,12 +102,33 @@ class ItemDescription extends StatelessWidget {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: value.entries.map((innerEntry) {
-                            return Text(
-                              '${getAttributeValue(innerEntry.key)}: ${innerEntry.value.startsWith('-') ? innerEntry.value : '+${innerEntry.value}'}',
-                              style: const TextStyle(
-                                color: Colors.greenAccent,
-                                fontSize: 14,
-                              ),
+                            return Row(
+                              children: [
+                                Text(
+                                  '${innerEntry.value.startsWith('-') ? innerEntry.value : '+${innerEntry.value}'}',
+                                  style: TextStyle(
+                                    color: Colors.lightGreenAccent.shade400,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                Text(
+                                  ' ${getAttributeValue(innerEntry.key)}',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    shadows: [
+                                      Shadow(
+                                        offset: Offset(1.5,
+                                            0.0), // La distancia de la sombra
+                                        blurRadius:
+                                            0.0, // Difusión de la sombra
+                                        color:
+                                            Colors.black, // Color de la sombra
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             );
                           }).toList(),
                         ),

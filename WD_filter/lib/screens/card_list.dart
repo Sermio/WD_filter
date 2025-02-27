@@ -49,16 +49,29 @@ class _CardListScreenState extends State<CardListScreen> {
         },
       ),
       appBar: AppBar(
-        backgroundColor: Colors.blue.shade800,
+        elevation: 10,
+        shadowColor: Colors.black,
+        // backgroundColor: Colors.blue.shade800,
         title: const Center(
           child: Text(
             'Items',
+            style: TextStyle(color: Colors.white),
           ),
+        ),
+        flexibleSpace: Stack(
+          children: [
+            Positioned.fill(
+              child: Image.asset(
+                'assets/images/banner.png', // Asegúrate de que la ruta de la imagen sea correcta
+                fit: BoxFit.cover,
+              ),
+            ),
+          ],
         ),
         actions: [
           IconButton(
             icon: Icon(_isFilterVisible ? Icons.close : Icons.filter_list),
-            color: Colors.black,
+            color: Colors.white,
             onPressed: () {
               setState(() {
                 _isFilterVisible = !_isFilterVisible;
