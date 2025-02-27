@@ -21,6 +21,7 @@ List<Item> itemsFile2 = [];
 Set<String> attributeKeys = {};
 Set<String> mapsSet = {};
 Set<String> slotsSet = {};
+Set<String> namesSet = {};
 Set<int> lootTableSet = {};
 
 String getAttributeValue(String key) {
@@ -28,6 +29,20 @@ String getAttributeValue(String key) {
     (attribute) => attribute['key'] == key,
     orElse: () => {'value': 'Unknown Attribute'},
   )['value']!;
+}
+
+String capitalizeFirstLetterOfEachWord(String input) {
+  // Si el string contiene 2 o más palabras
+  if (input.split(' ').length >= 2) {
+    return input.split(' ').map((word) {
+      // Cambia la primera letra de cada palabra por mayúscula
+      return word.isNotEmpty
+          ? word[0].toUpperCase() + word.substring(1).toLowerCase()
+          : '';
+    }).join(' ');
+  }
+  // Si no contiene 2 o más palabras, retorna el string original
+  return input;
 }
 
 String getUnitValue(String key) {
@@ -171,6 +186,7 @@ Future<void> parseLootFile1(String path) async {
             break;
           }
         }
+        namesSet.add(itemName);
 
         itemsFile1.add(Item(
           id: itemId,
@@ -270,6 +286,7 @@ Future<void> parseLootFile2(String path) async {
       } else {
         attributeString = line.substring(startIndex).trim();
       }
+      namesSet.add(name);
 
       itemsFile2.add(Item(
         id: itemId,
@@ -373,6 +390,21 @@ Future<void> uploadItemsToFirebase(List<Item> items) async {
   }
 }
 
+void copySetToClipboard(Set<String> mySet) {
+  // Convierte el Set en una cadena, agregando comillas simples alrededor de cada valor,
+  // y reemplaza las comillas dobles por comillas simples dentro de cada valor.
+  String content = mySet.map((value) {
+    // Reemplaza las comillas dobles internas por comillas simples
+    String sanitizedValue = value.replaceAll('"', "'");
+    return '"$sanitizedValue"';
+  }).join(',');
+
+  // Copia al portapapeles
+  Clipboard.setData(ClipboardData(text: content)).then((_) {
+    print("¡Datos copiados al portapapeles!");
+  });
+}
+
 Future<void> processAndUploadItems(String pathFile1, String pathFile2) async {
   try {
     await Firebase.initializeApp();
@@ -384,6 +416,8 @@ Future<void> processAndUploadItems(String pathFile1, String pathFile2) async {
       print(mapsSet);
       print(slotsSet);
       print(lootTableSet);
+      print(namesSet);
+      copySetToClipboard(namesSet);
       // await uploadItemsToFirebase(combinedItems);
       print(
           'Todos los items han sido subidos correctamente. Cantidad: ${combinedItems.length}');

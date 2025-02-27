@@ -43,6 +43,7 @@ dependencies:
   flame: ^1.22.0
   image: ^4.3.0
   permission_handler: ^11.3.1
+  flutter_typeahead: ^5.2.0
 
 dev_dependencies:
   flutter_test:

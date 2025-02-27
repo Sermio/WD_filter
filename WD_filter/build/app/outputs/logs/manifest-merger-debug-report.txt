@@ -39,6 +39,7 @@ INJECTED from C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\android\app\src\ma
 MERGED from C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\android\app\src\main\AndroidManifest.xml:1:1-37:12
 MERGED from [:cloud_firestore] C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\build\cloud_firestore\intermediates\merged_manifest\debug\AndroidManifest.xml:2:1-17:12
 MERGED from [:firebase_core] C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\build\firebase_core\intermediates\merged_manifest\debug\AndroidManifest.xml:2:1-17:12
+MERGED from [:flutter_keyboard_visibility] C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\build\flutter_keyboard_visibility\intermediates\merged_manifest\debug\AndroidManifest.xml:2:1-9:12
 MERGED from [:path_provider_android] C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\build\path_provider_android\intermediates\merged_manifest\debug\AndroidManifest.xml:2:1-9:12
 MERGED from [:permission_handler_android] C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\build\permission_handler_android\intermediates\merged_manifest\debug\AndroidManifest.xml:2:1-9:12
 MERGED from [com.google.firebase:firebase-firestore:25.1.2] C:\Users\Sergio\.gradle\caches\transforms-3\e4ba81dbf9a5f97fac0a2b6647781c43\transformed\jetified-firebase-firestore-25.1.2\AndroidManifest.xml:2:1-26:12
@@ -109,6 +110,8 @@ MERGED from [:cloud_firestore] C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\b
 MERGED from [:cloud_firestore] C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\build\cloud_firestore\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-7:41
 MERGED from [:firebase_core] C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\build\firebase_core\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-7:41
 MERGED from [:firebase_core] C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\build\firebase_core\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-7:41
+MERGED from [:flutter_keyboard_visibility] C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\build\flutter_keyboard_visibility\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-7:41
+MERGED from [:flutter_keyboard_visibility] C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\build\flutter_keyboard_visibility\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-7:41
 MERGED from [:path_provider_android] C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\build\path_provider_android\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-7:41
 MERGED from [:path_provider_android] C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\build\path_provider_android\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-7:41
 MERGED from [:permission_handler_android] C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\build\permission_handler_android\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-7:41
