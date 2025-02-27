@@ -61,15 +61,45 @@ class _ExpandableCardState extends State<ExpandableCard> {
                           : 'Unknown',
             ),
             leading: widget.itemData['slot'] == 'ALIEN_MASTER'
-                ? Image.asset(
-                    'assets/images/worldshift/items/item.png',
-                    width: 50,
-                    height: 50,
+                ? SizedBox(
+                    width: 60,
+                    height: 60,
+                    child: Stack(
+                      children: [
+                        Image.asset(
+                          'assets/images/worldshift/items/item.png',
+                          scale: 1.4,
+                          width: 60,
+                          height: 60,
+                        ),
+                        const BorderRarityColor(),
+                        Image.asset(
+                          'assets/images/items/humans/sprite_5_2.png',
+                          width: 60,
+                          height: 60,
+                        ),
+                      ],
+                    ),
                   )
-                : Image.asset(
-                    'assets/images/worldshift/items/item_sample.png',
-                    width: 50,
-                    height: 50,
+                : SizedBox(
+                    width: 60,
+                    height: 60,
+                    child: Stack(
+                      children: [
+                        Image.asset(
+                          'assets/images/worldshift/items/item_sample.png',
+                          scale: 1.4,
+                          width: 60,
+                          height: 60,
+                        ),
+                        const BorderRarityColor(),
+                        Image.asset(
+                          'assets/images/items/humans/sprite_5_2.png',
+                          width: 60,
+                          height: 60,
+                        ),
+                      ],
+                    ),
                   ),
             trailing: GestureDetector(
               child: const Icon(Icons.info_outline),
@@ -119,6 +149,74 @@ class _ExpandableCardState extends State<ExpandableCard> {
               ),
             ),
         ],
+      ),
+    );
+  }
+}
+
+class BorderRarityColor extends StatelessWidget {
+  const BorderRarityColor({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      top: 5.5,
+      left: 8,
+      child: Container(
+        width: 45,
+        height: 45,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.purple.shade700,
+              Colors.transparent,
+            ],
+            stops: const [0.07, 0.2],
+          ),
+        ),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+              colors: [
+                Colors.purple.shade700,
+                Colors.transparent,
+              ],
+              stops: const [0.07, 0.2],
+            ),
+          ),
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+                colors: [
+                  Colors.purple.shade700,
+                  Colors.transparent,
+                ],
+                stops: const [0.07, 0.2],
+              ),
+            ),
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.centerRight,
+                  end: Alignment.centerLeft,
+                  colors: [
+                    Colors.purple.shade700,
+                    Colors.transparent,
+                  ],
+                  stops: const [0.07, 0.2],
+                ),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

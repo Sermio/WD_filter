@@ -40,6 +40,9 @@ dependencies:
   firebase_core: ^3.12.0
   cloud_firestore: ^5.6.4
   provider: ^6.1.2
+  flame: ^1.22.0
+  image: ^4.3.0
+  permission_handler: ^11.3.1
 
 dev_dependencies:
   flutter_test:
@@ -66,6 +69,8 @@ flutter:
   assets:
     # - assets/images/quiz-logo.png
     - assets/images/worldshift/items/
+    - assets/images/
+    - assets/images/items/humans/
     - assets/csvFiles/
     - assets/tsvFiles/
 

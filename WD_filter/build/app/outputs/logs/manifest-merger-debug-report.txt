@@ -1,6 +1,6 @@
 -- Merging decision tree log ---
 application
-INJECTED from C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\android\app\src\main\AndroidManifest.xml:2:5-32:19
+INJECTED from C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\android\app\src\main\AndroidManifest.xml:5:5-36:19
 MERGED from [:cloud_firestore] C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\build\cloud_firestore\intermediates\merged_manifest\debug\AndroidManifest.xml:9:5-15:19
 MERGED from [:cloud_firestore] C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\build\cloud_firestore\intermediates\merged_manifest\debug\AndroidManifest.xml:9:5-15:19
 MERGED from [:firebase_core] C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\build\firebase_core\intermediates\merged_manifest\debug\AndroidManifest.xml:9:5-15:19
@@ -32,14 +32,15 @@ MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\Se
 	android:name
 		INJECTED from C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\android\app\src\main\AndroidManifest.xml
 manifest
-ADDED from C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\android\app\src\main\AndroidManifest.xml:1:1-33:12
-INJECTED from C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\android\app\src\main\AndroidManifest.xml:1:1-33:12
-INJECTED from C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\android\app\src\main\AndroidManifest.xml:1:1-33:12
-INJECTED from C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\android\app\src\main\AndroidManifest.xml:1:1-33:12
-MERGED from C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\android\app\src\main\AndroidManifest.xml:1:1-33:12
+ADDED from C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\android\app\src\main\AndroidManifest.xml:1:1-37:12
+INJECTED from C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\android\app\src\main\AndroidManifest.xml:1:1-37:12
+INJECTED from C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\android\app\src\main\AndroidManifest.xml:1:1-37:12
+INJECTED from C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\android\app\src\main\AndroidManifest.xml:1:1-37:12
+MERGED from C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\android\app\src\main\AndroidManifest.xml:1:1-37:12
 MERGED from [:cloud_firestore] C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\build\cloud_firestore\intermediates\merged_manifest\debug\AndroidManifest.xml:2:1-17:12
 MERGED from [:firebase_core] C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\build\firebase_core\intermediates\merged_manifest\debug\AndroidManifest.xml:2:1-17:12
 MERGED from [:path_provider_android] C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\build\path_provider_android\intermediates\merged_manifest\debug\AndroidManifest.xml:2:1-9:12
+MERGED from [:permission_handler_android] C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\build\permission_handler_android\intermediates\merged_manifest\debug\AndroidManifest.xml:2:1-9:12
 MERGED from [com.google.firebase:firebase-firestore:25.1.2] C:\Users\Sergio\.gradle\caches\transforms-3\e4ba81dbf9a5f97fac0a2b6647781c43\transformed\jetified-firebase-firestore-25.1.2\AndroidManifest.xml:2:1-26:12
 MERGED from [com.google.firebase:firebase-common-ktx:21.0.0] C:\Users\Sergio\.gradle\caches\transforms-3\55bebb2adf7331c9c8a8d8f1a60ed510\transformed\jetified-firebase-common-ktx-21.0.0\AndroidManifest.xml:2:1-18:12
 MERGED from [androidx.window:window-java:1.0.0-beta04] C:\Users\Sergio\.gradle\caches\transforms-3\234cf6cab2ae0df1de11d520bd41701d\transformed\jetified-window-java-1.0.0-beta04\AndroidManifest.xml:17:1-23:12
@@ -74,18 +75,32 @@ INJECTED from C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\android\app\src\de
 INJECTED from C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\android\app\src\debug\AndroidManifest.xml:1:1-7:12
 	package
 		INJECTED from C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\android\app\src\main\AndroidManifest.xml
-		ADDED from C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\android\app\src\main\AndroidManifest.xml:1:1-33:12
+		ADDED from C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\android\app\src\main\AndroidManifest.xml:1:1-37:12
 		INJECTED from C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\android\app\src\debug\AndroidManifest.xml
 	android:versionName
 		INJECTED from C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\android\app\src\main\AndroidManifest.xml
-		ADDED from C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\android\app\src\main\AndroidManifest.xml:1:1-33:12
+		ADDED from C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\android\app\src\main\AndroidManifest.xml:1:1-37:12
 		INJECTED from C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\android\app\src\debug\AndroidManifest.xml
 	android:versionCode
 		INJECTED from C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\android\app\src\main\AndroidManifest.xml
-		ADDED from C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\android\app\src\main\AndroidManifest.xml:1:1-33:12
+		ADDED from C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\android\app\src\main\AndroidManifest.xml:1:1-37:12
 		INJECTED from C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\android\app\src\debug\AndroidManifest.xml
 	xmlns:android
 		ADDED from C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\android\app\src\main\AndroidManifest.xml:1:11-69
+uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
+ADDED from C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\android\app\src\main\AndroidManifest.xml:2:1-103
+	android:maxSdkVersion
+		ADDED from C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\android\app\src\main\AndroidManifest.xml:2:75-101
+	android:name
+		ADDED from C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\android\app\src\main\AndroidManifest.xml:2:18-74
+uses-permission#android.permission.READ_EXTERNAL_STORAGE
+ADDED from C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\android\app\src\main\AndroidManifest.xml:3:1-76
+	android:name
+		ADDED from C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\android\app\src\main\AndroidManifest.xml:3:18-73
+uses-permission#android.permission.MANAGE_EXTERNAL_STORAGE
+ADDED from C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\android\app\src\main\AndroidManifest.xml:4:1-78
+	android:name
+		ADDED from C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\android\app\src\main\AndroidManifest.xml:4:18-75
 uses-sdk
 INJECTED from C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\android\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\android\app\src\main\AndroidManifest.xml
@@ -96,6 +111,8 @@ MERGED from [:firebase_core] C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\bui
 MERGED from [:firebase_core] C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\build\firebase_core\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-7:41
 MERGED from [:path_provider_android] C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\build\path_provider_android\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-7:41
 MERGED from [:path_provider_android] C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\build\path_provider_android\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-7:41
+MERGED from [:permission_handler_android] C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\build\permission_handler_android\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-7:41
+MERGED from [:permission_handler_android] C:\Users\Sergio\Desktop\git\WD_filter\WD_filter\build\permission_handler_android\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-7:41
 MERGED from [com.google.firebase:firebase-firestore:25.1.2] C:\Users\Sergio\.gradle\caches\transforms-3\e4ba81dbf9a5f97fac0a2b6647781c43\transformed\jetified-firebase-firestore-25.1.2\AndroidManifest.xml:6:5-44
 MERGED from [com.google.firebase:firebase-firestore:25.1.2] C:\Users\Sergio\.gradle\caches\transforms-3\e4ba81dbf9a5f97fac0a2b6647781c43\transformed\jetified-firebase-firestore-25.1.2\AndroidManifest.xml:6:5-44
 MERGED from [com.google.firebase:firebase-common-ktx:21.0.0] C:\Users\Sergio\.gradle\caches\transforms-3\55bebb2adf7331c9c8a8d8f1a60ed510\transformed\jetified-firebase-common-ktx-21.0.0\AndroidManifest.xml:5:5-44

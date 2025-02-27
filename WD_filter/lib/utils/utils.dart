@@ -1,10 +1,20 @@
 import 'dart:io';
+import 'dart:ui';
 import 'package:adv_basics/data/data.dart';
 import 'package:adv_basics/data/item.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'dart:typed_data';
+import 'package:flame/flame.dart';
+import 'package:flame/sprite.dart';
+import 'package:image/image.dart' as img;
+import 'package:flutter/services.dart';
+import 'package:flame/flame.dart';
+import 'package:flame/components.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart'; // Incluye Vector2
 
 List<Item> itemsFile1 = [];
 List<Item> itemsFile2 = [];
@@ -352,5 +362,56 @@ Future<void> processAndUploadItems(String pathFile1, String pathFile2) async {
     }
   } catch (e) {
     print('Error procesando y subiendo los items: $e');
+  }
+}
+
+Future<void> saveSpritesAsPngs() async {
+  // Pedir permisos de almacenamiento (solo necesario para Android)
+  if (await Permission.storage.request().isGranted) {
+    // Cargar la hoja de sprites
+    final image = await Flame.images.load('assets/ddsFiles/items.png');
+
+    // Configurar el tamaño de cada sprite (62.5 x 62.5)
+    const spriteWidth = 62.5;
+    const spriteHeight = 62.5;
+
+    // Calcular filas y columnas
+    final columns = (image.width / spriteWidth).floor();
+    final rows = (image.height / spriteHeight).floor();
+
+    // Obtener la ruta de la carpeta de descargas
+    final directory = await getExternalStorageDirectory();
+    final downloadPath = Directory('${directory?.path}/Download');
+
+    if (!await downloadPath.exists()) {
+      await downloadPath.create(recursive: true);
+    }
+
+    for (int y = 0; y < rows; y++) {
+      for (int x = 0; x < columns; x++) {
+        // Extraer cada sprite
+        final sprite = Sprite(
+          image,
+          srcPosition: Vector2(x * spriteWidth, y * spriteHeight),
+          srcSize: Vector2(spriteWidth, spriteHeight),
+        );
+
+        // Convertir el sprite en un Uint8List
+        final spriteImage = await sprite.toImage();
+        final byteData =
+            await spriteImage.toByteData(format: ImageByteFormat.png);
+
+        if (byteData != null) {
+          final pngBytes = byteData.buffer.asUint8List();
+
+          // Guardar la imagen en la carpeta de descargas
+          final file = File('${downloadPath.path}/sprite_${y}_$x.png');
+          await file.writeAsBytes(pngBytes);
+          print('Imagen guardada: ${file.path}');
+        }
+      }
+    }
+  } else {
+    print('Permisos de almacenamiento denegados.');
   }
 }
