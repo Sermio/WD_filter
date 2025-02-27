@@ -5,6 +5,7 @@ class ItemDescription extends StatelessWidget {
   final String itemName;
   final String rarity;
   final String slot;
+  final String obtainedFrom;
   final Map<String, dynamic> attributes;
 
   const ItemDescription({
@@ -12,6 +13,7 @@ class ItemDescription extends StatelessWidget {
     required this.itemName,
     required this.rarity,
     required this.slot,
+    this.obtainedFrom = '',
     required this.attributes,
   });
 
@@ -106,7 +108,30 @@ class ItemDescription extends StatelessWidget {
                 }).toList(),
               ),
             ),
-            const SizedBox(height: 8),
+            if (obtainedFrom.toLowerCase().contains('pvp'))
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Row(
+                  children: [
+                    const Text(
+                      'Battle points cost: ',
+                      style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                          color: Color.fromARGB(255, 234, 223, 178)),
+                    ),
+                    Text(
+                      getItemPrice(rarity),
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w400,
+                          color: Color.fromARGB(255, 255, 0, 1)),
+                    )
+                  ],
+                ),
+              ),
+            // const SizedBox(height: 8),
+            const Divider(
+              color: Color.fromARGB(229, 52, 51, 51),
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Text(

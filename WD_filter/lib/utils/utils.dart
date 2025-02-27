@@ -56,21 +56,21 @@ String cleanString(String input) {
 Color getRarityColor(String value) {
   switch (value) {
     case "1":
-      return Colors.grey;
+      return const Color.fromARGB(255, 142, 147, 156);
     case "2":
-      return Colors.greenAccent.shade400;
+      return const Color.fromARGB(255, 104, 191, 72);
     case "3":
-      return Colors.yellow.shade600;
+      return const Color.fromARGB(255, 236, 211, 21);
     case "4":
-      return Colors.purple;
+      return const Color.fromARGB(255, 219, 149, 49);
     case "5":
-      return Colors.orange.shade400;
+      return const Color.fromARGB(255, 109, 10, 144);
     default:
-      return Colors.grey;
+      return const Color.fromARGB(255, 120, 122, 128);
   }
 }
 
-String rarityToString(BuildContext context, String rarity) {
+String rarityToString(String rarity) {
   switch (rarity) {
     case '1':
       return 'Very Common';
@@ -85,6 +85,36 @@ String rarityToString(BuildContext context, String rarity) {
     default:
       return 'Unknown';
   }
+}
+
+String getItemPrice(String rarity) {
+  switch (rarity) {
+    case '1':
+      return '6';
+    case '2':
+      return '15';
+    case '3':
+      return '39';
+    case '4':
+      return '50';
+    case '5':
+      return '90';
+    default:
+      return '-';
+  }
+}
+
+String getImagePath(String race) {
+  race = race.toLowerCase();
+
+  if (race.contains('aliens')) {
+    return 'aliens';
+  } else if (race.contains('humans')) {
+    return 'humans';
+  } else if (race.contains('tribes')) {
+    return 'tribes';
+  }
+  return 'humans';
 }
 
 Future<String> loadFileFromAssets(String path) async {

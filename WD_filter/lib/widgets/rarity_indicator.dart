@@ -11,7 +11,7 @@ class RarityIndicator extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(rarityToString(context, rarity).toUpperCase()),
+        Text(rarityToString(rarity).toUpperCase()),
         const SizedBox(width: 10),
         Container(
           width: 15,
