@@ -42,14 +42,12 @@ class _CardListScreenState extends State<CardListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      // floatingActionButton: FloatingActionButton(
-      //   child: const Icon(Icons.refresh),
-      //   onPressed: () {
-      //     setState(() {
-      //       _itemsFuture = _fetchItems();
-      //     });
-      //   },
-      // ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.refresh),
+        onPressed: () async {
+          await saveSpritesAsPngs();
+        },
+      ),
       appBar: AppBar(
         backgroundColor: Colors.blue.shade800,
         title: const Text(
