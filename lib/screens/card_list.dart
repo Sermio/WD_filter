@@ -1,5 +1,5 @@
 import 'package:adv_basics/data/itemList.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:adv_basics/multiple_search_selection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -9,15 +9,6 @@ import 'package:adv_basics/utils/utils.dart';
 import 'package:adv_basics/widgets/expandable_card.dart';
 import 'package:adv_basics/widgets/multi_chip.dart';
 import 'package:adv_basics/widgets/rarity_indicator.dart';
-import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-
-import 'package:provider/provider.dart';
-
-import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CardListScreen extends StatefulWidget {
   const CardListScreen({super.key});
@@ -51,32 +42,10 @@ class _CardListScreenState extends State<CardListScreen> {
     return snapshot.docs;
   }
 
-  Future<void> _uploadItems(BuildContext context) async {
-    try {
-      await processAndUploadItems(
-        'assets/tsvFiles/loot_complete.txt',
-        'assets/tsvFiles/items_extra_data_complete.txt',
-      );
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Datos subidos correctamente.')),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      // floatingActionButton: FloatingActionButton(
-      //   child: const Icon(Icons.refresh),
-      //   onPressed: () async {
-      //     await _uploadItems(context);
-      //   },
-      // ),
       appBar: AppBar(
         elevation: 10,
         shadowColor: Colors.black,
@@ -102,15 +71,6 @@ class _CardListScreenState extends State<CardListScreen> {
             color: Colors.white,
             onPressed: () {
               setState(() {
-                // Limpiar los filtros
-                // Provider.of<FilterProvider>(context, listen: false)
-                //     .clearFilters();
-
-                // _nameController.clear();
-                // _attributeController.clear();
-                // _unitController.clear(); // Limpiar el filtro de unidades
-
-                // Cambiar visibilidad del filtro
                 _isFilterVisible = !_isFilterVisible;
               });
             },
@@ -133,115 +93,98 @@ class _CardListScreenState extends State<CardListScreen> {
 
                     return Column(
                       children: [
-                        // TypeAheadField<String>(
-                        //   controller: _nameController,
-                        //   builder: (context, controller, focusNode) {
-                        //     return TextField(
-                        //         controller: controller,
-                        //         focusNode: focusNode,
-                        //         autofocus: false,
-                        //         decoration: const InputDecoration(
-                        //           border: OutlineInputBorder(),
-                        //           labelText: 'Name',
-                        //         ));
-                        //   },
-                        //   // textFieldConfiguration: TextFieldConfiguration(
-                        //   //   controller: _nameController,
-                        //   //   decoration:
-                        //   //       const InputDecoration(labelText: 'Item Name'),
-                        //   // ),
-                        //   suggestionsCallback: (pattern) async {
-                        //     return getSuggestions(pattern, 'name');
-                        //   },
-                        //   itemBuilder: (context, suggestion) {
-                        //     return ListTile(
-                        //       title: Text(suggestion),
+                        const SizedBox(height: 5),
+                        MultipleSearchSelection<Map<String, String>>(
+                          controller: MultipleSearchController(),
+                          items: attributeList,
+                          fieldToCheck: (item) => item['value'] ?? '',
+                          searchField: TextField(
+                            decoration: InputDecoration(
+                              hintText: 'Search attributes',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                            ),
+                          ),
+                          itemBuilder: (attribute, index, isPicked) {
+                            return Padding(
+                              padding: const EdgeInsets.all(6.0),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(6),
+                                  color: Colors.white,
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 20.0,
+                                    horizontal: 12,
+                                  ),
+                                  child: Text(attribute['value']!),
+                                ),
+                              ),
+                            );
+                          },
+                          pickedItemBuilder: (attribute) {
+                            return Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(color: Colors.grey[400]!),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8),
+                                child: Text(attribute['value']!),
+                              ),
+                            );
+                          },
+                          onPickedChange: (items) {},
+                          showSelectAllButton: true,
+                        ),
+                        const SizedBox(height: 5),
+                        // MultipleSearchSelection<Map<String, String>>(
+                        //   controller: MultipleSearchController(),
+                        //   items: units,
+                        //   fieldToCheck: (item) => item['value'] ?? '',
+                        //   searchField: TextField(
+                        //     decoration: InputDecoration(
+                        //       hintText: 'Search units',
+                        //       border: OutlineInputBorder(
+                        //         borderRadius: BorderRadius.circular(6),
+                        //       ),
+                        //     ),
+                        //   ),
+                        //   itemBuilder: (unit, index, isPicked) {
+                        //     return Padding(
+                        //       padding: const EdgeInsets.all(6.0),
+                        //       child: Container(
+                        //         decoration: BoxDecoration(
+                        //           borderRadius: BorderRadius.circular(6),
+                        //           color: Colors.white,
+                        //         ),
+                        //         child: Padding(
+                        //           padding: const EdgeInsets.symmetric(
+                        //             vertical: 20.0,
+                        //             horizontal: 12,
+                        //           ),
+                        //           child: Text(unit['value']!),
+                        //         ),
+                        //       ),
                         //     );
                         //   },
-                        //   onSelected: (suggestion) {
-                        //     filterProvider.setNameFilter(suggestion.toLowerCase());
-                        //     _nameController.text =
-                        //         suggestion; // Sincronizar el valor
+                        //   pickedItemBuilder: (unit) {
+                        //     return Container(
+                        //       decoration: BoxDecoration(
+                        //         color: Colors.white,
+                        //         border: Border.all(color: Colors.grey[400]!),
+                        //       ),
+                        //       child: Padding(
+                        //         padding: const EdgeInsets.all(8),
+                        //         child: Text(unit['value']!),
+                        //       ),
+                        //     );
                         //   },
+                        //   onPickedChange: (items) {},
+                        //   showSelectAllButton: true,
                         // ),
-                        const SizedBox(height: 5),
-                        TypeAheadField<String>(
-                          controller: _attributeController,
-                          builder: (context, controller, focusNode) {
-                            return TextField(
-                              controller: controller,
-                              focusNode: focusNode,
-                              autofocus: false,
-                              decoration: InputDecoration(
-                                border: const OutlineInputBorder(),
-                                labelText: 'Attribute',
-                                suffixIcon: _attributeController.text.isNotEmpty
-                                    ? IconButton(
-                                        icon: const Icon(Icons.close),
-                                        onPressed: () {
-                                          filterProvider.resetAttributeFilter();
-                                          _attributeController.clear();
-                                        },
-                                      )
-                                    : null,
-                              ),
-                            );
-                          },
-                          suggestionsCallback: (pattern) async {
-                            // Capitalizar la primera letra de cada palabra y manejar múltiples palabras
-                            String capitalizedPattern =
-                                capitalizeFirstLetterOfEachWord(pattern);
-                            return getSuggestions(
-                                capitalizedPattern, 'attribute');
-                          },
-                          itemBuilder: (context, suggestion) {
-                            return ListTile(
-                              title: Text(suggestion),
-                            );
-                          },
-                          onSelected: (suggestion) {
-                            filterProvider
-                                .setAttributeFilter(suggestion.toLowerCase());
-                            _attributeController.text = suggestion;
-                          },
-                        ),
-                        const SizedBox(height: 5),
-                        TypeAheadField<String>(
-                          controller: _unitController,
-                          builder: (context, controller, focusNode) {
-                            return TextField(
-                              controller: controller,
-                              focusNode: focusNode,
-                              autofocus: false,
-                              decoration: InputDecoration(
-                                border: const OutlineInputBorder(),
-                                labelText: 'Unit',
-                                suffixIcon: _unitController.text.isNotEmpty
-                                    ? IconButton(
-                                        icon: const Icon(Icons.close),
-                                        onPressed: () {
-                                          filterProvider.resetUnitFilter();
-                                          _unitController.clear();
-                                        },
-                                      )
-                                    : null,
-                              ),
-                            );
-                          },
-                          suggestionsCallback: (pattern) async {
-                            return getSuggestions(pattern, 'unit');
-                          },
-                          itemBuilder: (context, suggestion) {
-                            return ListTile(
-                              title: Text(suggestion),
-                            );
-                          },
-                          onSelected: (suggestion) {
-                            filterProvider
-                                .setUnitFilter(suggestion.toLowerCase());
-                            _unitController.text = suggestion;
-                          },
-                        ),
                         const SizedBox(
                           height: 10,
                         ),
