@@ -1,0 +1,1 @@
+ C:\\Users\\Sergio\\Desktop\\git\\WD_filter\\.dart_tool\\flutter_build\\7202673f846fe25bd1274dd017f50128\\native_assets.yaml: 
