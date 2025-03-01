@@ -1,3 +1,0 @@
-50320	3	Tribes	MUTANT_SHAMAN		Sacred Stream of Power		Shaman	Shaman purify_psicost = -8%	
-51640	4	Aliens	ALIEN_CORRUPTION		Astral Sphere Barrier		TrisatOverseer	Trisat armor = 4Trisat hp = 1%Overseer psi = 2%Overseer charging_field_area = 10%	
-67710	5	Humans	HUMAN_JUDGE	Tool of Justice	Judge	Judge damage = 19Judge proton_shot_damage = 21%		
