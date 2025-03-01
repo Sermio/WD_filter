@@ -71,12 +71,12 @@ class _CardListScreenState extends State<CardListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.refresh),
-        onPressed: () async {
-          await _uploadItems(context);
-        },
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   child: const Icon(Icons.refresh),
+      //   onPressed: () async {
+      //     await _uploadItems(context);
+      //   },
+      // ),
       appBar: AppBar(
         elevation: 10,
         shadowColor: Colors.black,
@@ -191,7 +191,8 @@ class _CardListScreenState extends State<CardListScreen> {
                             // Capitalizar la primera letra de cada palabra y manejar múltiples palabras
                             String capitalizedPattern =
                                 capitalizeFirstLetterOfEachWord(pattern);
-                            return getSuggestions(capitalizedPattern, 'unit');
+                            return getSuggestions(
+                                capitalizedPattern, 'attribute');
                           },
                           itemBuilder: (context, suggestion) {
                             return ListTile(
