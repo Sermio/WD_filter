@@ -1,1 +1,0 @@
- C:\\Users\\Sergio\\Desktop\\MHWProject\\MHW\\.dart_tool\\flutter_build\\c69e305141c694fff07cd40eaf4753b4\\native_assets.yaml: 
