@@ -1,4 +1,4 @@
-<h1>WorldShift Tribute Application</h1>
+<h1>WorldShift Tribute Application (Done in Flutter)</h1>
 
 <h2>Description</h2>
 <p>
