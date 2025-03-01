@@ -464,13 +464,13 @@
       "languageVersion": "3.2"
     },
     {
-      "name": "adv_basics",
+      "name": "worldshift_filters",
       "rootUri": "../",
       "packageUri": "lib/",
       "languageVersion": "3.1"
     }
   ],
-  "generated": "2025-03-01T10:03:14.966839Z",
+  "generated": "2025-03-01T17:40:06.241176Z",
   "generator": "pub",
   "generatorVersion": "3.4.4",
   "flutterRoot": "file:///C:/Users/Sergio/Documents/flutter",

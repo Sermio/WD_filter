@@ -1,4 +1,4 @@
-import 'package:adv_basics/utils/utils.dart'; // Asegúrate de importar el archivo donde tienes las funciones
+import 'package:worldshift_filters/utils/utils.dart'; // Asegúrate de importar el archivo donde tienes las funciones
 import 'package:flutter/material.dart';
 
 class UploadScreen extends StatelessWidget {

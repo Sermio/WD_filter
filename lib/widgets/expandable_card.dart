@@ -1,5 +1,5 @@
-import 'package:adv_basics/utils/utils.dart';
-import 'package:adv_basics/widgets/item_description_widget.dart';
+import 'package:worldshift_filters/utils/utils.dart';
+import 'package:worldshift_filters/widgets/item_description_widget.dart';
 import 'package:flutter/material.dart';
 
 class ExpandableCard extends StatefulWidget {

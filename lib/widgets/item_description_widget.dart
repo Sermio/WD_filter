@@ -1,4 +1,4 @@
-import 'package:adv_basics/utils/utils.dart';
+import 'package:worldshift_filters/utils/utils.dart';
 import 'package:flutter/material.dart';
 
 class ItemDescription extends StatelessWidget {
