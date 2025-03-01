@@ -1,4 +1,4 @@
-import 'package:adv_basics/models/item_filters_model.dart';
+import 'package:worldshift_filters/models/item_filters_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

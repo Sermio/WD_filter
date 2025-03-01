@@ -1,14 +1,14 @@
-import 'package:adv_basics/data/itemList.dart';
+import 'package:worldshift_filters/data/itemList.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:adv_basics/data/data.dart';
-import 'package:adv_basics/models/item_filters_model.dart';
-import 'package:adv_basics/utils/utils.dart';
-import 'package:adv_basics/widgets/expandable_card.dart';
-import 'package:adv_basics/widgets/multi_chip.dart';
-import 'package:adv_basics/widgets/rarity_indicator.dart';
+import 'package:worldshift_filters/data/data.dart';
+import 'package:worldshift_filters/models/item_filters_model.dart';
+import 'package:worldshift_filters/utils/utils.dart';
+import 'package:worldshift_filters/widgets/expandable_card.dart';
+import 'package:worldshift_filters/widgets/multi_chip.dart';
+import 'package:worldshift_filters/widgets/rarity_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
