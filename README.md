@@ -43,9 +43,13 @@
   This project is more than just a database—it is a digital archive, a research tool, and a visual homage to <em>WorldShift</em>. By combining powerful filtering capabilities, real-time data management, and authentic game visuals, the app delivers a polished and engaging experience tailored to both veteran players and newcomers alike.
 </p>
 
-<h2>App images</h2>
+<h2>App video and images</h2>
 <p>
-  Here are some images of the application screens with some of the functionalities.
+  Demo video: https://drive.google.com/file/d/1mr5SpdVBOtJDoCkoXNEU9tZzOKuGEJp2/view?usp=sharing
+</p>
+
+<p>
+  Here you can see images and a demo video showcasing the application's functionalities:
 </p>
 
 
