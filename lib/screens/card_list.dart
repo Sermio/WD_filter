@@ -262,12 +262,18 @@ class _CardListScreenState extends State<CardListScreen> {
                                       listen: false)
                                   .setSelectedMap(newValue);
                             },
-                            items: maps
-                                .map((map) => DropdownMenuItem<String>(
-                                      value: map['value'],
-                                      child: Text(map['value']!),
-                                    ))
-                                .toList(),
+                            items: [
+                              const DropdownMenuItem<String>(
+                                value:
+                                    null, // O usa '' si prefieres una cadena vacía
+                                child: Text(
+                                    'All Maps'), // Texto para indicar que no hay filtro
+                              ),
+                              ...maps.map((map) => DropdownMenuItem<String>(
+                                    value: map['value'],
+                                    child: Text(map['value']!),
+                                  )),
+                            ],
                           ),
                         ),
                         SizedBox(
@@ -284,12 +290,18 @@ class _CardListScreenState extends State<CardListScreen> {
                                       listen: false)
                                   .setSelectedSlot(newValue);
                             },
-                            items: slots
-                                .map((slot) => DropdownMenuItem<String>(
-                                      value: slot['key'],
-                                      child: Text(slot['value']!),
-                                    ))
-                                .toList(),
+                            items: [
+                              const DropdownMenuItem<String>(
+                                value:
+                                    null, // O usa '' si prefieres una cadena vacía
+                                child: Text(
+                                    'All Slots'), // Indica que no se aplica filtro
+                              ),
+                              ...slots.map((slot) => DropdownMenuItem<String>(
+                                    value: slot['key'],
+                                    child: Text(slot['value']!),
+                                  )),
+                            ],
                           ),
                         ),
                         SizedBox(
@@ -301,12 +313,20 @@ class _CardListScreenState extends State<CardListScreen> {
                             hint: const Text('Select Rarity'),
                             value: Provider.of<FilterProvider>(context)
                                 .selectedRarity,
-                            items: ['1', '2', '3', '4', '5'].map((rarity) {
-                              return DropdownMenuItem<String>(
-                                value: rarity,
-                                child: RarityIndicator(rarity: rarity),
-                              );
-                            }).toList(),
+                            items: [
+                              const DropdownMenuItem<String>(
+                                value:
+                                    null, // O usa '' si prefieres una cadena vacía
+                                child: Text(
+                                    'All Rarities'), // Indica que no se aplica filtro
+                              ),
+                              ...['1', '2', '3', '4', '5'].map((rarity) {
+                                return DropdownMenuItem<String>(
+                                  value: rarity,
+                                  child: RarityIndicator(rarity: rarity),
+                                );
+                              }),
+                            ],
                             onChanged: (value) {
                               Provider.of<FilterProvider>(context,
                                       listen: false)
