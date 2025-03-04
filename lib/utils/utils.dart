@@ -15,6 +15,27 @@ import 'package:flame/flame.dart';
 import 'package:flame/components.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart'; // Incluye Vector2
+import 'dart:io';
+import 'dart:convert';
+import 'package:excel/excel.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:path_provider/path_provider.dart';
+import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:intl/intl.dart';
+import 'package:excel/excel.dart';
+import 'package:intl/intl.dart';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:excel/excel.dart';
+import 'package:intl/intl.dart';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter/material.dart';
 
 List<Item> itemsFile1 = [];
 List<Item> itemsFile2 = [];
@@ -417,7 +438,8 @@ Future<void> processAndUploadItems(String pathFile1, String pathFile2) async {
       print(slotsSet);
       print(lootTableSet);
       print(namesSet);
-      copySetToClipboard(namesSet);
+      // copySetToClipboard(namesSet);
+      downloadItemsExcel(combinedItems);
       // await uploadItemsToFirebase(combinedItems);
       print(
           'Todos los items han sido subidos correctamente. Cantidad: ${combinedItems.length}');
@@ -478,4 +500,82 @@ Future<void> saveSpritesAsPngs() async {
   } else {
     print('Permisos de almacenamiento denegados.');
   }
+}
+
+Future<String> downloadItemsExcel(List<Item> items) async {
+  var excel = Excel.createExcel();
+  Sheet sheet = excel['Sheet1'];
+
+  // Encabezados para las columnas
+  sheet.appendRow([TextCellValue('text')]);
+  sheet.appendRow([
+    TextCellValue('ID'),
+    TextCellValue('Loot Table'),
+    TextCellValue('Map'),
+    TextCellValue('Obtained From'),
+    TextCellValue('Name'),
+    TextCellValue('Rarity'),
+    TextCellValue('Race'),
+    TextCellValue('Slot'),
+    TextCellValue('Attributes'),
+  ]);
+
+  // Llenar las filas con la información de cada item
+  for (var item in items) {
+    // Aquí se podría personalizar para incluir más detalles de los atributos si es necesario
+    String attributes = '';
+    item.attributes.forEach((key, value) {
+      attributes += '$key: ';
+      value.forEach((subKey, subValue) {
+        attributes += '$subKey - $subValue; ';
+      });
+    });
+
+    sheet.appendRow([
+      IntCellValue(item.id),
+      IntCellValue(item.lootTable),
+      TextCellValue(item.map),
+      TextCellValue(item.obtainedFrom),
+      TextCellValue(item.name),
+      TextCellValue(item.rarity),
+      TextCellValue(item.race),
+      TextCellValue(item.slot),
+      TextCellValue(attributes),
+    ]);
+  }
+
+  var status = await Permission.manageExternalStorage.request();
+  if (!status.isGranted) {
+    throw Exception('No se otorgaron permisos de almacenamiento.');
+  }
+
+  Directory? downloadsDirectory;
+  if (Platform.isAndroid) {
+    downloadsDirectory = Directory('/storage/emulated/0/Download');
+  }
+
+  if (downloadsDirectory == null) {
+    throw Exception('No se pudo acceder al directorio de descargas.');
+  }
+
+  String fileName = 'items_history.xlsx';
+  var file = File('${downloadsDirectory.path}/$fileName');
+  await file.writeAsBytes(excel.encode()!);
+
+  // try {
+  //   final result = await Share.shareXFiles(
+  //     [XFile(file.path)],
+  //     text: 'Aquí está la historia de los items.',
+  //   );
+
+  //   if (result.status == ShareResultStatus.success) {
+  //     print('Archivo compartido con éxito.');
+  //   } else if (result.status == ShareResultStatus.dismissed) {
+  //     print('El usuario descartó el compartir.');
+  //   }
+  // } catch (e) {
+  //   print('Error al compartir el archivo: $e');
+  // }
+
+  return 'items_history.xlsx';
 }
