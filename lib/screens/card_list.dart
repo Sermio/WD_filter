@@ -46,7 +46,7 @@ class _CardListScreenState extends State<CardListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFFF8F9FA),
       // floatingActionButton: FloatingActionButton(
       //   child: const Icon(Icons.refresh),
       //   onPressed: () async {
@@ -54,53 +54,81 @@ class _CardListScreenState extends State<CardListScreen> {
       //   },
       // ),
       appBar: AppBar(
-        elevation: 10,
-        shadowColor: Colors.black,
+        elevation: 0,
+        backgroundColor: Colors.transparent,
         title: const Center(
           child: Text(
-            'Items',
-            style: TextStyle(color: Colors.white),
+            'WorldShift Items',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.2,
+            ),
           ),
         ),
-        flexibleSpace: Stack(
-          children: [
-            Positioned.fill(
-              child: Image.asset(
-                'assets/images/banner.png',
-                fit: BoxFit.cover,
-              ),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                const Color(0xFF667eea),
+                const Color(0xFF764ba2),
+                const Color(0xFFf093fb),
+              ],
+              stops: const [0.0, 0.5, 1.0],
             ),
-          ],
+            image: const DecorationImage(
+              image: AssetImage('assets/images/banner.png'),
+              fit: BoxFit.cover,
+              opacity: 0.3,
+            ),
+          ),
         ),
         actions: [
-          IconButton(
-            icon: Icon(_isFilterVisible ? Icons.close : Icons.filter_list),
-            color: Colors.white,
-            onPressed: () {
-              setState(() {
-                // Limpiar los filtros
-                // Provider.of<FilterProvider>(context, listen: false)
-                //     .clearFilters();
-
-                // _nameController.clear();
-                // _attributeController.clear();
-                // _unitController.clear(); // Limpiar el filtro de unidades
-
-                // Cambiar visibilidad del filtro
-                _isFilterVisible = !_isFilterVisible;
-              });
-            },
+          Container(
+            margin: const EdgeInsets.only(right: 8),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: IconButton(
+              icon: Icon(
+                _isFilterVisible ? Icons.close : Icons.tune,
+                color: Colors.white,
+                size: 24,
+              ),
+              onPressed: () {
+                setState(() {
+                  _isFilterVisible = !_isFilterVisible;
+                });
+              },
+            ),
           ),
         ],
       ),
       body: Column(
         children: [
           if (_isFilterVisible)
-            SizedBox(
-              height: 200,
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              height: 280,
+              child: Container(
+                margin: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 20,
+                      offset: const Offset(0, 10),
+                    ),
+                  ],
+                ),
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(20),
                   child: Consumer<FilterProvider>(
                       builder: (context, filterProvider, child) {
                     _nameController.text = filterProvider.nameFilter;
@@ -140,182 +168,463 @@ class _CardListScreenState extends State<CardListScreen> {
                         //         suggestion; // Sincronizar el valor
                         //   },
                         // ),
-                        const SizedBox(height: 5),
-                        TypeAheadField<String>(
-                          controller: _attributeController,
-                          builder: (context, controller, focusNode) {
-                            return TextField(
-                              controller: controller,
-                              focusNode: focusNode,
-                              autofocus: false,
-                              decoration: InputDecoration(
-                                border: const OutlineInputBorder(),
-                                labelText: 'Attribute',
-                                suffixIcon: _attributeController.text.isNotEmpty
-                                    ? IconButton(
-                                        icon: const Icon(Icons.close),
-                                        onPressed: () {
-                                          filterProvider.resetAttributeFilter();
-                                          _attributeController.clear();
-                                        },
-                                      )
-                                    : null,
+                        const SizedBox(height: 12),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(
+                              color: Colors.grey.shade300,
+                              width: 1,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
                               ),
-                            );
-                          },
-                          suggestionsCallback: (pattern) async {
-                            // Capitalizar la primera letra de cada palabra y manejar múltiples palabras
-                            String capitalizedPattern =
-                                capitalizeFirstLetterOfEachWord(pattern);
-                            return getSuggestions(
-                                capitalizedPattern, 'attribute');
-                          },
-                          itemBuilder: (context, suggestion) {
-                            return ListTile(
-                              title: Text(suggestion),
-                            );
-                          },
-                          onSelected: (suggestion) {
-                            filterProvider
-                                .setAttributeFilter(suggestion.toLowerCase());
-                            _attributeController.text = suggestion;
-                          },
+                            ],
+                          ),
+                          child: TypeAheadField<String>(
+                            controller: _attributeController,
+                            builder: (context, controller, focusNode) {
+                              return TextField(
+                                controller: controller,
+                                focusNode: focusNode,
+                                autofocus: false,
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  isDense: true,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                    borderSide: const BorderSide(
+                                      color: Color(0xFF667eea),
+                                      width: 2,
+                                    ),
+                                  ),
+                                  labelText: 'Attribute',
+                                  labelStyle: TextStyle(
+                                    color: Colors.grey.shade600,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  prefixIcon: Icon(
+                                    Icons.search,
+                                    color: Colors.grey.shade600,
+                                  ),
+                                  suffixIcon:
+                                      _attributeController.text.isNotEmpty
+                                          ? IconButton(
+                                              icon: Icon(
+                                                Icons.close,
+                                                color: Colors.grey.shade600,
+                                              ),
+                                              onPressed: () {
+                                                filterProvider
+                                                    .resetAttributeFilter();
+                                                _attributeController.clear();
+                                              },
+                                            )
+                                          : null,
+                                ),
+                              );
+                            },
+                            suggestionsCallback: (pattern) async {
+                              // Capitalizar la primera letra de cada palabra y manejar múltiples palabras
+                              String capitalizedPattern =
+                                  capitalizeFirstLetterOfEachWord(pattern);
+                              return getSuggestions(
+                                  capitalizedPattern, 'attribute');
+                            },
+                            itemBuilder: (context, suggestion) {
+                              return Material(
+                                color: Colors.white,
+                                child: ListTile(
+                                  title: Text(suggestion),
+                                ),
+                              );
+                            },
+                            onSelected: (suggestion) {
+                              filterProvider
+                                  .setAttributeFilter(suggestion.toLowerCase());
+                              _attributeController.text = suggestion;
+                            },
+                          ),
                         ),
-                        const SizedBox(height: 5),
-                        TypeAheadField<String>(
-                          controller: _unitController,
-                          builder: (context, controller, focusNode) {
-                            return TextField(
-                              controller: controller,
-                              focusNode: focusNode,
-                              autofocus: false,
-                              decoration: InputDecoration(
-                                border: const OutlineInputBorder(),
-                                labelText: 'Unit',
-                                suffixIcon: _unitController.text.isNotEmpty
-                                    ? IconButton(
-                                        icon: const Icon(Icons.close),
-                                        onPressed: () {
-                                          filterProvider.resetUnitFilter();
-                                          _unitController.clear();
-                                        },
-                                      )
-                                    : null,
+                        const SizedBox(height: 12),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(
+                              color: Colors.grey.shade300,
+                              width: 1,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
                               ),
-                            );
-                          },
-                          suggestionsCallback: (pattern) async {
-                            return getSuggestions(pattern, 'unit');
-                          },
-                          itemBuilder: (context, suggestion) {
-                            return ListTile(
-                              title: Text(suggestion),
-                            );
-                          },
-                          onSelected: (suggestion) {
-                            filterProvider
-                                .setUnitFilter(suggestion.toLowerCase());
-                            _unitController.text = suggestion;
-                          },
+                            ],
+                          ),
+                          child: TypeAheadField<String>(
+                            controller: _unitController,
+                            builder: (context, controller, focusNode) {
+                              return TextField(
+                                controller: controller,
+                                focusNode: focusNode,
+                                autofocus: false,
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  isDense: true,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                    borderSide: const BorderSide(
+                                      color: Color(0xFF667eea),
+                                      width: 2,
+                                    ),
+                                  ),
+                                  labelText: 'Unit',
+                                  labelStyle: TextStyle(
+                                    color: Colors.grey.shade600,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  prefixIcon: Icon(
+                                    Icons.category,
+                                    color: Colors.grey.shade600,
+                                  ),
+                                  suffixIcon: _unitController.text.isNotEmpty
+                                      ? IconButton(
+                                          icon: Icon(
+                                            Icons.close,
+                                            color: Colors.grey.shade600,
+                                          ),
+                                          onPressed: () {
+                                            filterProvider.resetUnitFilter();
+                                            _unitController.clear();
+                                          },
+                                        )
+                                      : null,
+                                ),
+                              );
+                            },
+                            suggestionsCallback: (pattern) async {
+                              return getSuggestions(pattern, 'unit');
+                            },
+                            itemBuilder: (context, suggestion) {
+                              return Material(
+                                color: Colors.white,
+                                child: ListTile(
+                                  title: Text(suggestion),
+                                ),
+                              );
+                            },
+                            onSelected: (suggestion) {
+                              filterProvider
+                                  .setUnitFilter(suggestion.toLowerCase());
+                              _unitController.text = suggestion;
+                            },
+                          ),
                         ),
-                        const SizedBox(
-                          height: 10,
-                        ),
+                        const SizedBox(height: 16),
                         MultiSelectChip(
                           labels: races,
                         ),
-                        SizedBox(
-                          width: 200,
-                          child: DropdownButton<String>(
-                            isExpanded: true,
-                            alignment: Alignment.centerLeft,
-                            menuMaxHeight: 300,
-                            value: Provider.of<FilterProvider>(context)
-                                .selectedMap,
-                            hint: const Text('Select Map'),
-                            onChanged: (newValue) {
-                              Provider.of<FilterProvider>(context,
-                                      listen: false)
-                                  .setSelectedMap(newValue);
-                            },
-                            items: [
-                              const DropdownMenuItem<String>(
-                                value:
-                                    null, // O usa '' si prefieres una cadena vacía
-                                child: Text(
-                                    'All Maps'), // Texto para indicar que no hay filtro
+                        const SizedBox(height: 16),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 16),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(15),
+                                  border: Border.all(
+                                    color: Colors.grey.shade300,
+                                    width: 1,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.05),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: Material(
+                                  color: Colors.white,
+                                  child: DropdownButton<String>(
+                                    isExpanded: true,
+                                    alignment: Alignment.centerLeft,
+                                    menuMaxHeight: 300,
+                                    dropdownColor: Colors.white,
+                                    value: Provider.of<FilterProvider>(context)
+                                        .selectedMap,
+                                    hint: Text(
+                                      'Select Map',
+                                      style: TextStyle(
+                                        color: Colors.grey.shade600,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    underline: const SizedBox(),
+                                    icon: Icon(
+                                      Icons.keyboard_arrow_down,
+                                      color: Colors.grey.shade600,
+                                    ),
+                                    onChanged: (newValue) {
+                                      Provider.of<FilterProvider>(context,
+                                              listen: false)
+                                          .setSelectedMap(newValue);
+                                    },
+                                    items: [
+                                      DropdownMenuItem<String>(
+                                        value: null,
+                                        child: Text(
+                                          'All Maps',
+                                          style: TextStyle(
+                                            color: Colors.grey.shade600,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ),
+                                      ...maps.map(
+                                          (map) => DropdownMenuItem<String>(
+                                                value: map['value'],
+                                                child: Text(
+                                                  map['value']!,
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                              )),
+                                    ],
+                                  ),
+                                ),
                               ),
-                              ...maps.map((map) => DropdownMenuItem<String>(
-                                    value: map['value'],
-                                    child: Text(map['value']!),
-                                  )),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          width: 200,
-                          child: DropdownButton<String>(
-                            isExpanded: true,
-                            alignment: Alignment.centerLeft,
-                            menuMaxHeight: 300,
-                            value: Provider.of<FilterProvider>(context)
-                                .selectedSlot,
-                            hint: const Text('Select Slot'),
-                            onChanged: (newValue) {
-                              Provider.of<FilterProvider>(context,
-                                      listen: false)
-                                  .setSelectedSlot(newValue);
-                            },
-                            items: [
-                              const DropdownMenuItem<String>(
-                                value:
-                                    null, // O usa '' si prefieres una cadena vacía
-                                child: Text(
-                                    'All Slots'), // Indica que no se aplica filtro
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Container(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 16),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(15),
+                                  border: Border.all(
+                                    color: Colors.grey.shade300,
+                                    width: 1,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.05),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: Material(
+                                  color: Colors.white,
+                                  child: DropdownButton<String>(
+                                    isExpanded: true,
+                                    alignment: Alignment.centerLeft,
+                                    menuMaxHeight: 300,
+                                    dropdownColor: Colors.white,
+                                    value: Provider.of<FilterProvider>(context)
+                                        .selectedSlot,
+                                    hint: Text(
+                                      'Select Slot',
+                                      style: TextStyle(
+                                        color: Colors.grey.shade600,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    underline: const SizedBox(),
+                                    icon: Icon(
+                                      Icons.keyboard_arrow_down,
+                                      color: Colors.grey.shade600,
+                                    ),
+                                    onChanged: (newValue) {
+                                      Provider.of<FilterProvider>(context,
+                                              listen: false)
+                                          .setSelectedSlot(newValue);
+                                    },
+                                    items: [
+                                      DropdownMenuItem<String>(
+                                        value: null,
+                                        child: Text(
+                                          'All Slots',
+                                          style: TextStyle(
+                                            color: Colors.grey.shade600,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ),
+                                      ...slots.map(
+                                          (slot) => DropdownMenuItem<String>(
+                                                value: slot['key'],
+                                                child: Text(
+                                                  slot['value']!,
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                              )),
+                                    ],
+                                  ),
+                                ),
                               ),
-                              ...slots.map((slot) => DropdownMenuItem<String>(
-                                    value: slot['key'],
-                                    child: Text(slot['value']!),
-                                  )),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                        SizedBox(
-                          width: 200,
-                          child: DropdownButton<String>(
-                            isExpanded: true,
-                            alignment: Alignment.centerLeft,
-                            menuMaxHeight: 300,
-                            hint: const Text('Select Rarity'),
-                            value: Provider.of<FilterProvider>(context)
-                                .selectedRarity,
-                            items: [
-                              const DropdownMenuItem<String>(
-                                value:
-                                    null, // O usa '' si prefieres una cadena vacía
-                                child: Text(
-                                    'All Rarities'), // Indica que no se aplica filtro
+                        const SizedBox(height: 16),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 16),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(15),
+                                  border: Border.all(
+                                    color: Colors.grey.shade300,
+                                    width: 1,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.05),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: Material(
+                                  color: Colors.white,
+                                  child: DropdownButton<String>(
+                                    isExpanded: true,
+                                    alignment: Alignment.centerLeft,
+                                    menuMaxHeight: 300,
+                                    dropdownColor: Colors.white,
+                                    hint: Text(
+                                      'Select Rarity',
+                                      style: TextStyle(
+                                        color: Colors.grey.shade600,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    value: Provider.of<FilterProvider>(context)
+                                        .selectedRarity,
+                                    underline: const SizedBox(),
+                                    icon: Icon(
+                                      Icons.keyboard_arrow_down,
+                                      color: Colors.grey.shade600,
+                                    ),
+                                    items: [
+                                      DropdownMenuItem<String>(
+                                        value: null,
+                                        child: Text(
+                                          'All Rarities',
+                                          style: TextStyle(
+                                            color: Colors.grey.shade600,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ),
+                                      ...['1', '2', '3', '4', '5']
+                                          .map((rarity) {
+                                        return DropdownMenuItem<String>(
+                                          value: rarity,
+                                          child:
+                                              RarityIndicator(rarity: rarity),
+                                        );
+                                      }),
+                                    ],
+                                    onChanged: (value) {
+                                      Provider.of<FilterProvider>(context,
+                                              listen: false)
+                                          .setSelectedRarity(value);
+                                    },
+                                  ),
+                                ),
                               ),
-                              ...['1', '2', '3', '4', '5'].map((rarity) {
-                                return DropdownMenuItem<String>(
-                                  value: rarity,
-                                  child: RarityIndicator(rarity: rarity),
-                                );
-                              }),
-                            ],
-                            onChanged: (value) {
-                              Provider.of<FilterProvider>(context,
-                                      listen: false)
-                                  .setSelectedRarity(value);
-                            },
-                          ),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            Provider.of<FilterProvider>(context, listen: false)
-                                .clearFilters();
-                          },
-                          child: const Text('Clear Filters'),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Container(
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  gradient: const LinearGradient(
+                                    colors: [
+                                      Color(0xFF667eea),
+                                      Color(0xFF764ba2)
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.circular(15),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: const Color(0xFF667eea)
+                                          .withOpacity(0.3),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 4),
+                                    ),
+                                  ],
+                                ),
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    Provider.of<FilterProvider>(context,
+                                            listen: false)
+                                        .clearFilters();
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.transparent,
+                                    shadowColor: Colors.transparent,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                  ),
+                                  child: const Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.clear_all,
+                                        color: Colors.white,
+                                        size: 20,
+                                      ),
+                                      SizedBox(width: 8),
+                                      Text(
+                                        'Clear Filters',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     );
@@ -351,7 +660,7 @@ class _CardListScreenState extends State<CardListScreen> {
                   child: ListView.separated(
                     itemCount: filteredItems.length,
                     separatorBuilder: (context, index) =>
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 4),
                     itemBuilder: (context, index) {
                       var itemData =
                           filteredItems[index].data() as Map<String, dynamic>;

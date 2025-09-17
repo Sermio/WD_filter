@@ -9,13 +9,19 @@ class RarityIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Text(rarityToString(rarity).toUpperCase()),
-        const SizedBox(width: 10),
+        Flexible(
+          child: Text(
+            rarityToString(rarity).toUpperCase(),
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontSize: 12),
+          ),
+        ),
+        const SizedBox(width: 8),
         Container(
-          width: 15,
-          height: 15,
+          width: 12,
+          height: 12,
           decoration: BoxDecoration(
             color: getRarityColor(rarity),
             shape: BoxShape.circle,
