@@ -29,82 +29,162 @@ class _ExpandableCardState extends State<ExpandableCard> {
   Widget build(BuildContext context) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
-      margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
-      padding: const EdgeInsets.all(8),
+      margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white,
+            Colors.grey.shade50,
+          ],
+        ),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.3),
-            blurRadius: 4,
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 6,
             offset: const Offset(0, 2),
           ),
         ],
+        border: Border.all(
+          color: Colors.grey.shade200,
+          width: 1,
+        ),
       ),
       child: Column(
         children: [
           ListTile(
+            contentPadding: EdgeInsets.zero,
             title: Text(
               widget.name,
               style: TextStyle(
-                  color: getRarityColor(widget.itemData['rarity']),
-                  fontWeight: FontWeight.bold),
+                color: getRarityColor(widget.itemData['rarity']),
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+                letterSpacing: 0.5,
+              ),
             ),
-            subtitle: Text(
-              (widget.map.isNotEmpty &&
-                      widget.itemData['obtainedFrom'] != null &&
-                      widget.itemData['obtainedFrom'].isNotEmpty)
-                  ? "${widget.map} - ${widget.itemData['obtainedFrom']}"
-                  : widget.map.isNotEmpty
-                      ? widget.map
-                      : widget.itemData['obtainedFrom']?.isNotEmpty ?? false
-                          ? widget.itemData['obtainedFrom']
-                          : 'Unknown',
+            subtitle: Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: Text(
+                (widget.map.isNotEmpty &&
+                        widget.itemData['obtainedFrom'] != null &&
+                        widget.itemData['obtainedFrom'].isNotEmpty)
+                    ? "${widget.map} - ${widget.itemData['obtainedFrom']}"
+                    : widget.map.isNotEmpty
+                        ? widget.map
+                        : widget.itemData['obtainedFrom']?.isNotEmpty ?? false
+                            ? widget.itemData['obtainedFrom']
+                            : 'Unknown',
+                style: TextStyle(
+                  color: Colors.grey.shade600,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
             ),
-            leading: ItemCompleteFrame(
-              slot: widget.itemData['slot'],
-              race: widget.itemData['race'],
-              rarity: widget.rarity,
-            ),
-            trailing: GestureDetector(
-              child: const Icon(Icons.info_outline),
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (ctx) => AlertDialog(
-                    title: Text(
-                      widget.name,
-                      style: TextStyle(
-                          color: getRarityColor(widget.itemData['rarity']),
-                          fontWeight: FontWeight.bold),
-                    ),
-                    content: SingleChildScrollView(
-                      child: ItemDescription(
-                          itemName: widget.name,
-                          rarity: widget.rarity,
-                          slot: widget.itemData['slot'],
-                          obtainedFrom: widget.obtainedFrom,
-                          attributes: widget.itemData['attributes']),
-                    ),
-                    // content: Column(
-                    //   mainAxisSize: MainAxisSize.min,
-                    //   children: [
-                    //     Text(widget.itemData['map']),
-                    //     Text(widget.itemData['race']),
-                    //     Text(widget.itemData['rarity']),
-                    //     Text(widget.itemData['slot']),
-                    //   ],
-                    // ),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text('Accept'),
-                      ),
-                    ],
+            leading: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
                   ),
-                );
-              },
+                ],
+              ),
+              child: ItemCompleteFrame(
+                slot: widget.itemData['slot'],
+                race: widget.itemData['race'],
+                rarity: widget.rarity,
+              ),
+            ),
+            trailing: Container(
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: IconButton(
+                icon: Icon(
+                  Icons.info_outline,
+                  color: Colors.grey.shade600,
+                  size: 20,
+                ),
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      backgroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      elevation: 20,
+                      title: Text(
+                        widget.name,
+                        style: TextStyle(
+                            color: getRarityColor(widget.itemData['rarity']),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20),
+                      ),
+                      content: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Colors.grey.shade50,
+                              Colors.white,
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: SingleChildScrollView(
+                          child: ItemDescription(
+                              itemName: widget.name,
+                              rarity: widget.rarity,
+                              slot: widget.itemData['slot'],
+                              obtainedFrom: widget.obtainedFrom,
+                              attributes: widget.itemData['attributes']),
+                        ),
+                      ),
+                      actions: [
+                        Container(
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFF667eea), Color(0xFF764ba2)],
+                            ),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            style: TextButton.styleFrom(
+                              backgroundColor: Colors.transparent,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            child: const Text(
+                              'Accept',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
             ),
             onTap: () {
               setState(() {
