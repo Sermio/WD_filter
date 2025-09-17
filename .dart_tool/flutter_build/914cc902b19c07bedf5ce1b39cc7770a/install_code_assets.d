@@ -1,1 +1,0 @@
- C:\\Users\\sergi\\Desktop\\Proyectos\\WD_filter\\.dart_tool\\flutter_build\\914cc902b19c07bedf5ce1b39cc7770a\\native_assets.json: 
