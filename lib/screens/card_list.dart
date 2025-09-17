@@ -3,13 +3,13 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:worldshift_filters/data/itemList.dart';
-import 'package:worldshift_filters/data/data.dart';
-import 'package:worldshift_filters/models/item_filters_model.dart';
-import 'package:worldshift_filters/utils/utils.dart';
-import 'package:worldshift_filters/widgets/expandable_card.dart';
-import 'package:worldshift_filters/widgets/multi_chip.dart';
-import 'package:worldshift_filters/widgets/rarity_indicator.dart';
+import 'package:worldshift_assistant/data/itemList.dart';
+import 'package:worldshift_assistant/data/data.dart';
+import 'package:worldshift_assistant/models/item_filters_model.dart';
+import 'package:worldshift_assistant/utils/utils.dart';
+import 'package:worldshift_assistant/widgets/expandable_card.dart';
+import 'package:worldshift_assistant/widgets/multi_chip.dart';
+import 'package:worldshift_assistant/widgets/rarity_indicator.dart';
 
 class CardListScreen extends StatefulWidget {
   const CardListScreen({super.key});
@@ -58,7 +58,7 @@ class _CardListScreenState extends State<CardListScreen> {
         backgroundColor: Colors.transparent,
         title: const Center(
           child: Text(
-            'WorldShift Items',
+            'WorldShift Assistant',
             style: TextStyle(
               color: Colors.white,
               fontSize: 22,

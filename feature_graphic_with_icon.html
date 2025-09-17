@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorldShift Items Filter - Feature Graphic Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .svg-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 0 10px;
+        }
+        button:hover {
+            background: #5a6fd8;
+        }
+        .info {
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+        #preview {
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 WorldShift Assistant - Feature Graphic Generator</h1>
+        
+        <div class="info">
+            <h3>📋 Instrucciones:</h3>
+            <ol>
+                <li>Haz clic en "Generar PNG" para crear la imagen con tu icono</li>
+                <li>La imagen se descargará automáticamente como "feature_graphic.png"</li>
+                <li>Dimensiones: 1024x500 píxeles (perfecto para App Store)</li>
+            </ol>
+        </div>
+        
+        <div class="svg-container">
+            <h3>Vista previa del Feature Graphic:</h3>
+            <div id="preview">
+                <div class="loading">🔄 Cargando icono de la app...</div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button onclick="generateFeatureGraphic()">🖼️ Generar PNG (1024x500)</button>
+        </div>
+        
+        <div class="info">
+            <h3>✨ Características del diseño:</h3>
+            <ul>
+                <li><strong>Icono real:</strong> Usa el icono de tu app WorldShift</li>
+                <li><strong>Fondo degradado:</strong> Azul púrpura profesional</li>
+                <li><strong>Tipografía:</strong> Arial bold para máximo impacto</li>
+                <li><strong>Elementos visuales:</strong> Items simulados con conexiones</li>
+                <li><strong>Colores:</strong> Esquema consistente con la app</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        let canvas, ctx;
+        let iconLoaded = false;
+
+        function generateFeatureGraphic() {
+            if (!iconLoaded) {
+                alert('El icono aún se está cargando. Espera un momento y vuelve a intentar.');
+                return;
+            }
+
+            // Crear canvas
+            canvas = document.createElement('canvas');
+            ctx = canvas.getContext('2d');
+            
+            // Establecer dimensiones exactas
+            canvas.width = 1024;
+            canvas.height = 500;
+
+            // Crear gradiente de fondo
+            const gradient = ctx.createLinearGradient(0, 0, 0, 500);
+            gradient.addColorStop(0, '#1a1a2e');
+            gradient.addColorStop(0.5, '#667eea');
+            gradient.addColorStop(1, '#764ba2');
+            
+            // Dibujar fondo
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 1024, 500);
+
+            // Elementos decorativos de fondo
+            ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(150, 100, 60, 0, 2 * Math.PI);
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.arc(300, 150, 40, 0, 2 * Math.PI);
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.arc(450, 80, 50, 0, 2 * Math.PI);
+            ctx.stroke();
+
+            // Dibujar el icono de la app
+            const icon = new Image();
+            icon.onload = function() {
+                // Sombra sutil del icono
+                ctx.fillStyle = 'rgba(0,0,0,0.15)';
+                ctx.fillRect(52, 152, 116, 116);
+                
+                // Dibujar el icono sin borde
+                ctx.drawImage(icon, 50, 150, 120, 120);
+                
+                // Continuar con el resto del diseño
+                drawRestOfDesign();
+            };
+            icon.src = './assets/images/icono.png';
+        }
+
+        function drawRestOfDesign() {
+            // Título principal
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 48px Arial';
+            ctx.fillText('WorldShift Assistant', 220, 200);
+
+            // Subtítulo
+            ctx.fillStyle = '#e0e0e0';
+            ctx.font = '24px Arial';
+            ctx.fillText('Smart Search & Advanced Filtering', 220, 240);
+
+            // Características
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '20px Arial';
+            ctx.fillText('🔍 Smart Search', 220, 280);
+            ctx.fillText('⚡ Real-time Filtering', 220, 310);
+            ctx.fillText('🎯 Multiple Categories', 220, 340);
+            ctx.fillText('📱 Modern Interface', 220, 370);
+
+            // Items simulados con colores de rareza de la app
+            const items = [
+                {x: 700, y: 80, color: '#9E9E9E', rarity: 'Very Common'},   // Gray
+                {x: 750, y: 100, color: '#4CAF50', rarity: 'Common'},       // Green
+                {x: 800, y: 120, color: '#FFC107', rarity: 'Uncommon'},     // Yellow
+                {x: 850, y: 140, color: '#FF9800', rarity: 'Rare'},         // Orange
+                {x: 900, y: 160, color: '#9C27B0', rarity: 'Legendary'}     // Purple
+            ];
+
+            items.forEach((item, index) => {
+                // Fondo del item
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(item.x, item.y, 30, 30);
+                
+                // Icono del item
+                ctx.fillStyle = item.color;
+                ctx.beginPath();
+                ctx.arc(item.x + 15, item.y + 15, 8, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // Líneas de conexión
+                if (index < items.length - 1) {
+                    ctx.strokeStyle = '#667eea';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(item.x + 30, item.y + 15);
+                    ctx.lineTo(items[index + 1].x, items[index + 1].y + 15);
+                    ctx.stroke();
+                }
+            });
+
+            // Texto adicional
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '18px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Filter by Rarity', 800, 200);
+            ctx.fillText('Gray • Green • Yellow • Orange • Purple', 800, 220);
+
+            // Mostrar preview
+            document.getElementById('preview').innerHTML = '';
+            document.getElementById('preview').appendChild(canvas);
+
+            // Convertir a PNG y descargar
+            canvas.toBlob(function(blob) {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'feature_graphic.png';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 'image/png');
+        }
+
+        // Cargar el icono al iniciar
+        window.onload = function() {
+            const icon = new Image();
+            icon.onload = function() {
+                iconLoaded = true;
+                document.getElementById('preview').innerHTML = '<div style="text-align: center; padding: 20px; color: #4CAF50;">✅ Icono cargado correctamente. Haz clic en "Generar PNG" para crear tu feature graphic.</div>';
+            };
+            icon.onerror = function() {
+                document.getElementById('preview').innerHTML = '<div style="text-align: center; padding: 20px; color: #f44336;">❌ Error cargando el icono. Asegúrate de que el archivo icono.png existe en assets/images/</div>';
+            };
+            icon.src = './assets/images/icono.png';
+        };
+    </script>
+</body>
+</html>

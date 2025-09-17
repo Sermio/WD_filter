@@ -1,0 +1,68 @@
+POLÍTICA DE PRIVACIDAD - WORLDSHIFT ASSISTANT
+
+Última actualización: Diciembre 2024
+Versión: 1.0
+
+RESUMEN
+WorldShift Assistant respeta tu privacidad. No recopilamos datos personales ni información sensible. Esta app es completamente offline y segura.
+
+1. INFORMACIÓN QUE RECOPILAMOS
+Ninguna información personal. Nuestra aplicación:
+- No recopila datos personales del usuario
+- No accede a información de contacto
+- No recopila ubicación geográfica
+- No accede a archivos personales del dispositivo
+- No recopila información de uso o analytics
+
+2. DATOS DE LA APLICACIÓN
+La aplicación únicamente:
+- Almacena datos de filtros localmente en tu dispositivo
+- Accede a datos de items del juego desde Firebase (públicos)
+- No transmite información personal a servidores externos
+
+3. USO DE FIREBASE
+Utilizamos Firebase para:
+- Almacenar datos públicos de items del juego WorldShift
+- Proporcionar información de rareza, atributos y estadísticas
+- No recopilar ni almacenar datos personales del usuario
+
+4. PERMISOS DE LA APLICACIÓN
+Los permisos solicitados son únicamente para:
+- Almacenamiento: Para guardar filtros localmente
+- Internet: Para acceder a datos públicos de Firebase
+- Ningún otro permiso es requerido o utilizado
+
+5. COMPARTIR INFORMACIÓN
+No compartimos información personal porque no la recopilamos. Los datos de items del juego son públicos y están disponibles para todos los usuarios.
+
+6. SEGURIDAD
+Implementamos medidas de seguridad para:
+- Proteger la aplicación contra accesos no autorizados
+- Mantener la integridad de los datos del juego
+- Garantizar que no se recopilen datos personales
+
+7. MENORES DE EDAD
+Nuestra aplicación es segura para menores de edad ya que:
+- No recopila información personal
+- No requiere registro de usuario
+- No tiene funciones de chat o comunicación
+- Únicamente muestra información pública del juego
+
+8. CAMBIOS EN ESTA POLÍTICA
+Si realizamos cambios en esta política de privacidad, los notificaremos a través de:
+- Actualización de la aplicación
+- Notificación en la tienda de aplicaciones
+- Publicación en esta página web
+
+9. TU CONTROL
+Tienes control total sobre:
+- Eliminar la aplicación en cualquier momento
+- Limpiar datos locales desde la configuración del dispositivo
+- No usar funciones que requieran conexión a internet
+
+CONTACTO
+Si tienes preguntas sobre esta política de privacidad, puedes contactarnos en:
+Email: privacy@worldshiftassistant.com
+Asunto: Política de Privacidad - WorldShift Assistant
+
+Esta política de privacidad es clara, simple y cumple con los requisitos de las tiendas de aplicaciones.

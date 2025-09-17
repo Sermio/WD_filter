@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redimensionar Icono a 512x512 - Versión Simple</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .preview {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 0 10px;
+        }
+        button:hover {
+            background: #5a6fd8;
+        }
+        .info {
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+        #preview {
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: inline-block;
+        }
+        .size-info {
+            background: #f0f8ff;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+        input[type="file"] {
+            margin: 10px 0;
+            padding: 10px;
+            border: 2px dashed #667eea;
+            border-radius: 8px;
+            width: 100%;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🖼️ Redimensionar Icono a 512x512 - Versión Simple</h1>
+        
+        <div class="info">
+            <h3>📋 Instrucciones:</h3>
+            <ol>
+                <li>Selecciona tu archivo icono.png</li>
+                <li>Se redimensionará automáticamente a 512x512 píxeles</li>
+                <li>Haz clic en "Descargar Icono Redimensionado"</li>
+                <li>Reemplaza el archivo original con el nuevo</li>
+            </ol>
+        </div>
+        
+        <div class="controls">
+            <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)">
+        </div>
+        
+        <div class="preview">
+            <h3>Vista previa del icono:</h3>
+            <div id="preview"></div>
+            <div id="sizeInfo" class="size-info"></div>
+        </div>
+        
+        <div class="controls">
+            <button onclick="resizeIcon()" id="resizeBtn" disabled>🔄 Redimensionar a 512x512</button>
+            <button onclick="downloadResizedIcon()" id="downloadBtn" disabled>💾 Descargar Icono Redimensionado</button>
+        </div>
+        
+        <div class="info">
+            <h3>✨ Características:</h3>
+            <ul>
+                <li><strong>Tamaño objetivo:</strong> 512x512 píxeles</li>
+                <li><strong>Calidad:</strong> Máxima calidad mantenida</li>
+                <li><strong>Formato:</strong> PNG con transparencia</li>
+                <li><strong>Uso:</strong> Perfecto para App Store y Android</li>
+                <li><strong>Sin CORS:</strong> Funciona con archivos locales</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        let originalImage, resizedCanvas;
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    originalImage = img;
+                    
+                    // Mostrar información del tamaño original
+                    document.getElementById('sizeInfo').innerHTML = 
+                        `Tamaño original: ${img.width}x${img.height} píxeles`;
+                    
+                    // Mostrar preview
+                    const preview = document.getElementById('preview');
+                    preview.innerHTML = '';
+                    
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    // Redimensionar para mostrar (máximo 200px)
+                    const maxSize = 200;
+                    let displayWidth = img.width;
+                    let displayHeight = img.height;
+                    
+                    if (img.width > maxSize || img.height > maxSize) {
+                        const ratio = Math.min(maxSize / img.width, maxSize / img.height);
+                        displayWidth = img.width * ratio;
+                        displayHeight = img.height * ratio;
+                    }
+                    
+                    canvas.width = displayWidth;
+                    canvas.height = displayHeight;
+                    canvas.style.border = '1px solid #ddd';
+                    
+                    ctx.drawImage(img, 0, 0, displayWidth, displayHeight);
+                    preview.appendChild(canvas);
+                    
+                    // Habilitar botones
+                    document.getElementById('resizeBtn').disabled = false;
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function resizeIcon() {
+            if (!originalImage) {
+                alert('Primero selecciona una imagen');
+                return;
+            }
+
+            // Crear canvas para la imagen redimensionada
+            resizedCanvas = document.createElement('canvas');
+            const ctx = resizedCanvas.getContext('2d');
+            
+            // Establecer tamaño objetivo
+            resizedCanvas.width = 512;
+            resizedCanvas.height = 512;
+            
+            // Dibujar la imagen redimensionada
+            ctx.drawImage(originalImage, 0, 0, 512, 512);
+            
+            // Mostrar información actualizada
+            document.getElementById('sizeInfo').innerHTML = 
+                `Tamaño original: ${originalImage.width}x${originalImage.height} píxeles<br>
+                 Tamaño redimensionado: 512x512 píxeles`;
+            
+            // Mostrar preview redimensionado
+            const preview = document.getElementById('preview');
+            preview.innerHTML = '';
+            
+            const previewCanvas = document.createElement('canvas');
+            const previewCtx = previewCanvas.getContext('2d');
+            
+            // Redimensionar para mostrar (máximo 200px)
+            const maxSize = 200;
+            previewCanvas.width = maxSize;
+            previewCanvas.height = maxSize;
+            previewCanvas.style.border = '1px solid #ddd';
+            
+            previewCtx.drawImage(resizedCanvas, 0, 0, maxSize, maxSize);
+            preview.appendChild(previewCanvas);
+            
+            // Habilitar botón de descarga
+            document.getElementById('downloadBtn').disabled = false;
+        }
+
+        function downloadResizedIcon() {
+            if (!resizedCanvas) {
+                alert('Primero debes redimensionar el icono');
+                return;
+            }
+
+            // Convertir a PNG y descargar
+            resizedCanvas.toBlob(function(blob) {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'icono_512x512.png';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 'image/png');
+        }
+    </script>
+</body>
+</html>

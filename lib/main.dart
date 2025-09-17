@@ -1,6 +1,6 @@
-import 'package:worldshift_filters/models/item_filters_model.dart';
-import 'package:worldshift_filters/screens/card_list.dart';
-import 'package:worldshift_filters/screens/upload_info.dart';
+import 'package:worldshift_assistant/models/item_filters_model.dart';
+import 'package:worldshift_assistant/screens/card_list.dart';
+import 'package:worldshift_assistant/screens/upload_info.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Card List App',
+      title: 'WorldShift Assistant',
       theme: ThemeData(primarySwatch: Colors.blue),
       home: const CardListScreen(),
     );

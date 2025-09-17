@@ -1,10 +1,10 @@
 {
   "roots": [
-    "worldshift_filters"
+    "worldshift_assistant"
   ],
   "packages": [
     {
-      "name": "worldshift_filters",
+      "name": "worldshift_assistant",
       "version": "1.0.0+1",
       "dependencies": [
         "cloud_firestore",

@@ -1,5 +1,5 @@
-name: worldshift_filters
-description: A Worldshift filtering items app.
+name: worldshift_assistant
+description: A WorldShift Assistant app for filtering and managing game items.
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev

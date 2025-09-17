@@ -470,7 +470,7 @@
       "languageVersion": "3.2"
     },
     {
-      "name": "worldshift_filters",
+      "name": "worldshift_assistant",
       "rootUri": "../",
       "packageUri": "lib/",
       "languageVersion": "3.1"

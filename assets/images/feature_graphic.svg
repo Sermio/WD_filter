@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1024" height="500" viewBox="0 0 1024 500" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fondo con gradiente -->
+  <defs>
+    <linearGradient id="backgroundGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="cardGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f8f9fa;stop-opacity:1" />
+    </linearGradient>
+    
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Fondo -->
+  <rect width="1024" height="500" fill="url(#backgroundGradient)"/>
+  
+  <!-- Elementos decorativos de fondo -->
+  <circle cx="150" cy="100" r="60" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2"/>
+  <circle cx="300" cy="150" r="40" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2"/>
+  <circle cx="450" cy="80" r="50" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2"/>
+  <circle cx="600" cy="120" r="35" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2"/>
+  
+  <!-- Icono principal -->
+  <g transform="translate(50, 150)">
+    <!-- Fondo del icono -->
+    <rect x="0" y="0" width="120" height="120" rx="20" ry="20" fill="url(#cardGradient)" filter="url(#glow)"/>
+    
+    <!-- Lupa -->
+    <circle cx="40" cy="40" r="18" fill="none" stroke="#667eea" stroke-width="4"/>
+    <line x1="52" y1="52" x2="70" y2="70" stroke="#667eea" stroke-width="4" stroke-linecap="round"/>
+    
+    <!-- Filtros (líneas) -->
+    <line x1="20" y1="70" x2="100" y2="70" stroke="#667eea" stroke-width="3"/>
+    <line x1="20" y1="85" x2="100" y2="85" stroke="#667eea" stroke-width="3"/>
+    <line x1="20" y1="100" x2="100" y2="100" stroke="#667eea" stroke-width="3"/>
+  </g>
+  
+  <!-- Título principal -->
+  <text x="220" y="200" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#ffffff">
+    WorldShift Items Filter
+  </text>
+  
+  <!-- Subtítulo -->
+  <text x="220" y="240" font-family="Arial, sans-serif" font-size="24" fill="#e0e0e0">
+    Smart Search &amp; Advanced Filtering
+  </text>
+  
+  <!-- Características -->
+  <g transform="translate(220, 280)">
+    <text x="0" y="0" font-family="Arial, sans-serif" font-size="20" fill="#ffffff">🔍 Smart Search</text>
+    <text x="0" y="30" font-family="Arial, sans-serif" font-size="20" fill="#ffffff">⚡ Real-time Filtering</text>
+    <text x="0" y="60" font-family="Arial, sans-serif" font-size="20" fill="#ffffff">🎯 Multiple Categories</text>
+    <text x="0" y="90" font-family="Arial, sans-serif" font-size="20" fill="#ffffff">📱 Modern Interface</text>
+  </g>
+  
+  <!-- Items simulados -->
+  <g transform="translate(750, 100)">
+    <!-- Item 1 -->
+    <rect x="0" y="0" width="30" height="30" rx="5" ry="5" fill="#ffffff"/>
+    <circle cx="15" cy="15" r="8" fill="#667eea"/>
+    
+    <!-- Item 2 -->
+    <rect x="50" y="20" width="30" height="30" rx="5" ry="5" fill="#ffffff"/>
+    <circle cx="65" cy="35" r="8" fill="#764ba2"/>
+    
+    <!-- Item 3 -->
+    <rect x="100" y="40" width="30" height="30" rx="5" ry="5" fill="#ffffff"/>
+    <circle cx="115" cy="55" r="8" fill="#f093fb"/>
+    
+    <!-- Item 4 -->
+    <rect x="150" y="60" width="30" height="30" rx="5" ry="5" fill="#ffffff"/>
+    <circle cx="165" cy="75" r="8" fill="#667eea"/>
+    
+    <!-- Líneas de conexión -->
+    <line x1="30" y1="15" x2="50" y2="35" stroke="#667eea" stroke-width="2"/>
+    <line x1="80" y1="35" x2="100" y2="55" stroke="#667eea" stroke-width="2"/>
+    <line x1="130" y1="55" x2="150" y2="75" stroke="#667eea" stroke-width="2"/>
+  </g>
+  
+  <!-- Texto adicional -->
+  <text x="750" y="200" font-family="Arial, sans-serif" font-size="18" fill="#ffffff" text-anchor="middle">
+    Filter by Rarity
+  </text>
+  <text x="750" y="220" font-family="Arial, sans-serif" font-size="18" fill="#ffffff" text-anchor="middle">
+    Race &amp; Attributes
+  </text>
+  
+  <!-- Elementos decorativos finales -->
+  <circle cx="900" cy="400" r="80" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+  <circle cx="950" cy="350" r="60" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+</svg>

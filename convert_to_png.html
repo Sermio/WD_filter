@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convert SVG to PNG - Feature Graphic</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .svg-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 0 10px;
+        }
+        button:hover {
+            background: #5a6fd8;
+        }
+        .info {
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 WorldShift Items Filter - Feature Graphic Generator</h1>
+        
+        <div class="info">
+            <h3>📋 Instrucciones:</h3>
+            <ol>
+                <li>Haz clic en "Convertir a PNG" para generar la imagen</li>
+                <li>La imagen se descargará automáticamente como "feature_graphic.png"</li>
+                <li>Dimensiones: 1024x500 píxeles (perfecto para App Store)</li>
+                <li>Si necesitas ajustes, puedes modificar el archivo SVG y recargar esta página</li>
+            </ol>
+        </div>
+        
+        <div class="svg-container">
+            <h3>Vista previa del Feature Graphic:</h3>
+            <div id="svgContainer"></div>
+        </div>
+        
+        <div class="controls">
+            <button onclick="convertToPNG()">🖼️ Convertir a PNG (1024x500)</button>
+            <button onclick="downloadSVG()">📁 Descargar SVG</button>
+        </div>
+        
+        <div class="info">
+            <h3>✨ Características del diseño:</h3>
+            <ul>
+                <li><strong>Fondo degradado:</strong> Azul púrpura profesional</li>
+                <li><strong>Icono principal:</strong> Lupa con filtros (representa búsqueda inteligente)</li>
+                <li><strong>Tipografía:</strong> Arial bold para máximo impacto</li>
+                <li><strong>Elementos visuales:</strong> Items simulados con conexiones</li>
+                <li><strong>Colores:</strong> Esquema consistente con la app</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Cargar el SVG
+        fetch('./assets/images/feature_graphic.svg')
+            .then(response => response.text())
+            .then(svgText => {
+                document.getElementById('svgContainer').innerHTML = svgText;
+            })
+            .catch(error => {
+                console.error('Error cargando SVG:', error);
+                document.getElementById('svgContainer').innerHTML = '<p>Error cargando el SVG. Asegúrate de que el archivo existe.</p>';
+            });
+
+        function convertToPNG() {
+            const svgElement = document.querySelector('svg');
+            if (!svgElement) {
+                alert('No se encontró el elemento SVG');
+                return;
+            }
+
+            // Crear canvas
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Establecer dimensiones exactas
+            canvas.width = 1024;
+            canvas.height = 500;
+
+            // Convertir SVG a imagen
+            const svgData = new XMLSerializer().serializeToString(svgElement);
+            const img = new Image();
+            
+            img.onload = function() {
+                // Dibujar en canvas
+                ctx.drawImage(img, 0, 0, 1024, 500);
+                
+                // Convertir a PNG y descargar
+                canvas.toBlob(function(blob) {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'feature_graphic.png';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }, 'image/png');
+            };
+            
+            img.src = 'data:image/svg+xml;base64,' + btoa(svgData);
+        }
+
+        function downloadSVG() {
+            const svgElement = document.querySelector('svg');
+            if (!svgElement) {
+                alert('No se encontró el elemento SVG');
+                return;
+            }
+
+            const svgData = new XMLSerializer().serializeToString(svgElement);
+            const blob = new Blob([svgData], { type: 'image/svg+xml' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'feature_graphic.svg';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>

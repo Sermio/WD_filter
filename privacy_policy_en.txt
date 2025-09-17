@@ -1,0 +1,77 @@
+PRIVACY POLICY - WORLDSHIFT ASSISTANT
+
+Last updated: December 2024
+Version: 1.0
+
+SUMMARY
+WorldShift Assistant respects your privacy. We do not collect personal data or sensitive information. This app is completely offline and secure.
+
+1. INFORMATION WE COLLECT
+No personal information. Our application:
+- Does not collect personal user data
+- Does not access contact information
+- Does not collect geographical location
+- Does not access personal device files
+- Does not collect usage data or analytics
+
+2. APPLICATION DATA
+The application only:
+- Stores filter data locally on your device
+- Access public game item data from Firebase
+- Does not transmit personal information to external servers
+
+3. FIREBASE USAGE
+We use Firebase to:
+- Store public WorldShift game item data
+- Provide rarity, attributes, and statistics information
+- Not collect or store personal user data
+
+4. APPLICATION PERMISSIONS
+Requested permissions are only for:
+- Storage: To save filters locally
+- Internet: To access public Firebase data
+- No other permissions are required or used
+
+5. INFORMATION SHARING
+We do not share personal information because we don't collect it. Game item data is public and available to all users.
+
+6. SECURITY
+We implement security measures to:
+- Protect the application from unauthorized access
+- Maintain the integrity of game data
+- Ensure no personal data is collected
+
+7. CHILDREN UNDER 13
+Our application is safe for children because:
+- It does not collect personal information
+- It does not require user registration
+- It has no chat or communication features
+- It only displays public game information
+
+8. CHANGES TO THIS POLICY
+If we make changes to this privacy policy, we will notify you through:
+- Application updates
+- App store notifications
+- Publication on this webpage
+
+9. YOUR CONTROL
+You have complete control over:
+- Deleting the application at any time
+- Clearing local data from device settings
+- Not using features that require internet connection
+
+10. DATA RETENTION
+We do not retain personal data because we don't collect it. Local filter preferences are stored on your device and can be deleted at any time.
+
+11. THIRD-PARTY SERVICES
+The only third-party service we use is Firebase, which:
+- Only provides public game data
+- Does not collect personal information
+- Is used solely for displaying item information
+
+CONTACT
+If you have questions about this privacy policy, you can contact us at:
+Email: privacy@worldshiftassistant.com
+Subject: Privacy Policy - WorldShift Assistant
+
+This privacy policy is clear, simple, and complies with app store requirements.

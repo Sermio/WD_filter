@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
-import 'package:worldshift_filters/data/data.dart';
-import 'package:worldshift_filters/data/item.dart';
+import 'package:worldshift_assistant/data/data.dart';
+import 'package:worldshift_assistant/data/item.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';

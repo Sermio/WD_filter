@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redimensionar Icono a 512x512</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .preview {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 0 10px;
+        }
+        button:hover {
+            background: #5a6fd8;
+        }
+        .info {
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+        #preview {
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: inline-block;
+        }
+        .size-info {
+            background: #f0f8ff;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🖼️ Redimensionar Icono a 512x512</h1>
+        
+        <div class="info">
+            <h3>📋 Instrucciones:</h3>
+            <ol>
+                <li>El icono se cargará automáticamente</li>
+                <li>Se redimensionará a 512x512 píxeles</li>
+                <li>Haz clic en "Descargar Icono Redimensionado"</li>
+                <li>Reemplaza el archivo original con el nuevo</li>
+            </ol>
+        </div>
+        
+        <div class="preview">
+            <h3>Vista previa del icono:</h3>
+            <div id="preview"></div>
+            <div id="sizeInfo" class="size-info"></div>
+        </div>
+        
+        <div class="controls">
+            <button onclick="resizeIcon()">🔄 Redimensionar a 512x512</button>
+            <button onclick="downloadResizedIcon()">💾 Descargar Icono Redimensionado</button>
+        </div>
+        
+        <div class="info">
+            <h3>✨ Características:</h3>
+            <ul>
+                <li><strong>Tamaño objetivo:</strong> 512x512 píxeles</li>
+                <li><strong>Calidad:</strong> Máxima calidad mantenida</li>
+                <li><strong>Formato:</strong> PNG con transparencia</li>
+                <li><strong>Uso:</strong> Perfecto para App Store y Android</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        let originalCanvas, resizedCanvas;
+        let originalImage, resizedImage;
+
+        function loadOriginalIcon() {
+            const img = new Image();
+            img.crossOrigin = 'anonymous'; // Configurar CORS
+            img.onload = function() {
+                originalImage = img;
+                
+                // Mostrar información del tamaño original
+                document.getElementById('sizeInfo').innerHTML = 
+                    `Tamaño original: ${img.width}x${img.height} píxeles`;
+                
+                // Crear canvas para mostrar la imagen original
+                originalCanvas = document.createElement('canvas');
+                const ctx = originalCanvas.getContext('2d');
+                
+                // Redimensionar para mostrar (máximo 200px)
+                const maxSize = 200;
+                let displayWidth = img.width;
+                let displayHeight = img.height;
+                
+                if (img.width > maxSize || img.height > maxSize) {
+                    const ratio = Math.min(maxSize / img.width, maxSize / img.height);
+                    displayWidth = img.width * ratio;
+                    displayHeight = img.height * ratio;
+                }
+                
+                originalCanvas.width = displayWidth;
+                originalCanvas.height = displayHeight;
+                
+                ctx.drawImage(img, 0, 0, displayWidth, displayHeight);
+                
+                document.getElementById('preview').innerHTML = '';
+                document.getElementById('preview').appendChild(originalCanvas);
+                
+                // Redimensionar automáticamente
+                resizeIcon();
+            };
+            img.onerror = function() {
+                // Si falla con CORS, intentar sin CORS
+                const img2 = new Image();
+                img2.onload = function() {
+                    originalImage = img2;
+                    
+                    document.getElementById('sizeInfo').innerHTML = 
+                        `Tamaño original: ${img2.width}x${img2.height} píxeles`;
+                    
+                    // Crear canvas para mostrar la imagen original
+                    originalCanvas = document.createElement('canvas');
+                    const ctx = originalCanvas.getContext('2d');
+                    
+                    // Redimensionar para mostrar (máximo 200px)
+                    const maxSize = 200;
+                    let displayWidth = img2.width;
+                    let displayHeight = img2.height;
+                    
+                    if (img2.width > maxSize || img2.height > maxSize) {
+                        const ratio = Math.min(maxSize / img2.width, maxSize / img2.height);
+                        displayWidth = img2.width * ratio;
+                        displayHeight = img2.height * ratio;
+                    }
+                    
+                    originalCanvas.width = displayWidth;
+                    originalCanvas.height = displayHeight;
+                    
+                    ctx.drawImage(img2, 0, 0, displayWidth, displayHeight);
+                    
+                    document.getElementById('preview').innerHTML = '';
+                    document.getElementById('preview').appendChild(originalCanvas);
+                    
+                    // Redimensionar automáticamente
+                    resizeIcon();
+                };
+                img2.onerror = function() {
+                    document.getElementById('preview').innerHTML = 
+                        '<div style="color: red; padding: 20px;">❌ Error cargando el icono. Asegúrate de que el archivo icono.png existe en assets/images/</div>';
+                };
+                img2.src = './assets/images/icono.png';
+            };
+            img.src = './assets/images/icono.png';
+        }
+
+        function resizeIcon() {
+            if (!originalImage) {
+                alert('No se ha cargado la imagen original');
+                return;
+            }
+
+            // Crear canvas para la imagen redimensionada
+            resizedCanvas = document.createElement('canvas');
+            const ctx = resizedCanvas.getContext('2d');
+            
+            // Establecer tamaño objetivo
+            resizedCanvas.width = 512;
+            resizedCanvas.height = 512;
+            
+            // Dibujar la imagen redimensionada
+            ctx.drawImage(originalImage, 0, 0, 512, 512);
+            
+            // Mostrar información actualizada
+            document.getElementById('sizeInfo').innerHTML = 
+                `Tamaño original: ${originalImage.width}x${originalImage.height} píxeles<br>
+                 Tamaño redimensionado: 512x512 píxeles`;
+            
+            // Mostrar preview redimensionado
+            const previewCanvas = document.createElement('canvas');
+            const previewCtx = previewCanvas.getContext('2d');
+            
+            // Redimensionar para mostrar (máximo 200px)
+            const maxSize = 200;
+            previewCanvas.width = maxSize;
+            previewCanvas.height = maxSize;
+            
+            previewCtx.drawImage(resizedCanvas, 0, 0, maxSize, maxSize);
+            
+            document.getElementById('preview').innerHTML = '';
+            document.getElementById('preview').appendChild(previewCanvas);
+            
+            resizedImage = resizedCanvas;
+        }
+
+        function downloadResizedIcon() {
+            if (!resizedImage) {
+                alert('Primero debes redimensionar el icono');
+                return;
+            }
+
+            // Convertir a PNG y descargar
+            resizedImage.toBlob(function(blob) {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'icono_512x512.png';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 'image/png');
+        }
+
+        // Cargar el icono al iniciar
+        window.onload = function() {
+            loadOriginalIcon();
+        };
+    </script>
+</body>
+</html>

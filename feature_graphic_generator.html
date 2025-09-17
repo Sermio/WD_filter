@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorldShift Items Filter - Feature Graphic Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .svg-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 0 10px;
+        }
+        button:hover {
+            background: #5a6fd8;
+        }
+        .info {
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+        #preview {
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 WorldShift Items Filter - Feature Graphic Generator</h1>
+        
+        <div class="info">
+            <h3>📋 Instrucciones:</h3>
+            <ol>
+                <li>Haz clic en "Generar PNG" para crear la imagen</li>
+                <li>La imagen se descargará automáticamente como "feature_graphic.png"</li>
+                <li>Dimensiones: 1024x500 píxeles (perfecto para App Store)</li>
+            </ol>
+        </div>
+        
+        <div class="svg-container">
+            <h3>Vista previa del Feature Graphic:</h3>
+            <div id="preview"></div>
+        </div>
+        
+        <div class="controls">
+            <button onclick="generateFeatureGraphic()">🖼️ Generar PNG (1024x500)</button>
+        </div>
+        
+        <div class="info">
+            <h3>✨ Características del diseño:</h3>
+            <ul>
+                <li><strong>Fondo degradado:</strong> Azul púrpura profesional</li>
+                <li><strong>Icono principal:</strong> Lupa con filtros (representa búsqueda inteligente)</li>
+                <li><strong>Tipografía:</strong> Arial bold para máximo impacto</li>
+                <li><strong>Elementos visuales:</strong> Items simulados con conexiones</li>
+                <li><strong>Colores:</strong> Esquema consistente con la app</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function generateCompleteImage() {
+            // Mostrar preview
+            document.getElementById('preview').innerHTML = '';
+            document.getElementById('preview').appendChild(canvas);
+
+            // Convertir a PNG y descargar
+            canvas.toBlob(function(blob) {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'feature_graphic.png';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 'image/png');
+        }
+
+        function generateFeatureGraphic() {
+            // Crear canvas
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Establecer dimensiones exactas
+            canvas.width = 1024;
+            canvas.height = 500;
+
+            // Crear gradiente de fondo
+            const gradient = ctx.createLinearGradient(0, 0, 0, 500);
+            gradient.addColorStop(0, '#1a1a2e');
+            gradient.addColorStop(0.5, '#667eea');
+            gradient.addColorStop(1, '#764ba2');
+            
+            // Dibujar fondo
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 1024, 500);
+
+            // Elementos decorativos de fondo
+            ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(150, 100, 60, 0, 2 * Math.PI);
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.arc(300, 150, 40, 0, 2 * Math.PI);
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.arc(450, 80, 50, 0, 2 * Math.PI);
+            ctx.stroke();
+
+            // Cargar y dibujar el icono de la app
+            const icon = new Image();
+            icon.onload = function() {
+                // Fondo del icono (sombra)
+                ctx.fillStyle = 'rgba(0,0,0,0.1)';
+                ctx.fillRect(55, 155, 110, 110);
+                
+                // Dibujar el icono
+                ctx.drawImage(icon, 50, 150, 120, 120);
+                
+                // Borde del icono
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 3;
+                ctx.strokeRect(50, 150, 120, 120);
+                
+                // Sombra del icono
+                ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+                ctx.lineWidth = 1;
+                ctx.strokeRect(51, 151, 118, 118);
+                
+                // Regenerar la imagen completa
+                generateCompleteImage();
+            };
+            icon.src = './assets/images/icono.png';
+
+            // Título principal
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 48px Arial';
+            ctx.fillText('WorldShift Items Filter', 220, 200);
+
+            // Subtítulo
+            ctx.fillStyle = '#e0e0e0';
+            ctx.font = '24px Arial';
+            ctx.fillText('Smart Search & Advanced Filtering', 220, 240);
+
+            // Características
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '20px Arial';
+            ctx.fillText('🔍 Smart Search', 220, 280);
+            ctx.fillText('⚡ Real-time Filtering', 220, 310);
+            ctx.fillText('🎯 Multiple Categories', 220, 340);
+            ctx.fillText('📱 Modern Interface', 220, 370);
+
+            // Items simulados
+            const items = [
+                {x: 750, y: 100, color: '#667eea'},
+                {x: 800, y: 120, color: '#764ba2'},
+                {x: 850, y: 140, color: '#f093fb'},
+                {x: 900, y: 160, color: '#667eea'}
+            ];
+
+            items.forEach((item, index) => {
+                // Fondo del item
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(item.x, item.y, 30, 30);
+                
+                // Icono del item
+                ctx.fillStyle = item.color;
+                ctx.beginPath();
+                ctx.arc(item.x + 15, item.y + 15, 8, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // Líneas de conexión
+                if (index < items.length - 1) {
+                    ctx.strokeStyle = '#667eea';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(item.x + 30, item.y + 15);
+                    ctx.lineTo(items[index + 1].x, items[index + 1].y + 15);
+                    ctx.stroke();
+                }
+            });
+
+            // Texto adicional
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '18px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Filter by Rarity', 825, 220);
+            ctx.fillText('Race & Attributes', 825, 240);
+
+            // Mostrar preview
+            document.getElementById('preview').innerHTML = '';
+            document.getElementById('preview').appendChild(canvas);
+
+            // Convertir a PNG y descargar
+            canvas.toBlob(function(blob) {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'feature_graphic.png';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 'image/png');
+        }
+
+        // Generar automáticamente al cargar
+        window.onload = function() {
+            generateFeatureGraphic();
+        };
+    </script>
+</body>
+</html>
