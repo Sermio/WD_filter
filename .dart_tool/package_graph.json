@@ -5,7 +5,7 @@
   "packages": [
     {
       "name": "worldshift_assistant",
-      "version": "1.0.0+1",
+      "version": "1.0.0+2",
       "dependencies": [
         "cloud_firestore",
         "cupertino_icons",
