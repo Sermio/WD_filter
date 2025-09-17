@@ -145,24 +145,39 @@ class ItemCompleteFrame extends StatelessWidget {
   Widget build(BuildContext context) {
     final String basePath = getImagePath(race);
 
-    return SizedBox(
-      width: 60,
-      height: 60,
+    return Container(
+      width: 62,
+      height: 62,
+      color: Colors.transparent,
       child: Stack(
         children: [
-          Image.asset(
-            'assets/images/items/$basePath/${slot.toUpperCase()}.png',
-            scale: 1.5,
+          Container(
             width: 60,
             height: 60,
+            color: Colors.white,
+            child: Image.asset(
+              'assets/images/items/$basePath/${slot.toUpperCase()}.png',
+              scale: 1.5,
+              width: 60,
+              height: 60,
+              cacheWidth: 60,
+              cacheHeight: 60,
+              fit: BoxFit.contain,
+              colorBlendMode: BlendMode.multiply,
+            ),
           ),
           BorderRarityColor(
             rarity: rarity,
           ),
-          Image.asset(
-            'assets/images/items/$basePath/${slot.toUpperCase()}_frame.png',
-            width: 60,
-            height: 60,
+          Center(
+            child: Image.asset(
+              'assets/images/items/$basePath/${slot.toUpperCase()}_frame.png',
+              width: 62,
+              height: 62,
+              cacheWidth: 62,
+              cacheHeight: 62,
+              fit: BoxFit.cover,
+            ),
           ),
         ],
       ),
@@ -180,115 +195,7 @@ class BorderRarityColor extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      top: 5.5,
-      left: 8,
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              getRarityColor(rarity),
-              Colors.transparent,
-            ],
-            stops: const [0.12, 0.2],
-          ),
-        ),
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topRight,
-              end: Alignment.bottomLeft,
-              colors: [
-                getRarityColor(rarity),
-                Colors.transparent,
-              ],
-              stops: const [0.12, 0.2],
-            ),
-          ),
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.bottomLeft,
-                end: Alignment.topRight,
-                colors: [
-                  getRarityColor(rarity),
-                  Colors.transparent,
-                ],
-                stops: const [0.12, 0.2],
-              ),
-            ),
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.bottomRight,
-                  end: Alignment.topLeft,
-                  colors: [
-                    getRarityColor(rarity),
-                    Colors.transparent,
-                  ],
-                  stops: const [0.2, 0.3],
-                ),
-              ),
-              child: Container(
-                width: 45,
-                height: 45,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      getRarityColor(rarity),
-                      Colors.transparent,
-                    ],
-                    stops: const [0.05, 0.25],
-                  ),
-                ),
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                      colors: [
-                        getRarityColor(rarity),
-                        Colors.transparent,
-                      ],
-                      stops: const [0.05, 0.25],
-                    ),
-                  ),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.bottomCenter,
-                        end: Alignment.topCenter,
-                        colors: [
-                          getRarityColor(rarity),
-                          Colors.transparent,
-                        ],
-                        stops: const [0.05, 0.25],
-                      ),
-                    ),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.centerRight,
-                          end: Alignment.centerLeft,
-                          colors: [
-                            getRarityColor(rarity),
-                            Colors.transparent,
-                          ],
-                          stops: const [0.05, 0.3],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
+    // Completamente transparente - sin efecto de color
+    return const SizedBox.shrink();
   }
 }

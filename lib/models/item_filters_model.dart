@@ -25,18 +25,24 @@ class FilterProvider with ChangeNotifier {
       _selectedUnits; // Getter para unidades seleccionadas
 
   void setNameFilter(String name) {
-    _nameFilter = name;
-    notifyListeners();
+    if (_nameFilter != name) {
+      _nameFilter = name;
+      notifyListeners();
+    }
   }
 
   void setAttributeFilter(String attribute) {
-    _attributeFilter = attribute;
-    notifyListeners();
+    if (_attributeFilter != attribute) {
+      _attributeFilter = attribute;
+      notifyListeners();
+    }
   }
 
   void setUnitFilter(String unit) {
-    _unitFilter = unit;
-    notifyListeners();
+    if (_unitFilter != unit) {
+      _unitFilter = unit;
+      notifyListeners();
+    }
   }
 
   // Método para agregar un atributo seleccionado
@@ -68,18 +74,24 @@ class FilterProvider with ChangeNotifier {
   }
 
   void setSelectedMap(String? map) {
-    _selectedMap = map;
-    notifyListeners();
+    if (_selectedMap != map) {
+      _selectedMap = map;
+      notifyListeners();
+    }
   }
 
   void setSelectedSlot(String? slot) {
-    _selectedSlot = slot;
-    notifyListeners();
+    if (_selectedSlot != slot) {
+      _selectedSlot = slot;
+      notifyListeners();
+    }
   }
 
   void setSelectedRarity(String? rarity) {
-    _selectedRarity = rarity;
-    notifyListeners();
+    if (_selectedRarity != rarity) {
+      _selectedRarity = rarity;
+      notifyListeners();
+    }
   }
 
   void setSelectedRaces(List<String> races) {

@@ -1,23 +1,15 @@
-import 'package:worldshift_filters/data/itemList.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'package:worldshift_filters/data/itemList.dart';
 import 'package:worldshift_filters/data/data.dart';
 import 'package:worldshift_filters/models/item_filters_model.dart';
 import 'package:worldshift_filters/utils/utils.dart';
 import 'package:worldshift_filters/widgets/expandable_card.dart';
 import 'package:worldshift_filters/widgets/multi_chip.dart';
 import 'package:worldshift_filters/widgets/rarity_indicator.dart';
-import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-
-import 'package:provider/provider.dart';
-
-import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CardListScreen extends StatefulWidget {
   const CardListScreen({super.key});
@@ -49,22 +41,6 @@ class _CardListScreenState extends State<CardListScreen> {
   Future<List<QueryDocumentSnapshot>> _fetchItems() async {
     final snapshot = await FirebaseFirestore.instance.collection('items').get();
     return snapshot.docs;
-  }
-
-  Future<void> _uploadItems(BuildContext context) async {
-    try {
-      await processAndUploadItems(
-        'assets/tsvFiles/loot_complete.txt',
-        'assets/tsvFiles/items_extra_data_complete.txt',
-      );
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Datos subidos correctamente.')),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
-    }
   }
 
   @override
@@ -359,68 +335,28 @@ class _CardListScreenState extends State<CardListScreen> {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 }
                 final items = snapshot.data ?? [];
+                final filterProvider = Provider.of<FilterProvider>(context);
+
+                // Filtrar la lista antes de mostrarla
+                final filteredItems = items.where((item) {
+                  final itemData = item.data() as Map<String, dynamic>;
+                  final name = itemData['name'] ?? '';
+                  final rarity = itemData['rarity'] ?? 'unknown';
+                  return _matchesFilters(
+                      itemData, name, rarity, filterProvider);
+                }).toList();
+
                 return Padding(
                   padding: const EdgeInsets.only(top: 15),
-                  child: ListView.builder(
-                    itemCount: items.length,
+                  child: ListView.separated(
+                    itemCount: filteredItems.length,
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(height: 8),
                     itemBuilder: (context, index) {
                       var itemData =
-                          items[index].data() as Map<String, dynamic>;
+                          filteredItems[index].data() as Map<String, dynamic>;
                       String name = itemData['name'] ?? '';
                       String rarity = itemData['rarity'] ?? 'unknown';
-
-                      if ((Provider.of<FilterProvider>(context).nameFilter.isNotEmpty &&
-                              !name.toLowerCase().contains(
-                                  Provider.of<FilterProvider>(context)
-                                      .nameFilter)) ||
-                          (Provider.of<FilterProvider>(context)
-                                  .attributeFilter
-                                  .isNotEmpty &&
-                              !itemData['attributes'].values.any((unitMap) {
-                                // Verificar que 'unitMap' es un Map
-                                if (unitMap is Map<String, dynamic>) {
-                                  return unitMap.keys.any((attributeKey) {
-                                    // Buscamos el 'key' correspondiente al 'value' del filtro
-                                    var filterValue =
-                                        Provider.of<FilterProvider>(context)
-                                            .attributeFilter
-                                            .toLowerCase();
-                                    var attributeMatch = attributeList.firstWhere(
-                                        (attribute) =>
-                                            attribute['value']?.toLowerCase() ==
-                                            filterValue,
-                                        orElse: () =>
-                                            {}); // Si no encontramos coincidencia, devolvemos un mapa vacío
-
-                                    return attributeMatch.isNotEmpty &&
-                                        attributeMatch['key']?.toLowerCase() ==
-                                            attributeKey.toLowerCase();
-                                  });
-                                }
-                                return false;
-                              })) ||
-                          (Provider.of<FilterProvider>(context).unitFilter.isNotEmpty &&
-                              !itemData['attributes']
-                                  .toString()
-                                  .toLowerCase()
-                                  .contains(Provider.of<FilterProvider>(context)
-                                      .unitFilter)) ||
-                          (Provider.of<FilterProvider>(context).selectedMap != null &&
-                              itemData['map'] !=
-                                  Provider.of<FilterProvider>(context)
-                                      .selectedMap) ||
-                          (Provider.of<FilterProvider>(context).selectedRaces.isNotEmpty &&
-                              !Provider.of<FilterProvider>(context)
-                                  .selectedRaces
-                                  .contains(itemData['race'])) ||
-                          (Provider.of<FilterProvider>(context).selectedSlot != null &&
-                              itemData['slot'] !=
-                                  Provider.of<FilterProvider>(context)
-                                      .selectedSlot) ||
-                          (Provider.of<FilterProvider>(context).selectedRarity != null &&
-                              rarity != Provider.of<FilterProvider>(context).selectedRarity)) {
-                        return const SizedBox();
-                      }
 
                       return ExpandableCard(
                         name: name,
@@ -448,12 +384,79 @@ class _CardListScreenState extends State<CardListScreen> {
     super.dispose();
   }
 
+  // Método optimizado para verificar filtros
+  bool _matchesFilters(Map<String, dynamic> itemData, String name,
+      String rarity, FilterProvider filterProvider) {
+    // Filtro por nombre
+    if (filterProvider.nameFilter.isNotEmpty &&
+        !name.toLowerCase().contains(filterProvider.nameFilter.toLowerCase())) {
+      return false;
+    }
+
+    // Filtro por atributo
+    if (filterProvider.attributeFilter.isNotEmpty) {
+      final attributes = itemData['attributes'];
+      if (attributes is Map) {
+        final hasAttribute = attributes.values.any((unitMap) {
+          if (unitMap is Map<String, dynamic>) {
+            return unitMap.keys.any((attributeKey) {
+              final filterValue = filterProvider.attributeFilter.toLowerCase();
+              final attributeMatch = attributeList.firstWhere(
+                (attribute) => attribute['value']?.toLowerCase() == filterValue,
+                orElse: () => <String, String>{},
+              );
+              return attributeMatch.isNotEmpty &&
+                  attributeMatch['key']?.toLowerCase() ==
+                      attributeKey.toLowerCase();
+            });
+          }
+          return false;
+        });
+        if (!hasAttribute) return false;
+      }
+    }
+
+    // Filtro por unidad
+    if (filterProvider.unitFilter.isNotEmpty &&
+        !itemData['attributes']
+            .toString()
+            .toLowerCase()
+            .contains(filterProvider.unitFilter.toLowerCase())) {
+      return false;
+    }
+
+    // Filtro por mapa
+    if (filterProvider.selectedMap != null &&
+        itemData['map'] != filterProvider.selectedMap) {
+      return false;
+    }
+
+    // Filtro por raza
+    if (filterProvider.selectedRaces.isNotEmpty &&
+        !filterProvider.selectedRaces.contains(itemData['race'])) {
+      return false;
+    }
+
+    // Filtro por slot
+    if (filterProvider.selectedSlot != null &&
+        itemData['slot'] != filterProvider.selectedSlot) {
+      return false;
+    }
+
+    // Filtro por rareza
+    if (filterProvider.selectedRarity != null &&
+        rarity != filterProvider.selectedRarity) {
+      return false;
+    }
+
+    return true;
+  }
+
   Future<List<String>> getSuggestions(String query, String filterType) async {
     query = query.toLowerCase();
     if (filterType == 'name') {
       return itemList;
     } else if (filterType == 'attribute') {
-      query = query.toLowerCase();
       return attributeList
           .map((attribute) => attribute['value'] ?? '')
           .where((value) => value.toLowerCase().contains(query))
