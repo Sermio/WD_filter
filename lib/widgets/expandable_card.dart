@@ -275,7 +275,96 @@ class BorderRarityColor extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Completamente transparente - sin efecto de color
-    return const SizedBox.shrink();
+    // Replicar el efecto antiguo: cuatro bordes con degradados superpuestos
+    final Color c = getRarityColor(rarity);
+    final Color d = c.withOpacity(0.55); // intensidad suavizada para diagonales
+    final Color v = c.withOpacity(
+        0.35); // intensidad suavizada para bandas vertical/horizontal
+    return Positioned(
+      top: 5.5,
+      left: 8,
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [d, Colors.transparent],
+            stops: const [0.12, 0.2],
+          ),
+        ),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topRight,
+              end: Alignment.bottomLeft,
+              colors: [d, Colors.transparent],
+              stops: const [0.12, 0.2],
+            ),
+          ),
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.bottomLeft,
+                end: Alignment.topRight,
+                colors: [d, Colors.transparent],
+                stops: const [0.12, 0.2],
+              ),
+            ),
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.bottomRight,
+                  end: Alignment.topLeft,
+                  colors: [d, Colors.transparent],
+                  stops: const [0.2, 0.3],
+                ),
+              ),
+              child: Container(
+                width: 45,
+                height: 45,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [v, Colors.transparent],
+                    stops: const [0.05, 0.25],
+                  ),
+                ),
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                      colors: [v, Colors.transparent],
+                      stops: const [0.05, 0.25],
+                    ),
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.bottomCenter,
+                        end: Alignment.topCenter,
+                        colors: [v, Colors.transparent],
+                        stops: const [0.05, 0.25],
+                      ),
+                    ),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.centerRight,
+                          end: Alignment.centerLeft,
+                          colors: [v, Colors.transparent],
+                          stops: const [0.05, 0.3],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
