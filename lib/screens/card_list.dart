@@ -38,6 +38,80 @@ class _CardListScreenState extends State<CardListScreen> {
         Provider.of<FilterProvider>(context, listen: false).unitFilter;
   }
 
+  // Unidades por raza para filtrar sugerencias de "Unit"
+  static const Map<String, List<String>> _raceToUnits = {
+    'Humans': [
+      'Commander',
+      'Assassin',
+      'Constructor',
+      'Judge',
+      'Surgeon',
+      'Trooper',
+      'Ripper',
+      'AssaultBot',
+      'Hellfire',
+    ],
+    'Tribes': [
+      'HighPriest',
+      'Guardian',
+      'Shaman',
+      'Sorcerer',
+      'StoneGhost',
+      'Warrior',
+      'Brute',
+      'AncientShade',
+      'HowlingHorror',
+    ],
+    'Aliens': [
+      'Master',
+      'Arbiter',
+      'Dominator',
+      'Harvester',
+      'Manipulator',
+      'Trisat',
+      'Tritech',
+      'Shifter',
+      'Overseer',
+    ],
+  };
+
+  List<String> _getUnitsByRaces(List<String> selectedRaces) {
+    if (selectedRaces.isEmpty) {
+      // Sin filtro por raza: devolver todas las unidades existentes
+      return units
+          .map((u) => u['value'] ?? '')
+          .where((e) => e.isNotEmpty)
+          .toList();
+    }
+    final Set<String> result = {};
+    for (final race in selectedRaces) {
+      final items = _raceToUnits[race];
+      if (items != null) {
+        result.addAll(items);
+      }
+    }
+    return result.toList();
+  }
+
+  List<Map<String, String>> _getSlotsByRaces(List<String> selectedRaces) {
+    if (selectedRaces.isEmpty) {
+      return slots;
+    }
+    final List<Map<String, String>> filtered = [];
+    final bool includeHumans = selectedRaces.contains('Humans');
+    final bool includeTribes = selectedRaces.contains('Tribes');
+    final bool includeAliens = selectedRaces.contains('Aliens');
+    for (final slot in slots) {
+      final key = slot['key'] ?? '';
+      if ((includeHumans && key.startsWith('HUMAN_')) ||
+          (includeTribes && key.startsWith('MUTANT_')) ||
+          (includeAliens && key.startsWith('ALIEN_'))) {
+        filtered.add(slot);
+      }
+    }
+    return filtered;
+  }
+
   Future<List<QueryDocumentSnapshot>> _fetchItems() async {
     final snapshot = await FirebaseFirestore.instance.collection('items').get();
     return snapshot.docs;
@@ -276,72 +350,80 @@ class _CardListScreenState extends State<CardListScreen> {
                               ),
                             ],
                           ),
-                          child: TypeAheadField<String>(
-                            controller: _unitController,
-                            builder: (context, controller, focusNode) {
-                              return TextField(
-                                controller: controller,
-                                focusNode: focusNode,
-                                autofocus: false,
-                                decoration: InputDecoration(
-                                  filled: true,
-                                  fillColor: Colors.white,
-                                  isDense: true,
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(15),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(15),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(15),
-                                    borderSide: const BorderSide(
-                                      color: Color(0xFF667eea),
-                                      width: 2,
+                          child: Consumer<FilterProvider>(
+                            builder: (context, fp, _) => TypeAheadField<String>(
+                              key: ValueKey(fp.selectedRaces.join(',')),
+                              controller: _unitController,
+                              builder: (context, controller, focusNode) {
+                                return TextField(
+                                  controller: controller,
+                                  focusNode: focusNode,
+                                  autofocus: false,
+                                  decoration: InputDecoration(
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                    isDense: true,
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(15),
+                                      borderSide: BorderSide.none,
                                     ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(15),
+                                      borderSide: BorderSide.none,
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(15),
+                                      borderSide: const BorderSide(
+                                        color: Color(0xFF667eea),
+                                        width: 2,
+                                      ),
+                                    ),
+                                    labelText: 'Unit',
+                                    labelStyle: TextStyle(
+                                      color: Colors.grey.shade600,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                    prefixIcon: Icon(
+                                      Icons.category,
+                                      color: Colors.grey.shade600,
+                                    ),
+                                    suffixIcon: _unitController.text.isNotEmpty
+                                        ? IconButton(
+                                            icon: Icon(
+                                              Icons.close,
+                                              color: Colors.grey.shade600,
+                                            ),
+                                            onPressed: () {
+                                              filterProvider.resetUnitFilter();
+                                              _unitController.clear();
+                                            },
+                                          )
+                                        : null,
                                   ),
-                                  labelText: 'Unit',
-                                  labelStyle: TextStyle(
-                                    color: Colors.grey.shade600,
-                                    fontWeight: FontWeight.w500,
+                                );
+                              },
+                              suggestionsCallback: (pattern) async {
+                                final candidates =
+                                    _getUnitsByRaces(fp.selectedRaces);
+                                final lower = pattern.toLowerCase();
+                                return candidates
+                                    .where(
+                                        (v) => v.toLowerCase().contains(lower))
+                                    .toList();
+                              },
+                              itemBuilder: (context, suggestion) {
+                                return Material(
+                                  color: Colors.white,
+                                  child: ListTile(
+                                    title: Text(suggestion),
                                   ),
-                                  prefixIcon: Icon(
-                                    Icons.category,
-                                    color: Colors.grey.shade600,
-                                  ),
-                                  suffixIcon: _unitController.text.isNotEmpty
-                                      ? IconButton(
-                                          icon: Icon(
-                                            Icons.close,
-                                            color: Colors.grey.shade600,
-                                          ),
-                                          onPressed: () {
-                                            filterProvider.resetUnitFilter();
-                                            _unitController.clear();
-                                          },
-                                        )
-                                      : null,
-                                ),
-                              );
-                            },
-                            suggestionsCallback: (pattern) async {
-                              return getSuggestions(pattern, 'unit');
-                            },
-                            itemBuilder: (context, suggestion) {
-                              return Material(
-                                color: Colors.white,
-                                child: ListTile(
-                                  title: Text(suggestion),
-                                ),
-                              );
-                            },
-                            onSelected: (suggestion) {
-                              filterProvider
-                                  .setUnitFilter(suggestion.toLowerCase());
-                              _unitController.text = suggestion;
-                            },
+                                );
+                              },
+                              onSelected: (suggestion) {
+                                fp.setUnitFilter(suggestion.toLowerCase());
+                                _unitController.text = suggestion;
+                              },
+                            ),
                           ),
                         ),
                         const SizedBox(height: 16),
@@ -479,8 +561,12 @@ class _CardListScreenState extends State<CardListScreen> {
                                           ),
                                         ),
                                       ),
-                                      ...slots.map(
-                                          (slot) => DropdownMenuItem<String>(
+                                      ..._getSlotsByRaces(
+                                              Provider.of<FilterProvider>(
+                                                      context)
+                                                  .selectedRaces)
+                                          .map((slot) =>
+                                              DropdownMenuItem<String>(
                                                 value: slot['key'],
                                                 child: Text(
                                                   slot['value']!,
@@ -771,8 +857,10 @@ class _CardListScreenState extends State<CardListScreen> {
           .where((value) => value.toLowerCase().contains(query))
           .toList();
     } else if (filterType == 'unit') {
-      return units
-          .map((unit) => unit['value'] ?? '')
+      final selectedRaces =
+          Provider.of<FilterProvider>(context, listen: false).selectedRaces;
+      final candidates = _getUnitsByRaces(selectedRaces);
+      return candidates
           .where((value) => value.toLowerCase().contains(query))
           .toList();
     } else {
