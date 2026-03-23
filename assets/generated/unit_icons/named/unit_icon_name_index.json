@@ -7,17 +7,8 @@
     "row": 30,
     "col": 5,
     "sourceFile": "assets/generated/unit_icons/units_70/r30_c5.png",
-    "namedFile": "assets/generated/unit_icons/named/units/alienship.png"
-  },
-  {
-    "id": "arbiter",
-    "displayName": "Arbiter",
-    "raceFolder": "aliens",
-    "iconClass": "officer",
-    "row": 6,
-    "col": 2,
-    "sourceFile": "assets/generated/unit_icons/officers_70/r6_c2.png",
-    "namedFile": "assets/generated/unit_icons/named/officers/arbiter.png"
+    "namedFile": "assets/generated/unit_icons/named/units/alienship.png",
+    "sharedNamedFile": "assets/generated/unit_icons/named/units/alienship.png"
   },
   {
     "id": "overseer",
@@ -27,27 +18,8 @@
     "row": 3,
     "col": 1,
     "sourceFile": "assets/generated/unit_icons/units_70/r3_c1.png",
-    "namedFile": "assets/generated/unit_icons/named/units/overseer.png"
-  },
-  {
-    "id": "dave",
-    "displayName": "Defiler",
-    "raceFolder": "aliens",
-    "iconClass": "officer",
-    "row": 6,
-    "col": 5,
-    "sourceFile": "assets/generated/unit_icons/officers_70/r6_c5.png",
-    "namedFile": "assets/generated/unit_icons/named/officers/dave.png"
-  },
-  {
-    "id": "dominator",
-    "displayName": "Dominator",
-    "raceFolder": "aliens",
-    "iconClass": "officer",
-    "row": 6,
-    "col": 1,
-    "sourceFile": "assets/generated/unit_icons/officers_70/r6_c1.png",
-    "namedFile": "assets/generated/unit_icons/named/officers/dominator.png"
+    "namedFile": "assets/generated/unit_icons/named/units/overseer.png",
+    "sharedNamedFile": "assets/generated/unit_icons/named/units/overseer.png"
   },
   {
     "id": "alienegg",
@@ -57,17 +29,8 @@
     "row": 3,
     "col": 7,
     "sourceFile": "assets/generated/unit_icons/units_70/r3_c7.png",
-    "namedFile": "assets/generated/unit_icons/named/units/alienegg.png"
-  },
-  {
-    "id": "harvester",
-    "displayName": "Harvester",
-    "raceFolder": "aliens",
-    "iconClass": "officer",
-    "row": 6,
-    "col": 3,
-    "sourceFile": "assets/generated/unit_icons/officers_70/r6_c3.png",
-    "namedFile": "assets/generated/unit_icons/named/officers/harvester.png"
+    "namedFile": "assets/generated/unit_icons/named/units/alienegg.png",
+    "sharedNamedFile": "assets/generated/unit_icons/named/units/alienegg.png"
   },
   {
     "id": "hatchling",
@@ -77,17 +40,8 @@
     "row": 3,
     "col": 5,
     "sourceFile": "assets/generated/unit_icons/units_70/r3_c5.png",
-    "namedFile": "assets/generated/unit_icons/named/units/hatchling.png"
-  },
-  {
-    "id": "manipulator",
-    "displayName": "Manipulator",
-    "raceFolder": "aliens",
-    "iconClass": "officer",
-    "row": 6,
-    "col": 4,
-    "sourceFile": "assets/generated/unit_icons/officers_70/r6_c4.png",
-    "namedFile": "assets/generated/unit_icons/named/officers/manipulator.png"
+    "namedFile": "assets/generated/unit_icons/named/units/hatchling.png",
+    "sharedNamedFile": "assets/generated/unit_icons/named/units/hatchling.png"
   },
   {
     "id": "psidetonator",
@@ -97,7 +51,8 @@
     "row": 6,
     "col": 7,
     "sourceFile": "assets/generated/unit_icons/units_70/r6_c7.png",
-    "namedFile": "assets/generated/unit_icons/named/units/psidetonator.png"
+    "namedFile": "assets/generated/unit_icons/named/units/psidetonator.png",
+    "sharedNamedFile": "assets/generated/unit_icons/named/units/psidetonator.png"
   },
   {
     "id": "shifter",
@@ -107,7 +62,8 @@
     "row": 3,
     "col": 4,
     "sourceFile": "assets/generated/unit_icons/units_70/r3_c4.png",
-    "namedFile": "assets/generated/unit_icons/named/units/shifter.png"
+    "namedFile": "assets/generated/unit_icons/named/units/shifter.png",
+    "sharedNamedFile": "assets/generated/unit_icons/named/units/shifter.png"
   },
   {
     "id": "trisat",
@@ -117,7 +73,8 @@
     "row": 3,
     "col": 3,
     "sourceFile": "assets/generated/unit_icons/units_70/r3_c3.png",
-    "namedFile": "assets/generated/unit_icons/named/units/trisat.png"
+    "namedFile": "assets/generated/unit_icons/named/units/trisat.png",
+    "sharedNamedFile": "assets/generated/unit_icons/named/units/trisat.png"
   },
   {
     "id": "tritech",
@@ -127,27 +84,8 @@
     "row": 3,
     "col": 2,
     "sourceFile": "assets/generated/unit_icons/units_70/r3_c2.png",
-    "namedFile": "assets/generated/unit_icons/named/units/tritech.png"
-  },
-  {
-    "id": "arbiter_lod",
-    "displayName": "arbiter_lod",
-    "raceFolder": "aliens",
-    "iconClass": "officer",
-    "row": 3,
-    "col": 2,
-    "sourceFile": "assets/generated/unit_icons/officers_70/r3_c2.png",
-    "namedFile": "assets/generated/unit_icons/named/officers/arbiter_lod.png"
-  },
-  {
-    "id": "assassin",
-    "displayName": "Assassin",
-    "raceFolder": "humans",
-    "iconClass": "officer",
-    "row": 4,
-    "col": 2,
-    "sourceFile": "assets/generated/unit_icons/officers_70/r4_c2.png",
-    "namedFile": "assets/generated/unit_icons/named/officers/assassin.png"
+    "namedFile": "assets/generated/unit_icons/named/units/tritech.png",
+    "sharedNamedFile": "assets/generated/unit_icons/named/units/tritech.png"
   },
   {
     "id": "assaultbot",
@@ -157,17 +95,8 @@
     "row": 1,
     "col": 4,
     "sourceFile": "assets/generated/unit_icons/units_70/r1_c4.png",
-    "namedFile": "assets/generated/unit_icons/named/units/assaultbot.png"
-  },
-  {
-    "id": "constructor",
-    "displayName": "Constructor",
-    "raceFolder": "humans",
-    "iconClass": "officer",
-    "row": 4,
-    "col": 4,
-    "sourceFile": "assets/generated/unit_icons/officers_70/r4_c4.png",
-    "namedFile": "assets/generated/unit_icons/named/officers/constructor.png"
+    "namedFile": "assets/generated/unit_icons/named/units/assaultbot.png",
+    "sharedNamedFile": "assets/generated/unit_icons/named/units/assaultbot.png"
   },
   {
     "id": "defender",
@@ -177,17 +106,8 @@
     "row": 5,
     "col": 6,
     "sourceFile": "assets/generated/unit_icons/units_70/r5_c6.png",
-    "namedFile": "assets/generated/unit_icons/named/units/defender.png"
-  },
-  {
-    "id": "technician2",
-    "displayName": "Engineer",
-    "raceFolder": "humans",
-    "iconClass": "officer",
-    "row": 3,
-    "col": 3,
-    "sourceFile": "assets/generated/unit_icons/officers_70/r3_c3.png",
-    "namedFile": "assets/generated/unit_icons/named/officers/technician2.png"
+    "namedFile": "assets/generated/unit_icons/named/units/defender.png",
+    "sharedNamedFile": "assets/generated/unit_icons/named/units/defender.png"
   },
   {
     "id": "hellfire",
@@ -197,17 +117,8 @@
     "row": 1,
     "col": 2,
     "sourceFile": "assets/generated/unit_icons/units_70/r1_c2.png",
-    "namedFile": "assets/generated/unit_icons/named/units/hellfire.png"
-  },
-  {
-    "id": "judge",
-    "displayName": "Judge",
-    "raceFolder": "humans",
-    "iconClass": "officer",
-    "row": 4,
-    "col": 3,
-    "sourceFile": "assets/generated/unit_icons/officers_70/r4_c3.png",
-    "namedFile": "assets/generated/unit_icons/named/officers/judge.png"
+    "namedFile": "assets/generated/unit_icons/named/units/hellfire.png",
+    "sharedNamedFile": "assets/generated/unit_icons/named/units/hellfire.png"
   },
   {
     "id": "humanship",
@@ -217,7 +128,8 @@
     "row": 28,
     "col": 7,
     "sourceFile": "assets/generated/unit_icons/units_70/r28_c7.png",
-    "namedFile": "assets/generated/unit_icons/named/units/humanship.png"
+    "namedFile": "assets/generated/unit_icons/named/units/humanship.png",
+    "sharedNamedFile": "assets/generated/unit_icons/named/units/humanship.png"
   },
   {
     "id": "ripper",
@@ -227,17 +139,8 @@
     "row": 1,
     "col": 3,
     "sourceFile": "assets/generated/unit_icons/units_70/r1_c3.png",
-    "namedFile": "assets/generated/unit_icons/named/units/ripper.png"
-  },
-  {
-    "id": "surgeon",
-    "displayName": "Surgeon",
-    "raceFolder": "humans",
-    "iconClass": "officer",
-    "row": 4,
-    "col": 1,
-    "sourceFile": "assets/generated/unit_icons/officers_70/r4_c1.png",
-    "namedFile": "assets/generated/unit_icons/named/officers/surgeon.png"
+    "namedFile": "assets/generated/unit_icons/named/units/ripper.png",
+    "sharedNamedFile": "assets/generated/unit_icons/named/units/ripper.png"
   },
   {
     "id": "technician",
@@ -247,7 +150,8 @@
     "row": 1,
     "col": 6,
     "sourceFile": "assets/generated/unit_icons/units_70/r1_c6.png",
-    "namedFile": "assets/generated/unit_icons/named/units/technician.png"
+    "namedFile": "assets/generated/unit_icons/named/units/technician.png",
+    "sharedNamedFile": "assets/generated/unit_icons/named/units/technician.png"
   },
   {
     "id": "lancelot",
@@ -257,7 +161,8 @@
     "row": 30,
     "col": 2,
     "sourceFile": "assets/generated/unit_icons/units_70/r30_c2.png",
-    "namedFile": "assets/generated/unit_icons/named/units/lancelot.png"
+    "namedFile": "assets/generated/unit_icons/named/units/lancelot.png",
+    "sharedNamedFile": "assets/generated/unit_icons/named/units/lancelot.png"
   },
   {
     "id": "trooper",
@@ -267,7 +172,8 @@
     "row": 1,
     "col": 1,
     "sourceFile": "assets/generated/unit_icons/units_70/r1_c1.png",
-    "namedFile": "assets/generated/unit_icons/named/units/trooper.png"
+    "namedFile": "assets/generated/unit_icons/named/units/trooper.png",
+    "sharedNamedFile": "assets/generated/unit_icons/named/units/trooper.png"
   },
   {
     "id": "ancientshade",
@@ -277,7 +183,8 @@
     "row": 2,
     "col": 7,
     "sourceFile": "assets/generated/unit_icons/units_70/r2_c7.png",
-    "namedFile": "assets/generated/unit_icons/named/units/ancientshade.png"
+    "namedFile": "assets/generated/unit_icons/named/units/ancientshade.png",
+    "sharedNamedFile": "assets/generated/unit_icons/named/units/ancientshade.png"
   },
   {
     "id": "brute",
@@ -287,17 +194,8 @@
     "row": 2,
     "col": 2,
     "sourceFile": "assets/generated/unit_icons/units_70/r2_c2.png",
-    "namedFile": "assets/generated/unit_icons/named/units/brute.png"
-  },
-  {
-    "id": "eji",
-    "displayName": "Eji",
-    "raceFolder": "mutants",
-    "iconClass": "officer",
-    "row": 3,
-    "col": 1,
-    "sourceFile": "assets/generated/unit_icons/officers_70/r3_c1.png",
-    "namedFile": "assets/generated/unit_icons/named/officers/eji.png"
+    "namedFile": "assets/generated/unit_icons/named/units/brute.png",
+    "sharedNamedFile": "assets/generated/unit_icons/named/units/brute.png"
   },
   {
     "id": "elitekairider",
@@ -307,17 +205,8 @@
     "row": 6,
     "col": 6,
     "sourceFile": "assets/generated/unit_icons/units_70/r6_c6.png",
-    "namedFile": "assets/generated/unit_icons/named/units/elitekairider.png"
-  },
-  {
-    "id": "guardian",
-    "displayName": "Guardian",
-    "raceFolder": "mutants",
-    "iconClass": "officer",
-    "row": 5,
-    "col": 1,
-    "sourceFile": "assets/generated/unit_icons/officers_70/r5_c1.png",
-    "namedFile": "assets/generated/unit_icons/named/officers/guardian.png"
+    "namedFile": "assets/generated/unit_icons/named/units/elitekairider.png",
+    "sharedNamedFile": "assets/generated/unit_icons/named/units/elitekairider.png"
   },
   {
     "id": "howlinghorror",
@@ -327,7 +216,8 @@
     "row": 2,
     "col": 4,
     "sourceFile": "assets/generated/unit_icons/units_70/r2_c4.png",
-    "namedFile": "assets/generated/unit_icons/named/units/howlinghorror.png"
+    "namedFile": "assets/generated/unit_icons/named/units/howlinghorror.png",
+    "sharedNamedFile": "assets/generated/unit_icons/named/units/howlinghorror.png"
   },
   {
     "id": "kai_rider",
@@ -337,37 +227,8 @@
     "row": 20,
     "col": 5,
     "sourceFile": "assets/generated/unit_icons/units_70/r20_c5.png",
-    "namedFile": "assets/generated/unit_icons/named/units/kai_rider.png"
-  },
-  {
-    "id": "eji2",
-    "displayName": "Psychic",
-    "raceFolder": "mutants",
-    "iconClass": "officer",
-    "row": 5,
-    "col": 5,
-    "sourceFile": "assets/generated/unit_icons/officers_70/r5_c5.png",
-    "namedFile": "assets/generated/unit_icons/named/officers/eji2.png"
-  },
-  {
-    "id": "shaman",
-    "displayName": "Shaman",
-    "raceFolder": "mutants",
-    "iconClass": "officer",
-    "row": 5,
-    "col": 2,
-    "sourceFile": "assets/generated/unit_icons/officers_70/r5_c2.png",
-    "namedFile": "assets/generated/unit_icons/named/officers/shaman.png"
-  },
-  {
-    "id": "sorcerer",
-    "displayName": "Sorcerer",
-    "raceFolder": "mutants",
-    "iconClass": "officer",
-    "row": 5,
-    "col": 3,
-    "sourceFile": "assets/generated/unit_icons/officers_70/r5_c3.png",
-    "namedFile": "assets/generated/unit_icons/named/officers/sorcerer.png"
+    "namedFile": "assets/generated/unit_icons/named/units/kai_rider.png",
+    "sharedNamedFile": "assets/generated/unit_icons/named/units/kai_rider.png"
   },
   {
     "id": "worm",
@@ -377,17 +238,8 @@
     "row": 2,
     "col": 3,
     "sourceFile": "assets/generated/unit_icons/units_70/r2_c3.png",
-    "namedFile": "assets/generated/unit_icons/named/units/worm.png"
-  },
-  {
-    "id": "stoneghost",
-    "displayName": "StoneGhost",
-    "raceFolder": "mutants",
-    "iconClass": "officer",
-    "row": 5,
-    "col": 4,
-    "sourceFile": "assets/generated/unit_icons/officers_70/r5_c4.png",
-    "namedFile": "assets/generated/unit_icons/named/officers/stoneghost.png"
+    "namedFile": "assets/generated/unit_icons/named/units/worm.png",
+    "sharedNamedFile": "assets/generated/unit_icons/named/units/worm.png"
   },
   {
     "id": "warrior",
@@ -397,7 +249,8 @@
     "row": 2,
     "col": 5,
     "sourceFile": "assets/generated/unit_icons/units_70/r2_c5.png",
-    "namedFile": "assets/generated/unit_icons/named/units/warrior.png"
+    "namedFile": "assets/generated/unit_icons/named/units/warrior.png",
+    "sharedNamedFile": "assets/generated/unit_icons/named/units/warrior.png"
   },
   {
     "id": "worker",
@@ -407,6 +260,7 @@
     "row": 2,
     "col": 1,
     "sourceFile": "assets/generated/unit_icons/units_70/r2_c1.png",
-    "namedFile": "assets/generated/unit_icons/named/units/worker.png"
+    "namedFile": "assets/generated/unit_icons/named/units/worker.png",
+    "sharedNamedFile": "assets/generated/unit_icons/named/units/worker.png"
   }
 ]

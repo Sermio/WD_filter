@@ -1,6 +1,7 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:worldshift_assistant/utils/utils.dart';
 import 'package:worldshift_assistant/widgets/item_description_widget.dart';
-import 'package:flutter/material.dart';
 
 class ExpandableCard extends StatefulWidget {
   final String name;
@@ -30,7 +31,11 @@ class _ExpandableCardState extends State<ExpandableCard> {
     final rarityColor = getRarityColor(widget.itemData['rarity']);
     final readableAccent = _buildReadableAccent(rarityColor);
     final previewGroups = _buildPreviewGroups(widget.itemData['attributes']);
+    final affectedUnits = _buildAffectedUnits(
+      widget.itemData['attributes'],
+    );
     final sourceText = _buildSourceText();
+    final hasSourceText = sourceText.isNotEmpty;
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
@@ -151,37 +156,56 @@ class _ExpandableCardState extends State<ExpandableCard> {
                             icon: Icons.stars_rounded,
                           ),
                           _InfoChip(
-                            label: getSlotValueOrDescription(widget.itemData['slot']),
+                            label: getSlotValueOrDescription(
+                                widget.itemData['slot']),
                             color: const Color(0xFF5E6678),
                             icon: Icons.category_outlined,
                           ),
                         ],
                       ),
-                      const SizedBox(height: 10),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Icons.place_outlined,
-                            size: 16,
-                            color: Colors.grey.shade600,
-                          ),
-                          const SizedBox(width: 6),
-                          Expanded(
-                            child: Text(
-                              sourceText,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                color: Color(0xFF525A69),
-                                fontSize: 13,
-                                fontWeight: FontWeight.w700,
-                                height: 1.2,
+                      if (affectedUnits.isNotEmpty) ...[
+                        const SizedBox(height: 8),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: affectedUnits
+                              .map(
+                                (unit) => _UnitInfoChip(
+                                  label: unit.label,
+                                  color: const Color(0xFF5E6678),
+                                  assetCandidates: unit.assetCandidates,
+                                ),
+                              )
+                              .toList(),
+                        ),
+                      ],
+                      if (hasSourceText) ...[
+                        const SizedBox(height: 10),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Icons.place_outlined,
+                              size: 16,
+                              color: Colors.grey.shade600,
+                            ),
+                            const SizedBox(width: 6),
+                            Expanded(
+                              child: Text(
+                                sourceText,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  color: Color(0xFF525A69),
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w700,
+                                  height: 1.2,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
+                          ],
+                        ),
+                      ],
                       if (previewGroups.isNotEmpty) ...[
                         const SizedBox(height: 12),
                         Container(
@@ -248,7 +272,7 @@ class _ExpandableCardState extends State<ExpandableCard> {
     if (obtainedFrom.isNotEmpty) {
       return obtainedFrom;
     }
-    return 'Origen desconocido';
+    return '';
   }
 
   Color _buildReadableAccent(Color base) {
@@ -259,6 +283,67 @@ class _ExpandableCardState extends State<ExpandableCard> {
     );
   }
 
+  List<_AffectedUnitChipData> _buildAffectedUnits(dynamic rawAttributes) {
+    if (rawAttributes is! Map<String, dynamic> || rawAttributes.isEmpty) {
+      return const [];
+    }
+
+    final seen = <String>{};
+    final affectedUnits = <_AffectedUnitChipData>[];
+
+    for (final entry in rawAttributes.entries) {
+      final key = entry.key.trim();
+      if (key.isEmpty || !seen.add(key)) {
+        continue;
+      }
+      if (entry.value is Map<String, dynamic>) {
+        affectedUnits.add(
+          _AffectedUnitChipData(
+            label: _formatUnitLabel(entry.key),
+            assetCandidates: _buildUnitIconCandidates(entry.key),
+          ),
+        );
+      }
+    }
+
+    return affectedUnits;
+  }
+
+  String _formatUnitLabel(String unitKey) {
+    final rawLabel = getUnitValue(unitKey).replaceAll('_', ' ').trim();
+    return rawLabel.replaceAllMapped(
+      RegExp(r'(?<=[a-z])(?=[A-Z])'),
+      (_) => ' ',
+    );
+  }
+
+  List<String> _buildUnitIconCandidates(String unitKey) {
+    const aliasByUnitKey = <String, List<String>>{
+      'Engineer': ['technician2'],
+      'Psychic': ['eji2'],
+      'Commander': ['commander', 'lancelot'],
+    };
+
+    final normalized =
+        unitKey.replaceAll(RegExp(r'[^A-Za-z0-9]+'), '').toLowerCase();
+    final aliases = <String>[
+      ...?aliasByUnitKey[unitKey],
+      normalized,
+    ];
+    final seen = <String>{};
+    final candidates = <String>[];
+
+    for (final id in aliases) {
+      if (!seen.add(id) || id.isEmpty) {
+        continue;
+      }
+      candidates.add('assets/generated/unit_icons/named/units/$id.png');
+      candidates.add('assets/generated/unit_icons/named/officers/$id.png');
+    }
+
+    return candidates;
+  }
+
   List<_PreviewStatGroup> _buildPreviewGroups(dynamic rawAttributes) {
     if (rawAttributes is! Map<String, dynamic>) {
       return const [];
@@ -267,7 +352,7 @@ class _ExpandableCardState extends State<ExpandableCard> {
     final groups = <_PreviewStatGroup>[];
     var statCount = 0;
     for (final entry in rawAttributes.entries) {
-      final unitName = getUnitValue(entry.key);
+      final unitName = _formatUnitLabel(entry.key);
       final value = entry.value;
 
       if (value is Map<String, dynamic>) {
@@ -306,7 +391,7 @@ class _ExpandableCardState extends State<ExpandableCard> {
         statCount++;
         if (statCount >= 3) {
           return groups;
-        }        
+        }
       }
     }
     return groups;
@@ -326,8 +411,7 @@ class ItemCompleteFrame extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final String repo = slot.toUpperCase();
-    final String iconPath =
-        'assets/generated/item_icons/named/icons/$repo.png';
+    final String iconPath = 'assets/generated/item_icons/named/icons/$repo.png';
     final String framePath =
         'assets/generated/item_icons/named/frames/${repo}_frame.png';
     final String overlayPath =
@@ -440,6 +524,53 @@ class _InfoChip extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 14, color: iconColor),
+          const SizedBox(width: 6),
+          Text(
+            label,
+            style: TextStyle(
+              color: textColor,
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _UnitInfoChip extends StatelessWidget {
+  const _UnitInfoChip({
+    required this.label,
+    required this.color,
+    required this.assetCandidates,
+  });
+
+  final String label;
+  final Color color;
+  final List<String> assetCandidates;
+
+  @override
+  Widget build(BuildContext context) {
+    final isBright = color.computeLuminance() > 0.6;
+    final textColor = Color.alphaBlend(
+      Colors.black.withValues(alpha: isBright ? 0.72 : 0.6),
+      color,
+    );
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: isBright ? 0.055 : 0.08),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(
+          color: color.withValues(alpha: isBright ? 0.1 : 0.14),
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _ResolvedMiniAssetImage(candidates: assetCandidates),
           const SizedBox(width: 6),
           Text(
             label,
@@ -586,6 +717,16 @@ class _PreviewStatGroup {
   final List<_PreviewStatLine> lines;
 }
 
+class _AffectedUnitChipData {
+  const _AffectedUnitChipData({
+    required this.label,
+    required this.assetCandidates,
+  });
+
+  final String label;
+  final List<String> assetCandidates;
+}
+
 class _PreviewStatLine {
   const _PreviewStatLine({
     required this.amount,
@@ -594,4 +735,48 @@ class _PreviewStatLine {
 
   final String amount;
   final String attribute;
+}
+
+class _ResolvedMiniAssetImage extends StatelessWidget {
+  const _ResolvedMiniAssetImage({required this.candidates});
+
+  final List<String> candidates;
+
+  Future<String?> _resolve() async {
+    for (final path in candidates) {
+      try {
+        await rootBundle.load(path);
+        return path;
+      } catch (_) {
+        continue;
+      }
+    }
+    return null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<String?>(
+      future: _resolve(),
+      builder: (context, snapshot) {
+        final path = snapshot.data;
+        if (path == null) {
+          return const Icon(
+            Icons.category_outlined,
+            size: 14,
+            color: Color(0xFF5E6678),
+          );
+        }
+        return ClipRRect(
+          borderRadius: BorderRadius.circular(4),
+          child: Image.asset(
+            path,
+            width: 16,
+            height: 16,
+            fit: BoxFit.cover,
+          ),
+        );
+      },
+    );
+  }
 }

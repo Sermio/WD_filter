@@ -1,11 +1,14 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:provider/provider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:worldshift_assistant/data/itemList.dart';
 import 'package:worldshift_assistant/data/data.dart';
+import 'package:worldshift_assistant/data/item.dart';
+import 'package:worldshift_assistant/data/worldshift_assets.dart';
 import 'package:worldshift_assistant/models/item_filters_model.dart';
+import 'package:provider/provider.dart';
 import 'package:worldshift_assistant/utils/utils.dart';
 import 'package:worldshift_assistant/widgets/expandable_card.dart';
 import 'package:worldshift_assistant/widgets/multi_chip.dart';
@@ -19,8 +22,9 @@ class CardListScreen extends StatefulWidget {
 }
 
 class _CardListScreenState extends State<CardListScreen> {
-  late Future<List<QueryDocumentSnapshot>> _itemsFuture;
+  late Future<List<Item>> _itemsFuture;
   bool _isFilterVisible = false;
+  final Map<int, Set<String>> _resolvedMapNamesByItem = {};
 
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _attributeController = TextEditingController();
@@ -34,8 +38,10 @@ class _CardListScreenState extends State<CardListScreen> {
         Provider.of<FilterProvider>(context, listen: false).nameFilter;
     _attributeController.text =
         Provider.of<FilterProvider>(context, listen: false).attributeFilter;
-    _unitController.text =
+    final initialUnitFilter =
         Provider.of<FilterProvider>(context, listen: false).unitFilter;
+    _unitController.text =
+        initialUnitFilter.isEmpty ? '' : _formatUnitLabel(initialUnitFilter);
   }
 
   // Unidades por raza para filtrar sugerencias de "Unit"
@@ -83,9 +89,8 @@ class _CardListScreenState extends State<CardListScreen> {
 
   List<String> _getUnitsByRaces(List<String> selectedRaces) {
     if (selectedRaces.isEmpty) {
-      // Sin filtro por raza: devolver todas las unidades existentes
       return units
-          .map((u) => u['value'] ?? '')
+          .map((u) => u['key'] ?? '')
           .where((e) => e.isNotEmpty)
           .toList();
     }
@@ -97,6 +102,83 @@ class _CardListScreenState extends State<CardListScreen> {
       }
     }
     return result.toList();
+  }
+
+  String _formatUnitLabel(String unitKey) {
+    final rawLabel = getUnitValue(unitKey).replaceAll('_', ' ').trim();
+    return rawLabel.replaceAllMapped(
+      RegExp(r'(?<=[a-z])(?=[A-Z])'),
+      (_) => ' ',
+    );
+  }
+
+  String _normalizeFilterValue(String value) {
+    return value.replaceAll(RegExp(r'[^A-Za-z0-9]+'), '').toLowerCase();
+  }
+
+  List<String> _buildUnitIconCandidates(String unitKey) {
+    const aliasByUnitKey = <String, List<String>>{
+      'Engineer': ['technician2'],
+      'Psychic': ['eji2'],
+      'Commander': ['commander', 'lancelot'],
+      'HighPriest': ['highpriest'],
+      'Defiler': ['dave', 'defiler'],
+    };
+
+    final normalized =
+        unitKey.replaceAll(RegExp(r'[^A-Za-z0-9]+'), '').toLowerCase();
+    final aliases = <String>[
+      ...?aliasByUnitKey[unitKey],
+      normalized,
+    ];
+    final seen = <String>{};
+    final candidates = <String>[];
+
+    for (final id in aliases) {
+      if (!seen.add(id) || id.isEmpty) {
+        continue;
+      }
+      candidates.add('assets/generated/unit_icons/named/units/$id.png');
+      candidates.add('assets/generated/unit_icons/named/officers/$id.png');
+    }
+
+    return candidates;
+  }
+
+  String _slotIconPath(String slotKey) =>
+      'assets/generated/item_icons/named/icons/$slotKey.png';
+
+  List<String> _buildSlotIconCandidates(String slotKey) {
+    const unitBySlotKey = <String, String>{
+      'HUMAN_COMMANDER': 'Commander',
+      'HUMAN_ASSASSIN': 'Assassin',
+      'HUMAN_CONSTRUCTOR': 'Constructor',
+      'HUMAN_JUDGE': 'Judge',
+      'HUMAN_SURGEON': 'Surgeon',
+      'HUMAN_ENGINEER': 'Engineer',
+      'ALIEN_MASTER': 'Master',
+      'ALIEN_ARBITER': 'Arbiter',
+      'ALIEN_DOMINATOR': 'Dominator',
+      'ALIEN_HARVESTER': 'Harvester',
+      'ALIEN_MANIPULATOR': 'Manipulator',
+      'ALIEN_DEFILER': 'Defiler',
+      'MUTANT_PSYCHIC': 'Psychic',
+      'MUTANT_HIGHPRIEST': 'HighPriest',
+      'MUTANT_ADEPT': 'Sorcerer',
+      'MUTANT_GUARDIAN': 'Guardian',
+      'MUTANT_SHAMAN': 'Shaman',
+      'MUTANT_STONEGHOST': 'StoneGhost',
+    };
+
+    final unitKey = unitBySlotKey[slotKey];
+    if (unitKey == null) {
+      return [_slotIconPath(slotKey)];
+    }
+
+    return [
+      ..._buildUnitIconCandidates(unitKey),
+      _slotIconPath(slotKey),
+    ];
   }
 
   List<Map<String, String>> _getSlotsByRaces(List<String> selectedRaces) {
@@ -118,9 +200,53 @@ class _CardListScreenState extends State<CardListScreen> {
     return filtered;
   }
 
-  Future<List<QueryDocumentSnapshot>> _fetchItems() async {
-    final snapshot = await FirebaseFirestore.instance.collection('items').get();
-    return snapshot.docs;
+  Future<List<Item>> _fetchItems() async {
+    await _loadResolvedMapNamesByItem();
+    final items = await combineLootData(
+      WorldshiftAssets.lootTableFile,
+      WorldshiftAssets.itemsDefinitionFile,
+    );
+    items.sort((a, b) => a.id.compareTo(b.id));
+    return items;
+  }
+
+  Future<void> _loadResolvedMapNamesByItem() async {
+    _resolvedMapNamesByItem.clear();
+    final raw =
+        await rootBundle.loadString(WorldshiftAssets.itemOriginIndexFile);
+    final decoded = jsonDecode(raw);
+    if (decoded is! Map<String, dynamic>) {
+      return;
+    }
+    final items = decoded['items'];
+    if (items is! List) {
+      return;
+    }
+
+    for (final item in items) {
+      if (item is! Map<String, dynamic>) {
+        continue;
+      }
+      final itemId = item['id'];
+      final resolvedOrigins = item['resolvedOrigins'];
+      if (itemId is! int || resolvedOrigins is! List) {
+        continue;
+      }
+
+      final mapNames = <String>{};
+      for (final origin in resolvedOrigins) {
+        if (origin is! Map<String, dynamic>) {
+          continue;
+        }
+        final mapName = '${origin['mapName'] ?? ''}'.trim();
+        if (mapName.isNotEmpty) {
+          mapNames.add(mapName);
+        }
+      }
+      if (mapNames.isNotEmpty) {
+        _resolvedMapNamesByItem[itemId] = mapNames;
+      }
+    }
   }
 
   @override
@@ -188,178 +314,94 @@ class _CardListScreenState extends State<CardListScreen> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          if (_isFilterVisible)
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              height: 280,
-              child: Container(
-                margin: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 20,
-                      offset: const Offset(0, 10),
-                    ),
-                  ],
-                ),
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(20),
-                  child: Consumer<FilterProvider>(
-                      builder: (context, filterProvider, child) {
-                    _nameController.text = filterProvider.nameFilter;
-                    _attributeController.text = filterProvider.attributeFilter;
-                    _unitController.text = filterProvider.unitFilter;
+      body: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: Column(
+          children: [
+            if (_isFilterVisible)
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                height: 280,
+                child: Container(
+                  margin: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 20,
+                        offset: const Offset(0, 10),
+                      ),
+                    ],
+                  ),
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(20),
+                    child: Consumer<FilterProvider>(
+                        builder: (context, filterProvider, child) {
+                      _nameController.text = filterProvider.nameFilter;
+                      _attributeController.text =
+                          filterProvider.attributeFilter;
+                      _unitController.text = filterProvider.unitFilter.isEmpty
+                          ? ''
+                          : _formatUnitLabel(filterProvider.unitFilter);
 
-                    return Column(
-                      children: [
-                        // TypeAheadField<String>(
-                        //   controller: _nameController,
-                        //   builder: (context, controller, focusNode) {
-                        //     return TextField(
-                        //         controller: controller,
-                        //         focusNode: focusNode,
-                        //         autofocus: false,
-                        //         decoration: const InputDecoration(
-                        //           border: OutlineInputBorder(),
-                        //           labelText: 'Name',
-                        //         ));
-                        //   },
-                        //   // textFieldConfiguration: TextFieldConfiguration(
-                        //   //   controller: _nameController,
-                        //   //   decoration:
-                        //   //       const InputDecoration(labelText: 'Item Name'),
-                        //   // ),
-                        //   suggestionsCallback: (pattern) async {
-                        //     return getSuggestions(pattern, 'name');
-                        //   },
-                        //   itemBuilder: (context, suggestion) {
-                        //     return ListTile(
-                        //       title: Text(suggestion),
-                        //     );
-                        //   },
-                        //   onSelected: (suggestion) {
-                        //     filterProvider.setNameFilter(suggestion.toLowerCase());
-                        //     _nameController.text =
-                        //         suggestion; // Sincronizar el valor
-                        //   },
-                        // ),
-                        const SizedBox(height: 12),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(15),
-                            border: Border.all(
-                              color: Colors.grey.shade300,
-                              width: 1,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
-                                blurRadius: 8,
-                                offset: const Offset(0, 2),
+                      return Column(
+                        children: [
+                          // TypeAheadField<String>(
+                          //   controller: _nameController,
+                          //   builder: (context, controller, focusNode) {
+                          //     return TextField(
+                          //         controller: controller,
+                          //         focusNode: focusNode,
+                          //         autofocus: false,
+                          //         decoration: const InputDecoration(
+                          //           border: OutlineInputBorder(),
+                          //           labelText: 'Name',
+                          //         ));
+                          //   },
+                          //   // textFieldConfiguration: TextFieldConfiguration(
+                          //   //   controller: _nameController,
+                          //   //   decoration:
+                          //   //       const InputDecoration(labelText: 'Item Name'),
+                          //   // ),
+                          //   suggestionsCallback: (pattern) async {
+                          //     return getSuggestions(pattern, 'name');
+                          //   },
+                          //   itemBuilder: (context, suggestion) {
+                          //     return ListTile(
+                          //       title: Text(suggestion),
+                          //     );
+                          //   },
+                          //   onSelected: (suggestion) {
+                          //     filterProvider.setNameFilter(suggestion.toLowerCase());
+                          //     _nameController.text =
+                          //         suggestion; // Sincronizar el valor
+                          //   },
+                          // ),
+                          const SizedBox(height: 12),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(15),
+                              border: Border.all(
+                                color: Colors.grey.shade300,
+                                width: 1,
                               ),
-                            ],
-                          ),
-                          child: TypeAheadField<String>(
-                            controller: _attributeController,
-                            builder: (context, controller, focusNode) {
-                              return TextField(
-                                controller: controller,
-                                focusNode: focusNode,
-                                autofocus: false,
-                                decoration: InputDecoration(
-                                  filled: true,
-                                  fillColor: Colors.white,
-                                  isDense: true,
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(15),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(15),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(15),
-                                    borderSide: const BorderSide(
-                                      color: Color(0xFF667eea),
-                                      width: 2,
-                                    ),
-                                  ),
-                                  labelText: 'Attribute',
-                                  labelStyle: TextStyle(
-                                    color: Colors.grey.shade600,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                  prefixIcon: Icon(
-                                    Icons.search,
-                                    color: Colors.grey.shade600,
-                                  ),
-                                  suffixIcon:
-                                      _attributeController.text.isNotEmpty
-                                          ? IconButton(
-                                              icon: Icon(
-                                                Icons.close,
-                                                color: Colors.grey.shade600,
-                                              ),
-                                              onPressed: () {
-                                                filterProvider
-                                                    .resetAttributeFilter();
-                                                _attributeController.clear();
-                                              },
-                                            )
-                                          : null,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.05),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 2),
                                 ),
-                              );
-                            },
-                            suggestionsCallback: (pattern) async {
-                              // Capitalizar la primera letra de cada palabra y manejar múltiples palabras
-                              String capitalizedPattern =
-                                  capitalizeFirstLetterOfEachWord(pattern);
-                              return getSuggestions(
-                                  capitalizedPattern, 'attribute');
-                            },
-                            itemBuilder: (context, suggestion) {
-                              return Material(
-                                color: Colors.white,
-                                child: ListTile(
-                                  title: Text(suggestion),
-                                ),
-                              );
-                            },
-                            onSelected: (suggestion) {
-                              filterProvider
-                                  .setAttributeFilter(suggestion.toLowerCase());
-                              _attributeController.text = suggestion;
-                            },
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(15),
-                            border: Border.all(
-                              color: Colors.grey.shade300,
-                              width: 1,
+                              ],
                             ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
-                                blurRadius: 8,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          child: Consumer<FilterProvider>(
-                            builder: (context, fp, _) => TypeAheadField<String>(
-                              key: ValueKey(fp.selectedRaces.join(',')),
-                              controller: _unitController,
+                            child: TypeAheadField<String>(
+                              controller: _attributeController,
+                              constraints: const BoxConstraints(maxHeight: 260),
+                              autoFlipDirection: true,
+                              hideOnUnfocus: true,
                               builder: (context, controller, focusNode) {
                                 return TextField(
                                   controller: controller,
@@ -384,38 +426,38 @@ class _CardListScreenState extends State<CardListScreen> {
                                         width: 2,
                                       ),
                                     ),
-                                    labelText: 'Unit',
+                                    labelText: 'Attribute',
                                     labelStyle: TextStyle(
                                       color: Colors.grey.shade600,
                                       fontWeight: FontWeight.w500,
                                     ),
                                     prefixIcon: Icon(
-                                      Icons.category,
+                                      Icons.search,
                                       color: Colors.grey.shade600,
                                     ),
-                                    suffixIcon: _unitController.text.isNotEmpty
-                                        ? IconButton(
-                                            icon: Icon(
-                                              Icons.close,
-                                              color: Colors.grey.shade600,
-                                            ),
-                                            onPressed: () {
-                                              filterProvider.resetUnitFilter();
-                                              _unitController.clear();
-                                            },
-                                          )
-                                        : null,
+                                    suffixIcon:
+                                        _attributeController.text.isNotEmpty
+                                            ? IconButton(
+                                                icon: Icon(
+                                                  Icons.close,
+                                                  color: Colors.grey.shade600,
+                                                ),
+                                                onPressed: () {
+                                                  filterProvider
+                                                      .resetAttributeFilter();
+                                                  _attributeController.clear();
+                                                },
+                                              )
+                                            : null,
                                   ),
                                 );
                               },
                               suggestionsCallback: (pattern) async {
-                                final candidates =
-                                    _getUnitsByRaces(fp.selectedRaces);
-                                final lower = pattern.toLowerCase();
-                                return candidates
-                                    .where(
-                                        (v) => v.toLowerCase().contains(lower))
-                                    .toList();
+                                // Capitalizar la primera letra de cada palabra y manejar múltiples palabras
+                                String capitalizedPattern =
+                                    capitalizeFirstLetterOfEachWord(pattern);
+                                return getSuggestions(
+                                    capitalizedPattern, 'attribute');
                               },
                               itemBuilder: (context, suggestion) {
                                 return Material(
@@ -426,467 +468,556 @@ class _CardListScreenState extends State<CardListScreen> {
                                 );
                               },
                               onSelected: (suggestion) {
-                                fp.setUnitFilter(suggestion.toLowerCase());
-                                _unitController.text = suggestion;
+                                filterProvider.setAttributeFilter(
+                                    suggestion.toLowerCase());
+                                _attributeController.text = suggestion;
                               },
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 16),
-                        MultiSelectChip(
-                          labels: races,
-                        ),
-                        const SizedBox(height: 16),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Container(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 16),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(15),
-                                  border: Border.all(
-                                    color: Colors.grey.shade300,
-                                    width: 1,
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.05),
-                                      blurRadius: 8,
-                                      offset: const Offset(0, 2),
-                                    ),
-                                  ],
-                                ),
-                                child: Material(
-                                  color: Colors.white,
-                                  child: DropdownButton<String>(
-                                    isExpanded: true,
-                                    alignment: Alignment.centerLeft,
-                                    menuMaxHeight: 300,
-                                    dropdownColor: Colors.white,
-                                    value: Provider.of<FilterProvider>(context)
-                                        .selectedMap,
-                                    hint: Text(
-                                      'Select Map',
-                                      style: TextStyle(
-                                        color: Colors.grey.shade600,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    underline: const SizedBox(),
-                                    icon: Icon(
-                                      Icons.keyboard_arrow_down,
-                                      color: Colors.grey.shade600,
-                                    ),
-                                    onChanged: (newValue) {
-                                      Provider.of<FilterProvider>(context,
-                                              listen: false)
-                                          .setSelectedMap(newValue);
-                                    },
-                                    items: [
-                                      DropdownMenuItem<String>(
-                                        value: null,
-                                        child: Text(
-                                          'All Maps',
-                                          style: TextStyle(
-                                            color: Colors.grey.shade600,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                      ),
-                                      ...maps.map(
-                                          (map) => DropdownMenuItem<String>(
-                                                value: map['value'],
-                                                child: Text(
-                                                  map['value']!,
-                                                  style: const TextStyle(
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                ),
-                                              )),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Container(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 16),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(15),
-                                  border: Border.all(
-                                    color: Colors.grey.shade300,
-                                    width: 1,
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.05),
-                                      blurRadius: 8,
-                                      offset: const Offset(0, 2),
-                                    ),
-                                  ],
-                                ),
-                                child: Material(
-                                  color: Colors.white,
-                                  child: DropdownButton<String>(
-                                    isExpanded: true,
-                                    alignment: Alignment.centerLeft,
-                                    menuMaxHeight: 300,
-                                    dropdownColor: Colors.white,
-                                    value: Provider.of<FilterProvider>(context)
-                                        .selectedSlot,
-                                    hint: Text(
-                                      'Select Slot',
-                                      style: TextStyle(
-                                        color: Colors.grey.shade600,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    underline: const SizedBox(),
-                                    icon: Icon(
-                                      Icons.keyboard_arrow_down,
-                                      color: Colors.grey.shade600,
-                                    ),
-                                    onChanged: (newValue) {
-                                      Provider.of<FilterProvider>(context,
-                                              listen: false)
-                                          .setSelectedSlot(newValue);
-                                    },
-                                    items: [
-                                      DropdownMenuItem<String>(
-                                        value: null,
-                                        child: Text(
-                                          'All Slots',
-                                          style: TextStyle(
-                                            color: Colors.grey.shade600,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                      ),
-                                      ..._getSlotsByRaces(
-                                              Provider.of<FilterProvider>(
-                                                      context)
-                                                  .selectedRaces)
-                                          .map((slot) =>
-                                              DropdownMenuItem<String>(
-                                                value: slot['key'],
-                                                child: Text(
-                                                  slot['value']!,
-                                                  style: const TextStyle(
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                ),
-                                              )),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Container(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 16),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(15),
-                                  border: Border.all(
-                                    color: Colors.grey.shade300,
-                                    width: 1,
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.05),
-                                      blurRadius: 8,
-                                      offset: const Offset(0, 2),
-                                    ),
-                                  ],
-                                ),
-                                child: Material(
-                                  color: Colors.white,
-                                  child: DropdownButton<String>(
-                                    isExpanded: true,
-                                    alignment: Alignment.centerLeft,
-                                    menuMaxHeight: 300,
-                                    dropdownColor: Colors.white,
-                                    hint: Text(
-                                      'Select Rarity',
-                                      style: TextStyle(
-                                        color: Colors.grey.shade600,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    value: Provider.of<FilterProvider>(context)
-                                        .selectedRarity,
-                                    underline: const SizedBox(),
-                                    icon: Icon(
-                                      Icons.keyboard_arrow_down,
-                                      color: Colors.grey.shade600,
-                                    ),
-                                    items: [
-                                      DropdownMenuItem<String>(
-                                        value: null,
-                                        child: Text(
-                                          'All Rarities',
-                                          style: TextStyle(
-                                            color: Colors.grey.shade600,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                      ),
-                                      ...['1', '2', '3', '4', '5']
-                                          .map((rarity) {
-                                        return DropdownMenuItem<String>(
-                                          value: rarity,
-                                          child:
-                                              RarityIndicator(rarity: rarity),
-                                        );
-                                      }),
-                                    ],
-                                    onChanged: (value) {
-                                      Provider.of<FilterProvider>(context,
-                                              listen: false)
-                                          .setSelectedRarity(value);
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Container(
-                                height: 50,
-                                decoration: BoxDecoration(
-                                  gradient: const LinearGradient(
-                                    colors: [
-                                      Color(0xFF667eea),
-                                      Color(0xFF764ba2)
-                                    ],
-                                  ),
-                                  borderRadius: BorderRadius.circular(15),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: const Color(0xFF667eea)
-                                          .withOpacity(0.3),
-                                      blurRadius: 8,
-                                      offset: const Offset(0, 4),
-                                    ),
-                                  ],
-                                ),
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    Provider.of<FilterProvider>(context,
-                                            listen: false)
-                                        .clearFilters();
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.transparent,
-                                    shadowColor: Colors.transparent,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15),
-                                    ),
-                                  ),
-                                  child: const Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.clear_all,
-                                        color: Colors.white,
-                                        size: 20,
-                                      ),
-                                      SizedBox(width: 8),
-                                      Text(
-                                        'Clear Filters',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    );
-                  }),
-                ),
-              ),
-            ),
-          if (_isFilterVisible) const Divider(),
-          Expanded(
-            child: FutureBuilder<List<QueryDocumentSnapshot>>(
-              future: _itemsFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                }
-                final items = snapshot.data ?? [];
-                final filterProvider = Provider.of<FilterProvider>(context);
-
-                // Filtrar la lista antes de mostrarla
-                final filteredItems = items.where((item) {
-                  final itemData = item.data() as Map<String, dynamic>;
-                  final name = itemData['name'] ?? '';
-                  final rarity = itemData['rarity'] ?? 'unknown';
-                  return _matchesFilters(
-                      itemData, name, rarity, filterProvider);
-                }).toList();
-
-                return Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
-                      child: Row(
-                        children: [
+                          const SizedBox(height: 12),
                           Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 14,
-                              vertical: 10,
-                            ),
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius: BorderRadius.circular(14),
+                              borderRadius: BorderRadius.circular(15),
+                              border: Border.all(
+                                color: Colors.grey.shade300,
+                                width: 1,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.05),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Consumer<FilterProvider>(
+                              builder: (context, fp, _) =>
+                                  TypeAheadField<String>(
+                                key: ValueKey(fp.selectedRaces.join(',')),
+                                controller: _unitController,
+                                constraints:
+                                    const BoxConstraints(maxHeight: 260),
+                                autoFlipDirection: true,
+                                hideOnUnfocus: true,
+                                builder: (context, controller, focusNode) {
+                                  return TextField(
+                                    controller: controller,
+                                    focusNode: focusNode,
+                                    autofocus: false,
+                                    decoration: InputDecoration(
+                                      filled: true,
+                                      fillColor: Colors.white,
+                                      isDense: true,
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(15),
+                                        borderSide: BorderSide.none,
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(15),
+                                        borderSide: BorderSide.none,
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(15),
+                                        borderSide: const BorderSide(
+                                          color: Color(0xFF667eea),
+                                          width: 2,
+                                        ),
+                                      ),
+                                      labelText: 'Unit',
+                                      labelStyle: TextStyle(
+                                        color: Colors.grey.shade600,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                      prefixIcon: _unitController.text.isEmpty
+                                          ? Icon(
+                                              Icons.category,
+                                              color: Colors.grey.shade600,
+                                            )
+                                          : Padding(
+                                              padding: const EdgeInsets.all(10),
+                                              child: _ResolvedAssetBadge(
+                                                candidates:
+                                                    _buildUnitIconCandidates(
+                                                  fp.unitFilter,
+                                                ),
+                                                size: 22,
+                                                borderRadius: 6,
+                                                fallbackIcon:
+                                                    Icons.shield_outlined,
+                                              ),
+                                            ),
+                                      suffixIcon:
+                                          _unitController.text.isNotEmpty
+                                              ? IconButton(
+                                                  icon: Icon(
+                                                    Icons.close,
+                                                    color: Colors.grey.shade600,
+                                                  ),
+                                                  onPressed: () {
+                                                    filterProvider
+                                                        .resetUnitFilter();
+                                                    _unitController.clear();
+                                                  },
+                                                )
+                                              : null,
+                                    ),
+                                  );
+                                },
+                                suggestionsCallback: (pattern) async {
+                                  final candidates =
+                                      _getUnitsByRaces(fp.selectedRaces);
+                                  final lower = pattern.toLowerCase();
+                                  return candidates
+                                      .where(
+                                        (v) =>
+                                            v.toLowerCase().contains(lower) ||
+                                            _formatUnitLabel(v)
+                                                .toLowerCase()
+                                                .contains(lower),
+                                      )
+                                      .toList();
+                                },
+                                itemBuilder: (context, suggestion) {
+                                  return Material(
+                                    color: Colors.white,
+                                    child: ListTile(
+                                      leading: _ResolvedAssetBadge(
+                                        candidates: _buildUnitIconCandidates(
+                                            suggestion),
+                                        size: 28,
+                                        borderRadius: 8,
+                                        fallbackIcon: Icons.shield_outlined,
+                                      ),
+                                      title: Text(_formatUnitLabel(suggestion)),
+                                    ),
+                                  );
+                                },
+                                onSelected: (suggestion) {
+                                  fp.setUnitFilter(suggestion);
+                                  _unitController.text =
+                                      _formatUnitLabel(suggestion);
+                                },
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          MultiSelectChip(
+                            labels: races,
+                          ),
+                          const SizedBox(height: 16),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(15),
+                                    border: Border.all(
+                                      color: Colors.grey.shade300,
+                                      width: 1,
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.05),
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Material(
+                                    color: Colors.white,
+                                    child: DropdownButton<String>(
+                                      isExpanded: true,
+                                      alignment: Alignment.centerLeft,
+                                      menuMaxHeight: 300,
+                                      dropdownColor: Colors.white,
+                                      value:
+                                          Provider.of<FilterProvider>(context)
+                                              .selectedMap,
+                                      hint: Text(
+                                        'Select Map',
+                                        style: TextStyle(
+                                          color: Colors.grey.shade600,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      underline: const SizedBox(),
+                                      icon: Icon(
+                                        Icons.keyboard_arrow_down,
+                                        color: Colors.grey.shade600,
+                                      ),
+                                      onChanged: (newValue) {
+                                        Provider.of<FilterProvider>(context,
+                                                listen: false)
+                                            .setSelectedMap(newValue);
+                                      },
+                                      items: [
+                                        DropdownMenuItem<String>(
+                                          value: null,
+                                          child: Text(
+                                            'All Maps',
+                                            style: TextStyle(
+                                              color: Colors.grey.shade600,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ),
+                                        ...maps.map((map) =>
+                                            DropdownMenuItem<String>(
+                                              value: map['value'],
+                                              child: Text(
+                                                map['value']!,
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            )),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(15),
+                                    border: Border.all(
+                                      color: Colors.grey.shade300,
+                                      width: 1,
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.05),
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Material(
+                                    color: Colors.white,
+                                    child: DropdownButton<String>(
+                                      isExpanded: true,
+                                      alignment: Alignment.centerLeft,
+                                      menuMaxHeight: 300,
+                                      dropdownColor: Colors.white,
+                                      value:
+                                          Provider.of<FilterProvider>(context)
+                                              .selectedSlot,
+                                      hint: Text(
+                                        'Select Slot',
+                                        style: TextStyle(
+                                          color: Colors.grey.shade600,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      underline: const SizedBox(),
+                                      icon: Icon(
+                                        Icons.keyboard_arrow_down,
+                                        color: Colors.grey.shade600,
+                                      ),
+                                      onChanged: (newValue) {
+                                        Provider.of<FilterProvider>(context,
+                                                listen: false)
+                                            .setSelectedSlot(newValue);
+                                      },
+                                      items: [
+                                        DropdownMenuItem<String>(
+                                          value: null,
+                                          child: Text(
+                                            'All Slots',
+                                            style: TextStyle(
+                                              color: Colors.grey.shade600,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ),
+                                        ..._getSlotsByRaces(
+                                                Provider.of<FilterProvider>(
+                                                        context)
+                                                    .selectedRaces)
+                                            .map((slot) =>
+                                                DropdownMenuItem<String>(
+                                                  value: slot['key'],
+                                                  child: Row(
+                                                    children: [
+                                                      _ResolvedAssetBadge(
+                                                        candidates:
+                                                            _buildSlotIconCandidates(
+                                                          slot['key']!,
+                                                        ),
+                                                        size: 24,
+                                                        borderRadius: 6,
+                                                        fallbackIcon: Icons
+                                                            .inventory_2_outlined,
+                                                      ),
+                                                      const SizedBox(width: 10),
+                                                      Expanded(
+                                                        child: Text(
+                                                          slot['value']!,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style:
+                                                              const TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                )),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(15),
+                                    border: Border.all(
+                                      color: Colors.grey.shade300,
+                                      width: 1,
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.05),
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Material(
+                                    color: Colors.white,
+                                    child: DropdownButton<String>(
+                                      isExpanded: true,
+                                      alignment: Alignment.centerLeft,
+                                      menuMaxHeight: 300,
+                                      dropdownColor: Colors.white,
+                                      hint: Text(
+                                        'Select Rarity',
+                                        style: TextStyle(
+                                          color: Colors.grey.shade600,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      value:
+                                          Provider.of<FilterProvider>(context)
+                                              .selectedRarity,
+                                      underline: const SizedBox(),
+                                      icon: Icon(
+                                        Icons.keyboard_arrow_down,
+                                        color: Colors.grey.shade600,
+                                      ),
+                                      items: [
+                                        DropdownMenuItem<String>(
+                                          value: null,
+                                          child: Text(
+                                            'All Rarities',
+                                            style: TextStyle(
+                                              color: Colors.grey.shade600,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ),
+                                        ...['1', '2', '3', '4', '5']
+                                            .map((rarity) {
+                                          return DropdownMenuItem<String>(
+                                            value: rarity,
+                                            child:
+                                                RarityIndicator(rarity: rarity),
+                                          );
+                                        }),
+                                      ],
+                                      onChanged: (value) {
+                                        Provider.of<FilterProvider>(context,
+                                                listen: false)
+                                            .setSelectedRarity(value);
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Container(
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                    gradient: const LinearGradient(
+                                      colors: [
+                                        Color(0xFF667eea),
+                                        Color(0xFF764ba2)
+                                      ],
+                                    ),
+                                    borderRadius: BorderRadius.circular(15),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: const Color(0xFF667eea)
+                                            .withOpacity(0.3),
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 4),
+                                      ),
+                                    ],
+                                  ),
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      Provider.of<FilterProvider>(context,
+                                              listen: false)
+                                          .clearFilters();
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.transparent,
+                                      shadowColor: Colors.transparent,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                    ),
+                                    child: const Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.clear_all,
+                                          color: Colors.white,
+                                          size: 20,
+                                        ),
+                                        SizedBox(width: 8),
+                                        Text(
+                                          'Clear Filters',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      );
+                    }),
+                  ),
+                ),
+              ),
+            if (_isFilterVisible) const Divider(),
+            Expanded(
+              child: FutureBuilder<List<Item>>(
+                future: _itemsFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  }
+                  final items = snapshot.data ?? const <Item>[];
+                  final filterProvider = Provider.of<FilterProvider>(context);
+
+                  // Filtrar la lista antes de mostrarla
+                  final filteredItems = items.where((item) {
+                    final itemData = item.toMap();
+                    final name = item.name;
+                    final rarity = item.rarity;
+                    return _matchesFilters(
+                        itemData, name, rarity, filterProvider);
+                  }).toList();
+
+                  return filteredItems.isEmpty
+                      ? Center(
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 24),
+                            padding: const EdgeInsets.all(24),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
                               border: Border.all(color: Colors.grey.shade200),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.04),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 3),
+                                  color: Colors.black.withValues(alpha: 0.05),
+                                  blurRadius: 18,
+                                  offset: const Offset(0, 8),
                                 ),
                               ],
                             ),
-                            child: Row(
+                            child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 const Icon(
-                                  Icons.inventory_2_outlined,
-                                  size: 18,
-                                  color: Color(0xFF5F6677),
+                                  Icons.search_off_rounded,
+                                  size: 42,
+                                  color: Color(0xFF8A90A0),
                                 ),
-                                const SizedBox(width: 8),
-                                Text(
-                                  '${filteredItems.length} items',
-                                  style: const TextStyle(
+                                const SizedBox(height: 14),
+                                const Text(
+                                  'No hay items con esos filtros',
+                                  style: TextStyle(
+                                    fontSize: 18,
                                     fontWeight: FontWeight.w800,
+                                    color: Color(0xFF313846),
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Prueba a cambiar la rareza, el slot o el mapa para ampliar los resultados.',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.grey.shade600,
                                     fontSize: 13,
-                                    color: Color(0xFF3F4655),
+                                    height: 1.35,
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: Text(
-                              'Vista previa rapida con icono, overlay de rareza y marco original.',
-                              style: TextStyle(
-                                color: Colors.grey.shade600,
-                                fontSize: 12.5,
-                                fontWeight: FontWeight.w600,
-                              ),
-                              textAlign: TextAlign.right,
-                            ),
+                        )
+                      : ListView.separated(
+                          padding: const EdgeInsets.only(
+                            top: 10,
+                            bottom: 20,
                           ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: filteredItems.isEmpty
-                          ? Center(
-                              child: Container(
-                                margin:
-                                    const EdgeInsets.symmetric(horizontal: 24),
-                                padding: const EdgeInsets.all(24),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(20),
-                                  border:
-                                      Border.all(color: Colors.grey.shade200),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color:
-                                          Colors.black.withValues(alpha: 0.05),
-                                      blurRadius: 18,
-                                      offset: const Offset(0, 8),
-                                    ),
-                                  ],
-                                ),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const Icon(
-                                      Icons.search_off_rounded,
-                                      size: 42,
-                                      color: Color(0xFF8A90A0),
-                                    ),
-                                    const SizedBox(height: 14),
-                                    const Text(
-                                      'No hay items con esos filtros',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w800,
-                                        color: Color(0xFF313846),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 8),
-                                    Text(
-                                      'Prueba a cambiar la rareza, el slot o el mapa para ampliar los resultados.',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        color: Colors.grey.shade600,
-                                        fontSize: 13,
-                                        height: 1.35,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            )
-                          : ListView.separated(
-                              padding: const EdgeInsets.only(
-                                top: 4,
-                                bottom: 20,
-                              ),
-                              itemCount: filteredItems.length,
-                              separatorBuilder: (context, index) =>
-                                  const SizedBox(height: 4),
-                              itemBuilder: (context, index) {
-                                final itemData = filteredItems[index].data()
-                                    as Map<String, dynamic>;
-                                final name = itemData['name'] ?? '';
-                                final rarity = itemData['rarity'] ?? 'unknown';
+                          itemCount: filteredItems.length,
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(height: 4),
+                          itemBuilder: (context, index) {
+                            final item = filteredItems[index];
+                            final itemData = item.toMap();
+                            final name = item.name;
+                            final rarity =
+                                item.rarity.isEmpty ? 'unknown' : item.rarity;
 
-                                return ExpandableCard(
-                                  name: name,
-                                  map: itemData['map'] ?? '',
-                                  rarity: rarity,
-                                  obtainedFrom: itemData['obtainedFrom'],
-                                  itemData: itemData,
-                                );
-                              },
-                            ),
-                    ),
-                  ],
-                );
-              },
+                            return ExpandableCard(
+                              name: name,
+                              map: item.map,
+                              rarity: rarity,
+                              obtainedFrom: item.obtainedFrom,
+                              itemData: itemData,
+                            );
+                          },
+                        );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -932,18 +1063,27 @@ class _CardListScreenState extends State<CardListScreen> {
     }
 
     // Filtro por unidad
-    if (filterProvider.unitFilter.isNotEmpty &&
-        !itemData['attributes']
-            .toString()
-            .toLowerCase()
-            .contains(filterProvider.unitFilter.toLowerCase())) {
-      return false;
+    if (filterProvider.unitFilter.isNotEmpty) {
+      final normalizedAttributes =
+          _normalizeFilterValue(itemData['attributes'].toString());
+      final normalizedUnitFilter =
+          _normalizeFilterValue(filterProvider.unitFilter);
+      if (!normalizedAttributes.contains(normalizedUnitFilter)) {
+        return false;
+      }
     }
 
     // Filtro por mapa
-    if (filterProvider.selectedMap != null &&
-        itemData['map'] != filterProvider.selectedMap) {
-      return false;
+    if (filterProvider.selectedMap != null) {
+      final selectedMap = filterProvider.selectedMap!;
+      final directMap = '${itemData['map'] ?? ''}'.trim();
+      final itemId = itemData['id'];
+      final resolvedMaps = itemId is int
+          ? (_resolvedMapNamesByItem[itemId] ?? const <String>{})
+          : const <String>{};
+      if (directMap != selectedMap && !resolvedMaps.contains(selectedMap)) {
+        return false;
+      }
     }
 
     // Filtro por raza
@@ -986,5 +1126,66 @@ class _CardListScreenState extends State<CardListScreen> {
     } else {
       return [];
     }
+  }
+}
+
+class _ResolvedAssetBadge extends StatelessWidget {
+  const _ResolvedAssetBadge({
+    required this.candidates,
+    required this.size,
+    required this.borderRadius,
+    required this.fallbackIcon,
+  });
+
+  final List<String> candidates;
+  final double size;
+  final double borderRadius;
+  final IconData fallbackIcon;
+
+  Future<String?> _resolve() async {
+    for (final path in candidates) {
+      try {
+        await rootBundle.load(path);
+        return path;
+      } catch (_) {
+        continue;
+      }
+    }
+    return null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<String?>(
+      future: _resolve(),
+      builder: (context, snapshot) {
+        final path = snapshot.data;
+        if (path == null) {
+          return Container(
+            width: size,
+            height: size,
+            decoration: BoxDecoration(
+              color: const Color(0xFFF2F4F8),
+              borderRadius: BorderRadius.circular(borderRadius),
+            ),
+            child: Icon(
+              fallbackIcon,
+              size: size * 0.6,
+              color: const Color(0xFF7A8395),
+            ),
+          );
+        }
+
+        return ClipRRect(
+          borderRadius: BorderRadius.circular(borderRadius),
+          child: Image.asset(
+            path,
+            width: size,
+            height: size,
+            fit: BoxFit.cover,
+          ),
+        );
+      },
+    );
   }
 }

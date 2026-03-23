@@ -3,8 +3,10 @@ import 'dart:io';
 
 import 'package:image/image.dart' as img;
 
-const _globalsPath = r'C:\Users\sergi\Desktop\Proyectos\Worldshift\data\db\items\globals.dt';
-const _inventoryUiPath = r'C:\Users\sergi\Desktop\Proyectos\Worldshift\data\db\ui\inventory.lua';
+const _globalsPath =
+    r'C:\Users\sergi\Desktop\Proyectos\Worldshift\data\db\items\globals.dt';
+const _inventoryUiPath =
+    r'C:\Users\sergi\Desktop\Proyectos\Worldshift\data\db\ui\inventory.lua';
 const _itemsAtlasPath = r'assets\ddsFiles\items.dds';
 const _framesAtlasPath = r'assets\ddsFiles\item_frames.dds';
 const _generatedRoot = r'assets\generated\item_icons';
@@ -81,20 +83,16 @@ void main(List<String> args) {
   final frameByRepo = _parseFrameByRepo(inventoryFile.readAsStringSync());
 
   final rootDir = Directory(_generatedRoot);
-  final rawItemsDir = Directory('${rootDir.path}${Platform.pathSeparator}raw_items');
-  final rawFramesDir = Directory('${rootDir.path}${Platform.pathSeparator}raw_frames');
-  final rawOverlaysDir =
-      Directory('${rootDir.path}${Platform.pathSeparator}raw_overlays');
-  final namedIconsDir =
-      Directory('${rootDir.path}${Platform.pathSeparator}named${Platform.pathSeparator}icons');
-  final namedFramesDir =
-      Directory('${rootDir.path}${Platform.pathSeparator}named${Platform.pathSeparator}frames');
-  final namedOverlaysDir =
-      Directory('${rootDir.path}${Platform.pathSeparator}named${Platform.pathSeparator}overlays');
+  final rawOverlaysDir = Directory(
+      '${rootDir.path}${Platform.pathSeparator}named${Platform.pathSeparator}raw_overlays');
+  final namedIconsDir = Directory(
+      '${rootDir.path}${Platform.pathSeparator}named${Platform.pathSeparator}icons');
+  final namedFramesDir = Directory(
+      '${rootDir.path}${Platform.pathSeparator}named${Platform.pathSeparator}frames');
+  final namedOverlaysDir = Directory(
+      '${rootDir.path}${Platform.pathSeparator}named${Platform.pathSeparator}overlays');
   for (final dir in [
     rootDir,
-    rawItemsDir,
-    rawFramesDir,
     rawOverlaysDir,
     namedIconsDir,
     namedFramesDir,
@@ -104,25 +102,11 @@ void main(List<String> args) {
       dir.createSync(recursive: true);
     }
   }
-  _cleanDirectory(rawItemsDir);
-  _cleanDirectory(rawFramesDir);
   _cleanDirectory(rawOverlaysDir);
   _cleanDirectory(namedIconsDir);
   _cleanDirectory(namedFramesDir);
   _cleanDirectory(namedOverlaysDir);
 
-  final rawItemsIndex = _exportRawAtlas(
-    atlas: itemsAtlas,
-    cellWidth: _itemsCell,
-    cellHeight: _itemsCell,
-    outDir: rawItemsDir,
-  );
-  final rawFramesIndex = _exportRawAtlas(
-    atlas: framesAtlas,
-    cellWidth: _frameCell,
-    cellHeight: _frameCell,
-    outDir: rawFramesDir,
-  );
   final rawOverlaysIndex = _exportRawOverlayBands(
     atlas: framesAtlas,
     cellWidth: _frameCell,
@@ -193,7 +177,8 @@ void main(List<String> args) {
 
     String? iconOut;
     if (!_isEmptyCell(iconCrop)) {
-      iconOut = '${namedIconsDir.path}${Platform.pathSeparator}${slot.repo}.png';
+      iconOut =
+          '${namedIconsDir.path}${Platform.pathSeparator}${slot.repo}.png';
       File(iconOut).writeAsBytesSync(img.encodePng(iconCrop));
       namedIcons++;
     } else {
@@ -207,7 +192,8 @@ void main(List<String> args) {
           '${namedFramesDir.path}${Platform.pathSeparator}${slot.repo}_frame.png';
       File(frameOut).writeAsBytesSync(img.encodePng(frameCrop));
       namedFrames++;
-    } else if (fallbackFrameCrop != null && _hasMeaningfulContent(fallbackFrameCrop)) {
+    } else if (fallbackFrameCrop != null &&
+        _hasMeaningfulContent(fallbackFrameCrop)) {
       frameOut =
           '${namedFramesDir.path}${Platform.pathSeparator}${slot.repo}_frame.png';
       File(frameOut).writeAsBytesSync(img.encodePng(fallbackFrameCrop));
@@ -261,25 +247,14 @@ void main(List<String> args) {
     });
   }
 
-  final rawItemsIndexFile =
-      File('${rawItemsDir.path}${Platform.pathSeparator}atlas_index.json');
-  rawItemsIndexFile.writeAsStringSync(
-    const JsonEncoder.withIndent('  ').convert(rawItemsIndex),
-  );
-
-  final rawFramesIndexFile =
-      File('${rawFramesDir.path}${Platform.pathSeparator}atlas_index.json');
-  rawFramesIndexFile.writeAsStringSync(
-    const JsonEncoder.withIndent('  ').convert(rawFramesIndex),
-  );
   final rawOverlaysIndexFile =
       File('${rawOverlaysDir.path}${Platform.pathSeparator}atlas_index.json');
   rawOverlaysIndexFile.writeAsStringSync(
     const JsonEncoder.withIndent('  ').convert(rawOverlaysIndex),
   );
 
-  final namedIndexFile =
-      File('${rootDir.path}${Platform.pathSeparator}named${Platform.pathSeparator}item_icon_name_index.json');
+  final namedIndexFile = File(
+      '${rootDir.path}${Platform.pathSeparator}named${Platform.pathSeparator}item_icon_name_index.json');
   namedIndexFile.writeAsStringSync(
     const JsonEncoder.withIndent('  ').convert(namedIndex),
   );
@@ -287,8 +262,6 @@ void main(List<String> args) {
   stdout.writeln(
     'Generados $namedIcons iconos nombrados, $namedFrames marcos nombrados y '
     '$namedOverlays overlays nombrados en ${rootDir.path}\n'
-    'Raw items: ${rawItemsDir.path}\n'
-    'Raw frames: ${rawFramesDir.path}\n'
     'Raw overlays: ${rawOverlaysDir.path}\n'
     'Indice: ${namedIndexFile.path}\n'
     'Slots sin icono visible: ${missingIcons.join(', ')}\n'
@@ -332,48 +305,6 @@ Map<String, int> _parseFrameByRepo(String source) {
     result[match.group(1)!] = int.parse(match.group(2)!);
   }
   return result;
-}
-
-List<Map<String, dynamic>> _exportRawAtlas({
-  required img.Image atlas,
-  required int cellWidth,
-  required int cellHeight,
-  required Directory outDir,
-}) {
-  final rows = atlas.height ~/ cellHeight;
-  final cols = atlas.width ~/ cellWidth;
-  final index = <Map<String, dynamic>>[];
-
-  for (var row = 1; row <= rows; row++) {
-    for (var col = 1; col <= cols; col++) {
-      final x = (col - 1) * cellWidth;
-      final y = (row - 1) * cellHeight;
-      final crop = img.copyCrop(
-        atlas,
-        x: x,
-        y: y,
-        width: cellWidth,
-        height: cellHeight,
-      );
-      if (_isEmptyCell(crop)) {
-        continue;
-      }
-      final fileName = 'r${row}_c${col}.png';
-      final file = File('${outDir.path}${Platform.pathSeparator}$fileName');
-      file.writeAsBytesSync(img.encodePng(crop));
-      index.add({
-        'row': row,
-        'col': col,
-        'x': x,
-        'y': y,
-        'width': cellWidth,
-        'height': cellHeight,
-        'file': file.path.replaceAll(r'\', '/'),
-      });
-    }
-  }
-
-  return index;
 }
 
 List<Map<String, dynamic>> _exportRawOverlayBands({
@@ -439,7 +370,8 @@ img.Image? _loadAtlasImage({
 }) {
   if (!atlasFile.existsSync()) {
     final pngFallback = File(
-      atlasFile.path.replaceAll(RegExp(r'\.dds$', caseSensitive: false), '.png'),
+      atlasFile.path
+          .replaceAll(RegExp(r'\.dds$', caseSensitive: false), '.png'),
     );
     if (pngFallback.existsSync()) {
       return _decodeImage(pngFallback);
@@ -459,7 +391,8 @@ img.Image? _loadAtlasImage({
   final texconv = File(texconvPath);
   if (!texconv.existsSync()) {
     final pngFallback = File(
-      atlasFile.path.replaceAll(RegExp(r'\.dds$', caseSensitive: false), '.png'),
+      atlasFile.path
+          .replaceAll(RegExp(r'\.dds$', caseSensitive: false), '.png'),
     );
     return _decodeImage(pngFallback);
   }

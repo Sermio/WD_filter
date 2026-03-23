@@ -63,7 +63,12 @@ void main() {
       iconClass: iconClass,
       id: id,
     );
+    final sharedOutPath =
+        '${namedUnitsDir.path}${Platform.pathSeparator}$id.png';
     sourceFile.copySync(outPath);
+    if (outPath != sharedOutPath) {
+      sourceFile.copySync(sharedOutPath);
+    }
 
     index.add({
       'id': id,
@@ -74,13 +79,15 @@ void main() {
       'col': col,
       'sourceFile': sourcePath.replaceAll(r'\', '/'),
       'namedFile': outPath.replaceAll(r'\', '/'),
+      'sharedNamedFile': sharedOutPath.replaceAll(r'\', '/'),
     });
     copied++;
   }
 
-  final indexFile =
-      File('${namedDir.path}${Platform.pathSeparator}unit_icon_name_index.json');
-  indexFile.writeAsStringSync(const JsonEncoder.withIndent('  ').convert(index));
+  final indexFile = File(
+      '${namedDir.path}${Platform.pathSeparator}unit_icon_name_index.json');
+  indexFile
+      .writeAsStringSync(const JsonEncoder.withIndent('  ').convert(index));
 
   stdout.writeln(
     'Generados $copied iconos nombrados en ${namedDir.path}\n'

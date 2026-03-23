@@ -42,31 +42,15 @@ class GameUnit {
     }
   }
 
-  bool get hasConversationIcon =>
-      conversationIconCol != null && conversationIconRow != null;
-
   bool get hasMainAtlasIcon => mainIconCol != null && mainIconRow != null;
-
-  String get conversationIconAssetPath =>
-      'assets/generated/conversation_icons/'
-      'r${conversationIconRow}_c${conversationIconCol}.png';
 
   List<String> get detailIconAssetCandidates {
     final candidates = <String>[];
 
-    if (unitIconClass == 'officer') {
-      candidates.add('assets/generated/unit_icons/named/officers/$id.png');
-      candidates.add('assets/generated/unit_icons/named/units/$id.png');
-    } else if (unitIconClass == 'unit') {
-      candidates.add('assets/generated/unit_icons/named/units/$id.png');
-      candidates.add('assets/generated/unit_icons/named/officers/$id.png');
-    } else {
-      candidates.add('assets/generated/unit_icons/named/officers/$id.png');
-      candidates.add('assets/generated/unit_icons/named/units/$id.png');
-    }
+    candidates.add('assets/generated/unit_icons/named/units/$id.png');
 
-    if (hasConversationIcon) {
-      candidates.add(conversationIconAssetPath);
+    if (unitIconClass == 'officer' || unitIconClass == 'commander') {
+      candidates.add('assets/generated/unit_icons/named/officers/$id.png');
     }
 
     return candidates;
@@ -79,7 +63,7 @@ class GameUnit {
       case 'unit':
         return 'units-70x70.dds';
       case 'commander':
-        return 'conversation_icons.dds';
+        return 'units consolidado';
       default:
         return 'desconocido';
     }
@@ -107,9 +91,7 @@ class GameUnit {
       conversationIconCol: json['conversationIconCol'] as int?,
       conversationIconRow: json['conversationIconRow'] as int?,
       stats: stats,
-      auraNames: auras is List
-          ? auras.map((e) => '$e').toList()
-          : const [],
+      auraNames: auras is List ? auras.map((e) => '$e').toList() : const [],
     );
   }
 

@@ -71,10 +71,8 @@ flutter:
   assets:
     # - assets/images/quiz-logo.png
     - assets/images/
-    - assets/images/items/aliens/
-    - assets/images/items/humans/
-    - assets/images/items/tribes/
     - assets/tsvFiles/
+    - assets/loot/
     - assets/data/
     - assets/generated/
     - assets/generated/unit_icons/

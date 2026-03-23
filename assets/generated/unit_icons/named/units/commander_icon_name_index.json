@@ -1,0 +1,29 @@
+[
+  {
+    "id": "master",
+    "displayName": "Master",
+    "iconClass": "commander",
+    "row": 2,
+    "col": 3,
+    "sourceAtlas": "assets/ddsFiles/conversation_icons.dds",
+    "namedFile": "assets/generated/unit_icons/named/units/master.png"
+  },
+  {
+    "id": "commander",
+    "displayName": "Lord Commander",
+    "iconClass": "commander",
+    "row": 2,
+    "col": 4,
+    "sourceAtlas": "assets/ddsFiles/conversation_icons.dds",
+    "namedFile": "assets/generated/unit_icons/named/units/commander.png"
+  },
+  {
+    "id": "highpriest",
+    "displayName": "High Priest",
+    "iconClass": "commander",
+    "row": 4,
+    "col": 3,
+    "sourceAtlas": "assets/ddsFiles/conversation_icons.dds",
+    "namedFile": "assets/generated/unit_icons/named/units/highpriest.png"
+  }
+]

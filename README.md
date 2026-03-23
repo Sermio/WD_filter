@@ -5,6 +5,11 @@
   The <strong>WorldShift Tribute Application</strong> is a tribute to the game <em>WorldShift (2008)</em>, designed as a comprehensive interactive catalog of in-game items. It offers users an intuitive way to browse, search, and filter through a vast collection of equipment. With a strong emphasis on accuracy and usability, it allows for detailed item exploration, making it an invaluable tool for both casual players and dedicated strategists.
 </p>
 
+<h2>Maintenance docs</h2>
+<p>
+  Item and loot update workflow: <code>docs/item-data-update-workflow.md</code>
+</p>
+
 <h2>Advanced Filtering & Item Exploration</h2>
 <ul>
   <li><strong>Rarity</strong>: Identify common, rare, and unique items.</li>

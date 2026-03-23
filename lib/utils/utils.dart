@@ -159,65 +159,56 @@ Future<void> parseLootFile1(String path) async {
 
   for (var line in lines) {
     if (line.trim().isEmpty) continue;
-    print('Línea 1: $line');
+    final parts = _splitTsvLine(line);
+    if (parts.length < 6) continue;
 
-    RegExp regex = RegExp(r'^(\d+)\s+(.+?)\s+(\d{5,})\s+(.+?)$');
-    Match? match = regex.firstMatch(line);
+    final lootTable = int.tryParse(parts[0]);
+    final itemId = int.tryParse(parts[2]);
+    if (lootTable == null || itemId == null) continue;
 
-    if (match != null) {
-      try {
-        int lootTable = int.parse(match.group(1) ?? '0');
-        String location = match.group(2) ?? '';
-        int itemId = int.parse(match.group(3) ?? '0');
-        String itemName = match.group(4) ?? '';
+    final location = parts[1];
+    final itemName = parts[5];
 
-        String map = '';
-        String obtainedFrom = '';
+    String map = '';
+    String obtainedFrom = '';
 
-        bool isMapFound = false;
-        for (var mapEntry in maps) {
-          if (location.startsWith(mapEntry['key']!)) {
-            map = mapEntry['key']!;
-            obtainedFrom = location
-                .substring(map.length)
-                .replaceFirst(RegExp(r'^[\s-]+'), '');
+    bool isMapFound = false;
+    for (var mapEntry in maps) {
+      if (location.startsWith(mapEntry['key']!)) {
+        map = mapEntry['key']!;
+        obtainedFrom =
+            location.substring(map.length).replaceFirst(RegExp(r'^[\s-]+'), '');
 
-            isMapFound = true;
-            break;
-          }
-        }
-
-        if (!isMapFound) {
-          map = '';
-          obtainedFrom = location.replaceFirst(RegExp(r'^[\s-]+'), '');
-        }
-
-        String translatedMap = map;
-        for (var mapEntry in maps) {
-          if (mapEntry['key'] == map) {
-            translatedMap = mapEntry['value'] ?? map;
-            break;
-          }
-        }
-        namesSet.add(itemName);
-
-        itemsFile1.add(Item(
-          id: itemId,
-          lootTable: lootTable,
-          map: translatedMap,
-          obtainedFrom: obtainedFrom,
-          name: itemName,
-          rarity: '',
-          race: '',
-          slot: '',
-          attributes: {},
-        ));
-
-        print('Mapa: $translatedMap, ObtainedFrom: $obtainedFrom');
-      } catch (e) {
-        print('Error al procesar la línea: $line');
+        isMapFound = true;
+        break;
       }
     }
+
+    if (!isMapFound) {
+      map = '';
+      obtainedFrom = location.replaceFirst(RegExp(r'^[\s-]+'), '');
+    }
+
+    String translatedMap = map;
+    for (var mapEntry in maps) {
+      if (mapEntry['key'] == map) {
+        translatedMap = mapEntry['value'] ?? map;
+        break;
+      }
+    }
+    namesSet.add(itemName);
+
+    itemsFile1.add(Item(
+      id: itemId,
+      lootTable: lootTable,
+      map: translatedMap,
+      obtainedFrom: obtainedFrom,
+      name: itemName,
+      rarity: '',
+      race: '',
+      slot: '',
+      attributes: {},
+    ));
   }
 }
 
@@ -257,64 +248,39 @@ Future<void> parseLootFile2(String path) async {
   itemsFile2.clear();
 
   for (var line in lines) {
-    print('Línea 2: $line');
+    if (line.trim().isEmpty) continue;
+    final parts = _splitTsvLine(line);
+    if (parts.length < 6) continue;
 
-    RegExp regex = RegExp(r'^(\d+)\s+(\d+)\s+(.+?)\s+(\S+)\s+(.*)$');
-    Match? match = regex.firstMatch(line);
+    final itemId = int.tryParse(parts[0]);
+    if (itemId == null) continue;
 
-    if (match != null) {
-      int itemId = int.parse(match.group(1) ?? '0');
-      String rarity = match.group(2) ?? '';
-      String race = match.group(3) ?? '';
-      String slot = match.group(4) ?? '';
-      slotsSet.add(slot);
+    final rarity = parts[1];
+    final race = parts[2];
+    final slot = parts[3];
+    final name = parts[4].trim();
+    final attributeString = parts.length > 6 ? parts[6].trim() : '';
 
-      int startIndex = line.indexOf(slot) + slot.length;
-      String name = '';
-      String attributeString = '';
+    slotsSet.add(slot);
+    namesSet.add(name);
 
-      List<String> words = line.substring(startIndex).split(RegExp(r'\s+'));
-      bool foundUnit = false;
-
-      for (var word in words) {
-        if (unitsFlat.contains(word)) {
-          foundUnit = true;
-          break;
-        }
-        name += '$word ';
-      }
-
-      name = name.trim();
-
-      if (foundUnit) {
-        int nameEndIndex = line.indexOf(name) + name.length;
-        attributeString = line.substring(nameEndIndex).trim();
-
-        List<String> attributeParts = attributeString.split(RegExp(r'\s+'));
-        if (attributeParts.isNotEmpty) {
-          attributeParts.removeAt(0);
-          attributeString = attributeParts.join(' ');
-        }
-      } else {
-        attributeString = line.substring(startIndex).trim();
-      }
-      namesSet.add(name);
-
-      itemsFile2.add(Item(
-        id: itemId,
-        lootTable: 0,
-        map: '',
-        obtainedFrom: '',
-        name: name,
-        rarity: rarity,
-        race: race,
-        slot: slot,
-        attributes: parseAttributes(attributeString),
-      ));
-    } else {
-      print('No se pudo parsear la línea: $line');
-    }
+    itemsFile2.add(Item(
+      id: itemId,
+      lootTable: 0,
+      map: '',
+      obtainedFrom: '',
+      name: name,
+      rarity: rarity,
+      race: race,
+      slot: slot,
+      attributes: parseAttributes(attributeString),
+    ));
   }
+}
+
+List<String> _splitTsvLine(String line) {
+  final sanitized = line.replaceFirst(RegExp(r'^(?:\uFEFF|ï»¿)'), '');
+  return sanitized.split('\t').map((part) => part.trim()).toList();
 }
 
 Future<List<Item>> combineLootData(String pathFile1, String pathFile2) async {
@@ -433,7 +399,10 @@ Future<WorldshiftPipelineResult> processAndUploadItems({
   int dropRows = 0;
   try {
     final dropRaw = await loadFileFromAssets(WorldshiftAssets.dropFile);
-    dropRows = dropRaw.split(RegExp(r'\r?\n')).where((l) => l.trim().isNotEmpty).length;
+    dropRows = dropRaw
+        .split(RegExp(r'\r?\n'))
+        .where((l) => l.trim().isNotEmpty)
+        .length;
   } catch (_) {
     /* drop opcional */
   }

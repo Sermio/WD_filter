@@ -8,4 +8,6 @@ class WorldshiftAssets {
       'assets/tsvFiles/items_extra_data_complete.txt';
   static const String dropFile = 'assets/tsvFiles/drop.tsv';
   static const String unitsCatalogFile = 'assets/data/units.json';
+  static const String itemOriginIndexFile =
+      'assets/data/item_origin_index.json';
 }
