@@ -1,3 +1,107 @@
+class GameUnitAbility {
+  final String name;
+  final String? description;
+  final String? iconAtlas;
+  final int? iconCol;
+  final int? iconRow;
+  final String? iconAssetPathOverride;
+
+  const GameUnitAbility({
+    required this.name,
+    this.description,
+    this.iconAtlas,
+    this.iconCol,
+    this.iconRow,
+    this.iconAssetPathOverride,
+  });
+
+  bool get hasIcon => iconAtlas != null && iconCol != null && iconRow != null;
+
+  String? get iconAssetPath {
+    if (iconAssetPathOverride != null && iconAssetPathOverride!.isNotEmpty) {
+      return iconAssetPathOverride;
+    }
+    if (!hasIcon) {
+      return null;
+    }
+    return 'assets/generated/ui_icons/$iconAtlas/r${iconRow}_c$iconCol.png';
+  }
+
+  factory GameUnitAbility.fromJson(Map<String, dynamic> json) {
+    return GameUnitAbility(
+      name: json['name'] as String? ?? '',
+      description: json['description'] as String?,
+      iconAtlas: json['iconAtlas'] as String?,
+      iconCol: (json['iconCol'] as num?)?.toInt(),
+      iconRow: (json['iconRow'] as num?)?.toInt(),
+      iconAssetPathOverride: json['iconAssetPath'] as String?,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'name': name,
+        'description': description,
+        'iconAtlas': iconAtlas,
+        'iconCol': iconCol,
+        'iconRow': iconRow,
+        'iconAssetPath': iconAssetPath,
+      };
+}
+
+class GameUnitStatusEffect {
+  final String name;
+  final String? description;
+  final bool? isDebuff;
+  final String? iconAtlas;
+  final int? iconCol;
+  final int? iconRow;
+  final String? iconAssetPathOverride;
+
+  const GameUnitStatusEffect({
+    required this.name,
+    this.description,
+    this.isDebuff,
+    this.iconAtlas,
+    this.iconCol,
+    this.iconRow,
+    this.iconAssetPathOverride,
+  });
+
+  bool get hasIcon => iconAtlas != null && iconCol != null && iconRow != null;
+
+  String? get iconAssetPath {
+    if (iconAssetPathOverride != null && iconAssetPathOverride!.isNotEmpty) {
+      return iconAssetPathOverride;
+    }
+    if (!hasIcon) {
+      return null;
+    }
+    return 'assets/generated/ui_icons/$iconAtlas/r${iconRow}_c$iconCol.png';
+  }
+
+  factory GameUnitStatusEffect.fromJson(Map<String, dynamic> json) {
+    return GameUnitStatusEffect(
+      name: json['name'] as String? ?? '',
+      description: json['description'] as String?,
+      isDebuff: json['isDebuff'] as bool?,
+      iconAtlas: json['iconAtlas'] as String?,
+      iconCol: (json['iconCol'] as num?)?.toInt(),
+      iconRow: (json['iconRow'] as num?)?.toInt(),
+      iconAssetPathOverride: json['iconAssetPath'] as String?,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'name': name,
+        'description': description,
+        'isDebuff': isDebuff,
+        'iconAtlas': iconAtlas,
+        'iconCol': iconCol,
+        'iconRow': iconRow,
+        'iconAssetPath': iconAssetPath,
+      };
+}
+
 class GameUnit {
   final String id;
   final String raceFolder;
@@ -12,6 +116,9 @@ class GameUnit {
   final int? conversationIconRow;
   final Map<String, String> stats;
   final List<String> auraNames;
+  final List<GameUnitAbility> passiveAbilities;
+  final List<GameUnitAbility> activeAbilities;
+  final List<GameUnitStatusEffect> statusEffects;
 
   const GameUnit({
     required this.id,
@@ -27,6 +134,9 @@ class GameUnit {
     this.conversationIconRow,
     this.stats = const {},
     this.auraNames = const [],
+    this.passiveAbilities = const [],
+    this.activeAbilities = const [],
+    this.statusEffects = const [],
   });
 
   String get raceLabel {
@@ -78,6 +188,9 @@ class GameUnit {
       });
     }
     final auras = json['auraNames'];
+    final passiveAbilities = json['passiveAbilities'];
+    final activeAbilities = json['activeAbilities'];
+    final statusEffects = json['statusEffects'];
     return GameUnit(
       id: json['id'] as String,
       raceFolder: json['raceFolder'] as String? ?? '',
@@ -92,6 +205,24 @@ class GameUnit {
       conversationIconRow: json['conversationIconRow'] as int?,
       stats: stats,
       auraNames: auras is List ? auras.map((e) => '$e').toList() : const [],
+      passiveAbilities: passiveAbilities is List
+          ? passiveAbilities
+              .whereType<Map<String, dynamic>>()
+              .map(GameUnitAbility.fromJson)
+              .toList()
+          : const [],
+      activeAbilities: activeAbilities is List
+          ? activeAbilities
+              .whereType<Map<String, dynamic>>()
+              .map(GameUnitAbility.fromJson)
+              .toList()
+          : const [],
+      statusEffects: statusEffects is List
+          ? statusEffects
+              .whereType<Map<String, dynamic>>()
+              .map(GameUnitStatusEffect.fromJson)
+              .toList()
+          : const [],
     );
   }
 
@@ -109,5 +240,10 @@ class GameUnit {
         'conversationIconRow': conversationIconRow,
         'stats': stats,
         'auraNames': auraNames,
+        'passiveAbilities':
+            passiveAbilities.map((ability) => ability.toJson()).toList(),
+        'activeAbilities':
+            activeAbilities.map((ability) => ability.toJson()).toList(),
+        'statusEffects': statusEffects.map((effect) => effect.toJson()).toList(),
       };
 }

@@ -1,0 +1,439 @@
+[
+  {
+    "row": 0,
+    "col": 7,
+    "key": "0:7",
+    "file": "assets/generated/ui_icons/buff_icons/r0_c7.png",
+    "names": [
+      "Hatchlings"
+    ],
+    "sources": [
+      {
+        "source": "units-dt",
+        "context": "alienegg.dt",
+        "name": "Hatchlings"
+      }
+    ]
+  },
+  {
+    "row": 0,
+    "col": 8,
+    "key": "0:8",
+    "file": "assets/generated/ui_icons/buff_icons/r0_c8.png",
+    "names": [
+      "Build Shrine",
+      "Repair Building"
+    ],
+    "sources": [
+      {
+        "source": "units-dt",
+        "context": "worker.dt",
+        "name": "Repair Building"
+      },
+      {
+        "source": "units-dt",
+        "context": "worker.dt",
+        "name": "Build Shrine"
+      }
+    ]
+  },
+  {
+    "row": 0,
+    "col": 13,
+    "key": "0:13",
+    "file": "assets/generated/ui_icons/buff_icons/r0_c13.png",
+    "names": [
+      "Battle Yamu",
+      "Gorgar the Late",
+      "HF1337",
+      "Howling Horror",
+      "Nanofix",
+      "Nomad",
+      "Poison",
+      "Relief Cell",
+      "Repair drones",
+      "Slowing Poison",
+      "Spider Spawn",
+      "Spitting Scorpion",
+      "Threaten",
+      "Vasilii"
+    ],
+    "sources": [
+      {
+        "source": "units-dt",
+        "context": "bigone.dt",
+        "name": "Slowing Poison"
+      },
+      {
+        "source": "units-dt",
+        "context": "bigone.dt",
+        "name": "Slowing Poison"
+      },
+      {
+        "source": "units-dt",
+        "context": "bigone.dt",
+        "name": "Poison"
+      },
+      {
+        "source": "units-dt",
+        "context": "bridgejudge.dt",
+        "name": "Relief Cell"
+      },
+      {
+        "source": "units-dt",
+        "context": "bsabattleyamu.dt",
+        "name": "Battle Yamu"
+      },
+      {
+        "source": "units-dt",
+        "context": "bsabattleyamu.dt",
+        "name": "Battle Yamu"
+      },
+      {
+        "source": "units-dt",
+        "context": "bsahowlinghorror.dt",
+        "name": "Howling Horror"
+      },
+      {
+        "source": "units-dt",
+        "context": "gorgar.dt",
+        "name": "Gorgar the Late"
+      },
+      {
+        "source": "units-dt",
+        "context": "hf1337.dt",
+        "name": "HF1337"
+      },
+      {
+        "source": "units-dt",
+        "context": "nomad.dt",
+        "name": "Nomad"
+      },
+      {
+        "source": "units-dt",
+        "context": "renegadehatchling.dt",
+        "name": "Threaten"
+      },
+      {
+        "source": "units-dt",
+        "context": "salingconstructor.dt",
+        "name": "Repair drones"
+      },
+      {
+        "source": "units-dt",
+        "context": "salingconstructor.dt",
+        "name": "Nanofix"
+      },
+      {
+        "source": "units-dt",
+        "context": "spiderspawn.dt",
+        "name": "Spider Spawn"
+      },
+      {
+        "source": "units-dt",
+        "context": "spittingscorpion.dt",
+        "name": "Spitting Scorpion"
+      },
+      {
+        "source": "units-dt",
+        "context": "spittingscorpion.dt",
+        "name": "Spitting Scorpion"
+      },
+      {
+        "source": "units-dt",
+        "context": "spittingscorpion.dt",
+        "name": "Poison"
+      },
+      {
+        "source": "units-dt",
+        "context": "vasilii.dt",
+        "name": "Vasilii"
+      },
+      {
+        "source": "units-dt",
+        "context": "venomousscorpion.dt",
+        "name": "Slowing Poison"
+      },
+      {
+        "source": "units-dt",
+        "context": "venomousscorpion.dt",
+        "name": "Slowing Poison"
+      },
+      {
+        "source": "units-dt",
+        "context": "venomousscorpion.dt",
+        "name": "Slowing Poison"
+      },
+      {
+        "source": "units-dt",
+        "context": "xelrad.dt",
+        "name": "Slowing Poison"
+      },
+      {
+        "source": "units-dt",
+        "context": "xelrad.dt",
+        "name": "Slowing Poison"
+      },
+      {
+        "source": "units-dt",
+        "context": "xelrad.dt",
+        "name": "Poison"
+      }
+    ]
+  },
+  {
+    "row": 1,
+    "col": 4,
+    "key": "1:4",
+    "file": "assets/generated/ui_icons/buff_icons/r1_c4.png",
+    "names": [
+      "Assault Bot"
+    ],
+    "sources": [
+      {
+        "source": "units-dt",
+        "context": "assaultbot.dt",
+        "name": "Assault Bot"
+      }
+    ]
+  },
+  {
+    "row": 1,
+    "col": 6,
+    "key": "1:6",
+    "file": "assets/generated/ui_icons/buff_icons/r1_c6.png",
+    "names": [
+      "Technician"
+    ],
+    "sources": [
+      {
+        "source": "units-dt",
+        "context": "technician.dt",
+        "name": "Technician"
+      }
+    ]
+  },
+  {
+    "row": 2,
+    "col": 1,
+    "key": "2:1",
+    "file": "assets/generated/ui_icons/buff_icons/r2_c1.png",
+    "names": [
+      "Acid Burst",
+      "Worker"
+    ],
+    "sources": [
+      {
+        "source": "units-dt",
+        "context": "alienegg.dt",
+        "name": "Acid Burst"
+      },
+      {
+        "source": "units-dt",
+        "context": "worker.dt",
+        "name": "Worker"
+      }
+    ]
+  },
+  {
+    "row": 2,
+    "col": 3,
+    "key": "2:3",
+    "file": "assets/generated/ui_icons/buff_icons/r2_c3.png",
+    "names": [
+      "Soul Worm"
+    ],
+    "sources": [
+      {
+        "source": "units-dt",
+        "context": "worm.dt",
+        "name": "Soul Worm"
+      }
+    ]
+  },
+  {
+    "row": 2,
+    "col": 4,
+    "key": "2:4",
+    "file": "assets/generated/ui_icons/buff_icons/r2_c4.png",
+    "names": [
+      "Confusion",
+      "HowlingHorror"
+    ],
+    "sources": [
+      {
+        "source": "units-dt",
+        "context": "queen_protector.dt",
+        "name": "Confusion"
+      },
+      {
+        "source": "units-dt",
+        "context": "howlinghorror.dt",
+        "name": "HowlingHorror"
+      }
+    ]
+  },
+  {
+    "row": 2,
+    "col": 5,
+    "key": "2:5",
+    "file": "assets/generated/ui_icons/buff_icons/r2_c5.png",
+    "names": [
+      "Warrior"
+    ],
+    "sources": [
+      {
+        "source": "units-dt",
+        "context": "warrior.dt",
+        "name": "Warrior"
+      }
+    ]
+  },
+  {
+    "row": 2,
+    "col": 7,
+    "key": "2:7",
+    "file": "assets/generated/ui_icons/buff_icons/r2_c7.png",
+    "names": [
+      "AncientShade"
+    ],
+    "sources": [
+      {
+        "source": "units-dt",
+        "context": "ancientshade.dt",
+        "name": "AncientShade"
+      }
+    ]
+  },
+  {
+    "row": 3,
+    "col": 2,
+    "key": "3:2",
+    "file": "assets/generated/ui_icons/buff_icons/r3_c2.png",
+    "names": [
+      "Chain Lightning",
+      "Erkh Arul",
+      "Feed",
+      "Tritech"
+    ],
+    "sources": [
+      {
+        "source": "units-dt",
+        "context": "master.dt",
+        "name": "Feed"
+      },
+      {
+        "source": "units-dt",
+        "context": "tritech.dt",
+        "name": "Tritech"
+      },
+      {
+        "source": "units-dt",
+        "context": "erkharul.dt",
+        "name": "Erkh Arul"
+      },
+      {
+        "source": "units-dt",
+        "context": "sorcerer.dt",
+        "name": "Chain Lightning"
+      }
+    ]
+  },
+  {
+    "row": 3,
+    "col": 3,
+    "key": "3:3",
+    "file": "assets/generated/ui_icons/buff_icons/r3_c3.png",
+    "names": [
+      "Charging field",
+      "Engineer",
+      "Trisat"
+    ],
+    "sources": [
+      {
+        "source": "units-dt",
+        "context": "overseer.dt",
+        "name": "Charging field"
+      },
+      {
+        "source": "units-dt",
+        "context": "trisat.dt",
+        "name": "Trisat"
+      },
+      {
+        "source": "units-dt",
+        "context": "technician2.dt",
+        "name": "Engineer"
+      }
+    ]
+  },
+  {
+    "row": 3,
+    "col": 4,
+    "key": "3:4",
+    "file": "assets/generated/ui_icons/buff_icons/r3_c4.png",
+    "names": [
+      "Frenzy",
+      "Shifter"
+    ],
+    "sources": [
+      {
+        "source": "units-dt",
+        "context": "shifter.dt",
+        "name": "Shifter"
+      },
+      {
+        "source": "units-dt",
+        "context": "kroggol.dt",
+        "name": "Frenzy"
+      },
+      {
+        "source": "units-dt",
+        "context": "safariscorpion.dt",
+        "name": "Frenzy"
+      },
+      {
+        "source": "units-dt",
+        "context": "elitekairider.dt",
+        "name": "Frenzy"
+      },
+      {
+        "source": "units-dt",
+        "context": "kai_rider.dt",
+        "name": "Frenzy"
+      }
+    ]
+  },
+  {
+    "row": 3,
+    "col": 6,
+    "key": "3:6",
+    "file": "assets/generated/ui_icons/buff_icons/r3_c6.png",
+    "names": [
+      "Psi Resonator"
+    ],
+    "sources": [
+      {
+        "source": "units-dt",
+        "context": "psiresonator.dt",
+        "name": "Psi Resonator"
+      }
+    ]
+  },
+  {
+    "row": 3,
+    "col": 7,
+    "key": "3:7",
+    "file": "assets/generated/ui_icons/buff_icons/r3_c7.png",
+    "names": [
+      "Egg"
+    ],
+    "sources": [
+      {
+        "source": "units-dt",
+        "context": "alienegg.dt",
+        "name": "Egg"
+      }
+    ]
+  }
+]

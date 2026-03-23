@@ -1,0 +1,827 @@
+[
+  {
+    "row": 0,
+    "col": 0,
+    "key": "0:0",
+    "file": "assets/generated/ui_icons/buttons/r0_c0.png",
+    "names": [
+      "Death Rumble",
+      "Hollow Voice"
+    ],
+    "sources": [
+      {
+        "source": "unit:howlinghorror",
+        "context": "HowlingHorror",
+        "name": "Hollow Voice"
+      },
+      {
+        "source": "unit:howlinghorror",
+        "context": "HowlingHorror",
+        "name": "Death Rumble"
+      }
+    ]
+  },
+  {
+    "row": 0,
+    "col": 1,
+    "key": "0:1",
+    "file": "assets/generated/ui_icons/buttons/r0_c1.png",
+    "names": [
+      "Chain Lightning",
+      "Charge",
+      "Overclock",
+      "Shift",
+      "Turrets"
+    ],
+    "sources": [
+      {
+        "source": "unit:technician2",
+        "context": "Engineer",
+        "name": "Turrets"
+      },
+      {
+        "source": "unit:ripper",
+        "context": "Ripper",
+        "name": "Overclock"
+      },
+      {
+        "source": "unit:guardian",
+        "context": "Guardian",
+        "name": "Charge"
+      },
+      {
+        "source": "unit:guardian",
+        "context": "Guardian",
+        "name": "Shift"
+      },
+      {
+        "source": "unit:sorcerer",
+        "context": "Sorcerer",
+        "name": "Chain Lightning"
+      }
+    ]
+  },
+  {
+    "row": 0,
+    "col": 4,
+    "key": "0:4",
+    "file": "assets/generated/ui_icons/buttons/r0_c4.png",
+    "names": [
+      "Terrify"
+    ],
+    "sources": [
+      {
+        "source": "unit:ancientshade",
+        "context": "AncientShade",
+        "name": "Terrify"
+      }
+    ]
+  },
+  {
+    "row": 0,
+    "col": 5,
+    "key": "0:5",
+    "file": "assets/generated/ui_icons/buttons/r0_c5.png",
+    "names": [
+      "Chill",
+      "Proton Rockets"
+    ],
+    "sources": [
+      {
+        "source": "unit:defender",
+        "context": "Defender",
+        "name": "Proton Rockets"
+      },
+      {
+        "source": "unit:sorcerer",
+        "context": "Sorcerer",
+        "name": "Chill"
+      }
+    ]
+  },
+  {
+    "row": 0,
+    "col": 6,
+    "key": "0:6",
+    "file": "assets/generated/ui_icons/buttons/r0_c6.png",
+    "names": [
+      "Harvest",
+      "Rupture"
+    ],
+    "sources": [
+      {
+        "source": "unit:harvester",
+        "context": "Harvester",
+        "name": "Harvest"
+      },
+      {
+        "source": "unit:ripper",
+        "context": "Ripper",
+        "name": "Rupture"
+      }
+    ]
+  },
+  {
+    "row": 1,
+    "col": 5,
+    "key": "1:5",
+    "file": "assets/generated/ui_icons/buttons/r1_c5.png",
+    "names": [
+      "Barrage"
+    ],
+    "sources": [
+      {
+        "source": "unit:assaultbot",
+        "context": "Assault Bot",
+        "name": "Barrage"
+      }
+    ]
+  },
+  {
+    "row": 1,
+    "col": 8,
+    "key": "1:8",
+    "file": "assets/generated/ui_icons/buttons/r1_c8.png",
+    "names": [
+      "Fire Sweep"
+    ],
+    "sources": [
+      {
+        "source": "unit:hellfire",
+        "context": "Hellfire",
+        "name": "Fire Sweep"
+      }
+    ]
+  },
+  {
+    "row": 1,
+    "col": 9,
+    "key": "1:9",
+    "file": "assets/generated/ui_icons/buttons/r1_c9.png",
+    "names": [
+      "Relief"
+    ],
+    "sources": [
+      {
+        "source": "unit:surgeon",
+        "context": "Surgeon",
+        "name": "Relief"
+      }
+    ]
+  },
+  {
+    "row": 1,
+    "col": 10,
+    "key": "1:10",
+    "file": "assets/generated/ui_icons/buttons/r1_c10.png",
+    "names": [
+      "Inject"
+    ],
+    "sources": [
+      {
+        "source": "unit:commander",
+        "context": "Lord Commander",
+        "name": "Inject"
+      }
+    ]
+  },
+  {
+    "row": 1,
+    "col": 11,
+    "key": "1:11",
+    "file": "assets/generated/ui_icons/buttons/r1_c11.png",
+    "names": [
+      "Sentinel Droid"
+    ],
+    "sources": [
+      {
+        "source": "unit:overseer",
+        "context": "Field Overseer",
+        "name": "Sentinel Droid"
+      }
+    ]
+  },
+  {
+    "row": 1,
+    "col": 13,
+    "key": "1:13",
+    "file": "assets/generated/ui_icons/buttons/r1_c13.png",
+    "names": [
+      "Poison Flare"
+    ],
+    "sources": [
+      {
+        "source": "unit:assassin",
+        "context": "Assassin",
+        "name": "Poison Flare"
+      }
+    ]
+  },
+  {
+    "row": 2,
+    "col": 2,
+    "key": "2:2",
+    "file": "assets/generated/ui_icons/buttons/r2_c2.png",
+    "names": [
+      "Brute"
+    ],
+    "sources": [
+      {
+        "source": "unit:brute",
+        "context": "Brute",
+        "name": "Brute"
+      }
+    ]
+  },
+  {
+    "row": 2,
+    "col": 12,
+    "key": "2:12",
+    "file": "assets/generated/ui_icons/buttons/r2_c12.png",
+    "names": [
+      "Dimension Chain"
+    ],
+    "sources": [
+      {
+        "source": "unit:dominator",
+        "context": "Dominator",
+        "name": "Dimension Chain"
+      }
+    ]
+  },
+  {
+    "row": 2,
+    "col": 13,
+    "key": "2:13",
+    "file": "assets/generated/ui_icons/buttons/r2_c13.png",
+    "names": [
+      "Mend"
+    ],
+    "sources": [
+      {
+        "source": "unit:surgeon",
+        "context": "Surgeon",
+        "name": "Mend"
+      }
+    ]
+  },
+  {
+    "row": 3,
+    "col": 1,
+    "key": "3:1",
+    "file": "assets/generated/ui_icons/buttons/r3_c1.png",
+    "names": [
+      "Eji"
+    ],
+    "sources": [
+      {
+        "source": "unit:eji",
+        "context": "Eji",
+        "name": "Eji"
+      }
+    ]
+  },
+  {
+    "row": 3,
+    "col": 5,
+    "key": "3:5",
+    "file": "assets/generated/ui_icons/buttons/r3_c5.png",
+    "names": [
+      "Hatchling"
+    ],
+    "sources": [
+      {
+        "source": "unit:hatchling",
+        "context": "Hatchling",
+        "name": "Hatchling"
+      }
+    ]
+  },
+  {
+    "row": 3,
+    "col": 9,
+    "key": "3:9",
+    "file": "assets/generated/ui_icons/buttons/r3_c9.png",
+    "names": [
+      "Nanofix"
+    ],
+    "sources": [
+      {
+        "source": "unit:constructor",
+        "context": "Constructor",
+        "name": "Nanofix"
+      }
+    ]
+  },
+  {
+    "row": 3,
+    "col": 10,
+    "key": "3:10",
+    "file": "assets/generated/ui_icons/buttons/r3_c10.png",
+    "names": [
+      "Inject",
+      "Renew"
+    ],
+    "sources": [
+      {
+        "source": "unit:commanderboss",
+        "context": "CommanderBoss",
+        "name": "Inject"
+      },
+      {
+        "source": "unit:denkar",
+        "context": "Denkar",
+        "name": "Inject"
+      },
+      {
+        "source": "unit:denkarh",
+        "context": "DenkarH",
+        "name": "Inject"
+      },
+      {
+        "source": "unit:lancelot",
+        "context": "Lancelot",
+        "name": "Inject"
+      },
+      {
+        "source": "unit:onk",
+        "context": "Onkarrr",
+        "name": "Inject"
+      },
+      {
+        "source": "unit:shaman",
+        "context": "Shaman",
+        "name": "Renew"
+      }
+    ]
+  },
+  {
+    "row": 3,
+    "col": 11,
+    "key": "3:11",
+    "file": "assets/generated/ui_icons/buttons/r3_c11.png",
+    "names": [
+      "Confuse"
+    ],
+    "sources": [
+      {
+        "source": "unit:commanderboss",
+        "context": "CommanderBoss",
+        "name": "Confuse"
+      },
+      {
+        "source": "unit:denkar",
+        "context": "Denkar",
+        "name": "Confuse"
+      },
+      {
+        "source": "unit:denkarh",
+        "context": "DenkarH",
+        "name": "Confuse"
+      },
+      {
+        "source": "unit:lancelot",
+        "context": "Lancelot",
+        "name": "Confuse"
+      },
+      {
+        "source": "unit:commander",
+        "context": "Lord Commander",
+        "name": "Confuse"
+      },
+      {
+        "source": "unit:onk",
+        "context": "Onkarrr",
+        "name": "Confuse"
+      }
+    ]
+  },
+  {
+    "row": 3,
+    "col": 12,
+    "key": "3:12",
+    "file": "assets/generated/ui_icons/buttons/r3_c12.png",
+    "names": [
+      "Proton Shot"
+    ],
+    "sources": [
+      {
+        "source": "unit:judge",
+        "context": "Judge",
+        "name": "Proton Shot"
+      }
+    ]
+  },
+  {
+    "row": 3,
+    "col": 13,
+    "key": "3:13",
+    "file": "assets/generated/ui_icons/buttons/r3_c13.png",
+    "names": [
+      "Voice of Command"
+    ],
+    "sources": [
+      {
+        "source": "unit:judge",
+        "context": "Judge",
+        "name": "Voice of Command"
+      }
+    ]
+  },
+  {
+    "row": 4,
+    "col": 1,
+    "key": "4:1",
+    "file": "assets/generated/ui_icons/buttons/r4_c1.png",
+    "names": [
+      "Fate Link"
+    ],
+    "sources": [
+      {
+        "source": "unit:ancientshade",
+        "context": "AncientShade",
+        "name": "Fate Link"
+      }
+    ]
+  },
+  {
+    "row": 4,
+    "col": 4,
+    "key": "4:4",
+    "file": "assets/generated/ui_icons/buttons/r4_c4.png",
+    "names": [
+      "Constructor",
+      "manipulate"
+    ],
+    "sources": [
+      {
+        "source": "unit:manipulator",
+        "context": "Manipulator",
+        "name": "manipulate"
+      },
+      {
+        "source": "unit:constructor",
+        "context": "Constructor",
+        "name": "Constructor"
+      }
+    ]
+  },
+  {
+    "row": 4,
+    "col": 10,
+    "key": "4:10",
+    "file": "assets/generated/ui_icons/buttons/r4_c10.png",
+    "names": [
+      "Nether Nova"
+    ],
+    "sources": [
+      {
+        "source": "unit:master",
+        "context": "Master",
+        "name": "Nether Nova"
+      }
+    ]
+  },
+  {
+    "row": 4,
+    "col": 13,
+    "key": "4:13",
+    "file": "assets/generated/ui_icons/buttons/r4_c13.png",
+    "names": [
+      "Feed"
+    ],
+    "sources": [
+      {
+        "source": "unit:master",
+        "context": "Master",
+        "name": "Feed"
+      }
+    ]
+  },
+  {
+    "row": 5,
+    "col": 1,
+    "key": "5:1",
+    "file": "assets/generated/ui_icons/buttons/r5_c1.png",
+    "names": [
+      "Freeze"
+    ],
+    "sources": [
+      {
+        "source": "unit:highpriest",
+        "context": "High Priest",
+        "name": "Freeze"
+      }
+    ]
+  },
+  {
+    "row": 5,
+    "col": 2,
+    "key": "5:2",
+    "file": "assets/generated/ui_icons/buttons/r5_c2.png",
+    "names": [
+      "Lightning"
+    ],
+    "sources": [
+      {
+        "source": "unit:highpriest",
+        "context": "High Priest",
+        "name": "Lightning"
+      }
+    ]
+  },
+  {
+    "row": 5,
+    "col": 3,
+    "key": "5:3",
+    "file": "assets/generated/ui_icons/buttons/r5_c3.png",
+    "names": [
+      "Holy Shock",
+      "Mount Up"
+    ],
+    "sources": [
+      {
+        "source": "unit:highpriest",
+        "context": "High Priest",
+        "name": "Holy Shock"
+      },
+      {
+        "source": "unit:highpriest",
+        "context": "High Priest",
+        "name": "Mount Up"
+      }
+    ]
+  },
+  {
+    "row": 5,
+    "col": 5,
+    "key": "5:5",
+    "file": "assets/generated/ui_icons/buttons/r5_c5.png",
+    "names": [
+      "Psychic"
+    ],
+    "sources": [
+      {
+        "source": "unit:eji2",
+        "context": "Psychic",
+        "name": "Psychic"
+      }
+    ]
+  },
+  {
+    "row": 5,
+    "col": 6,
+    "key": "5:6",
+    "file": "assets/generated/ui_icons/buttons/r5_c6.png",
+    "names": [
+      "Defender"
+    ],
+    "sources": [
+      {
+        "source": "unit:defender",
+        "context": "Defender",
+        "name": "Defender"
+      }
+    ]
+  },
+  {
+    "row": 5,
+    "col": 8,
+    "key": "5:8",
+    "file": "assets/generated/ui_icons/buttons/r5_c8.png",
+    "names": [
+      "Fortify"
+    ],
+    "sources": [
+      {
+        "source": "unit:guardian",
+        "context": "Guardian",
+        "name": "Fortify"
+      }
+    ]
+  },
+  {
+    "row": 5,
+    "col": 10,
+    "key": "5:10",
+    "file": "assets/generated/ui_icons/buttons/r5_c10.png",
+    "names": [
+      "Power Fuse"
+    ],
+    "sources": [
+      {
+        "source": "unit:dominator",
+        "context": "Dominator",
+        "name": "Power Fuse"
+      }
+    ]
+  },
+  {
+    "row": 6,
+    "col": 3,
+    "key": "6:3",
+    "file": "assets/generated/ui_icons/buttons/r6_c3.png",
+    "names": [
+      "Vitality Surge"
+    ],
+    "sources": [
+      {
+        "source": "unit:harvester",
+        "context": "Harvester",
+        "name": "Vitality Surge"
+      }
+    ]
+  },
+  {
+    "row": 6,
+    "col": 4,
+    "key": "6:4",
+    "file": "assets/generated/ui_icons/buttons/r6_c4.png",
+    "names": [
+      "Dark Vortex"
+    ],
+    "sources": [
+      {
+        "source": "unit:manipulator",
+        "context": "Manipulator",
+        "name": "Dark Vortex"
+      }
+    ]
+  },
+  {
+    "row": 6,
+    "col": 13,
+    "key": "6:13",
+    "file": "assets/generated/ui_icons/buttons/r6_c13.png",
+    "names": [
+      "Fear Shock"
+    ],
+    "sources": [
+      {
+        "source": "unit:arbiter",
+        "context": "Arbiter",
+        "name": "Fear Shock"
+      }
+    ]
+  },
+  {
+    "row": 7,
+    "col": 2,
+    "key": "7:2",
+    "file": "assets/generated/ui_icons/buttons/r7_c2.png",
+    "names": [
+      "Incinerate"
+    ],
+    "sources": [
+      {
+        "source": "unit:sorcerer",
+        "context": "Sorcerer",
+        "name": "Incinerate"
+      }
+    ]
+  },
+  {
+    "row": 7,
+    "col": 3,
+    "key": "7:3",
+    "file": "assets/generated/ui_icons/buttons/r7_c3.png",
+    "names": [
+      "Frost Wave"
+    ],
+    "sources": [
+      {
+        "source": "unit:sorcerer",
+        "context": "Sorcerer",
+        "name": "Frost Wave"
+      }
+    ]
+  },
+  {
+    "row": 7,
+    "col": 4,
+    "key": "7:4",
+    "file": "assets/generated/ui_icons/buttons/r7_c4.png",
+    "names": [
+      "Purify"
+    ],
+    "sources": [
+      {
+        "source": "unit:shaman",
+        "context": "Shaman",
+        "name": "Purify"
+      }
+    ]
+  },
+  {
+    "row": 7,
+    "col": 7,
+    "key": "7:7",
+    "file": "assets/generated/ui_icons/buttons/r7_c7.png",
+    "names": [
+      "Unholy Power"
+    ],
+    "sources": [
+      {
+        "source": "unit:stoneghost",
+        "context": "StoneGhost",
+        "name": "Unholy Power"
+      }
+    ]
+  },
+  {
+    "row": 7,
+    "col": 8,
+    "key": "7:8",
+    "file": "assets/generated/ui_icons/buttons/r7_c8.png",
+    "names": [
+      "Corruption"
+    ],
+    "sources": [
+      {
+        "source": "unit:stoneghost",
+        "context": "StoneGhost",
+        "name": "Corruption"
+      }
+    ]
+  },
+  {
+    "row": 7,
+    "col": 10,
+    "key": "7:10",
+    "file": "assets/generated/ui_icons/buttons/r7_c10.png",
+    "names": [
+      "Illusion"
+    ],
+    "sources": [
+      {
+        "source": "unit:guardian",
+        "context": "Guardian",
+        "name": "Illusion"
+      }
+    ]
+  },
+  {
+    "row": 7,
+    "col": 13,
+    "key": "7:13",
+    "file": "assets/generated/ui_icons/buttons/r7_c13.png",
+    "names": [
+      "Breed"
+    ],
+    "sources": [
+      {
+        "source": "unit:shifter",
+        "context": "Shifter",
+        "name": "Breed"
+      }
+    ]
+  },
+  {
+    "row": 8,
+    "col": 4,
+    "key": "8:4",
+    "file": "assets/generated/ui_icons/buttons/r8_c4.png",
+    "names": [
+      "Howl"
+    ],
+    "sources": [
+      {
+        "source": "unit:howlinghorror",
+        "context": "HowlingHorror",
+        "name": "Howl"
+      }
+    ]
+  },
+  {
+    "row": 8,
+    "col": 6,
+    "key": "8:6",
+    "file": "assets/generated/ui_icons/buttons/r8_c6.png",
+    "names": [
+      "Repair Drones"
+    ],
+    "sources": [
+      {
+        "source": "unit:constructor",
+        "context": "Constructor",
+        "name": "Repair Drones"
+      }
+    ]
+  },
+  {
+    "row": 8,
+    "col": 7,
+    "key": "8:7",
+    "file": "assets/generated/ui_icons/buttons/r8_c7.png",
+    "names": [
+      "Morph"
+    ],
+    "sources": [
+      {
+        "source": "unit:overseer",
+        "context": "Field Overseer",
+        "name": "Morph"
+      }
+    ]
+  }
+]

@@ -75,6 +75,11 @@ flutter:
     - assets/loot/
     - assets/data/
     - assets/generated/
+    - assets/generated/ui_icons/
+    - assets/generated/ui_icons/buttons/
+    - assets/generated/ui_icons/passive_abilities/
+    - assets/generated/ui_icons/buff_icons/
+    - assets/generated/ui_icons/spec_tree_icons/
     - assets/generated/unit_icons/
     - assets/generated/unit_icons/named/
     - assets/generated/unit_icons/named/units/

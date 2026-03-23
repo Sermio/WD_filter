@@ -1,0 +1,1371 @@
+[
+  {
+    "id": "alien",
+    "displayName": "Alien",
+    "raceFolder": "aliens",
+    "passiveAbilities": [],
+    "activeAbilities": []
+  },
+  {
+    "id": "alienegg",
+    "displayName": "Egg",
+    "raceFolder": "aliens",
+    "passiveAbilities": [],
+    "activeAbilities": []
+  },
+  {
+    "id": "alienship",
+    "displayName": "Alien Ship",
+    "raceFolder": "aliens",
+    "passiveAbilities": [],
+    "activeAbilities": []
+  },
+  {
+    "id": "ancientshade",
+    "displayName": "AncientShade",
+    "raceFolder": "mutants",
+    "passiveAbilities": [
+      {
+        "name": "Unholy Attack",
+        "description": "Shades default attacks are completely penetrating any kinds of enemy armor.",
+        "iconAtlas": "passive_abilities",
+        "iconRow": 0,
+        "iconCol": 1,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c1.png"
+      }
+    ],
+    "activeAbilities": [
+      {
+        "name": "Terrify",
+        "description": "The Ancient Shade instills fear into its enemies, every attack has a [stat:terrify_chance]% chance to terrify all enemies near its target for [stat:terrify_duration] seconds",
+        "iconAtlas": "buttons",
+        "iconRow": 0,
+        "iconCol": 4,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r0_c4.png"
+      },
+      {
+        "name": "Fate Link",
+        "description": "Ancient Shade is using his knowledge to establish a powerful link for [stat:fatelink_duration] sec. with a friendly unit. This link will case any damage caused on the friendly unit to be split with all Ancient Shades that are currently linked to him. The link will be destroyed if the Ancient Shade moves.",
+        "iconAtlas": "buttons",
+        "iconRow": 4,
+        "iconCol": 1,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r4_c1.png"
+      }
+    ]
+  },
+  {
+    "id": "arbiter",
+    "displayName": "Arbiter",
+    "raceFolder": "aliens",
+    "passiveAbilities": [
+      {
+        "name": "Arbiter",
+        "description": "Arbiter Placeholder Desc.",
+        "iconAtlas": "passive_abilities",
+        "iconRow": 6,
+        "iconCol": 2,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r6_c2.png"
+      },
+      {
+        "name": "Long Range",
+        "description": "Arbiter does great damage, but is only efficient at his maximum range. Attacking from close distance will reduce his damage dramatically.",
+        "iconAtlas": "passive_abilities",
+        "iconRow": 0,
+        "iconCol": 1,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c1.png"
+      },
+      {
+        "name": "Chain Shot",
+        "description": "Arbiter has [stat:chain_shot_chance]% chance with every shot to trigger plasma chain reaction, damaging [stat:chain_shot_hops] additional enemies.",
+        "iconAtlas": "passive_abilities",
+        "iconRow": 0,
+        "iconCol": 0,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c0.png"
+      }
+    ],
+    "activeAbilities": [
+      {
+        "name": "Fear Shock",
+        "description": "Fears all enemies in the selected area, causing them to run in chaos for [stat:fear_shock_duration] seconds.",
+        "iconAtlas": "buttons",
+        "iconRow": 6,
+        "iconCol": 13,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r6_c13.png"
+      }
+    ]
+  },
+  {
+    "id": "arbiter_lod",
+    "displayName": "arbiter_lod",
+    "raceFolder": "aliens",
+    "passiveAbilities": [],
+    "activeAbilities": []
+  },
+  {
+    "id": "assassin",
+    "displayName": "Assassin",
+    "raceFolder": "humans",
+    "passiveAbilities": [
+      {
+        "name": "Expose",
+        "description": "Assassin has [stat:expose_target_chance] on every attack to pierce enemy armor, reducing its effectiveness with [stat:expose_target_armor_perc]% for [stat:expose_target_armor_duration] seconds. This effect stacks up to 5 times.",
+        "iconAtlas": "passive_abilities",
+        "iconRow": 0,
+        "iconCol": 5,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c5.png"
+      }
+    ],
+    "activeAbilities": [
+      {
+        "name": "Poison Flare",
+        "description": "Shoot a poisonous flare at the selected area, all targets will be slowed for [stat:poison_shot_perc]% and take [stat:poison_shot_damage] damage every 2 seconds for [stat:poison_shot_duration] seconds.",
+        "iconAtlas": "buttons",
+        "iconRow": 1,
+        "iconCol": 13,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r1_c13.png"
+      }
+    ]
+  },
+  {
+    "id": "assaultbot",
+    "displayName": "Assault Bot",
+    "raceFolder": "humans",
+    "passiveAbilities": [
+      {
+        "name": "Concussion Rocket",
+        "description": "Assault Bot has [stat:rocket_precision_chance]% chance on evach attack to also launch a Concussion Rocket towards nearby targets. The resulting explosion will reduce affected enemies effectiveness, causing them to do [stat:rocket_precision_damage_perc]% less damage with their default attacks. The concussion effect stacks up to 5 times.",
+        "iconAtlas": "passive_abilities",
+        "iconRow": 0,
+        "iconCol": 5,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c5.png"
+      }
+    ],
+    "activeAbilities": [
+      {
+        "name": "Barrage",
+        "description": "Fires a short voley of Ion rockets at long distance. Each rocket inflicts [stat:rocket_damage] damage to all targets in a small area. Beware the friendly fire!",
+        "iconAtlas": "buttons",
+        "iconRow": 1,
+        "iconCol": 5,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r1_c5.png"
+      }
+    ]
+  },
+  {
+    "id": "attackdrone",
+    "displayName": "Attack Drone",
+    "raceFolder": "aliens",
+    "passiveAbilities": [],
+    "activeAbilities": []
+  },
+  {
+    "id": "battleyamu_test",
+    "displayName": "battleyamu_test",
+    "raceFolder": "mutants",
+    "passiveAbilities": [],
+    "activeAbilities": []
+  },
+  {
+    "id": "brute",
+    "displayName": "Brute",
+    "raceFolder": "mutants",
+    "passiveAbilities": [],
+    "activeAbilities": [
+      {
+        "name": "Brute",
+        "description": "DESCRIPTION",
+        "iconAtlas": "buttons",
+        "iconRow": 2,
+        "iconCol": 2,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r2_c2.png"
+      }
+    ]
+  },
+  {
+    "id": "cargocopter",
+    "displayName": "cargocopter",
+    "raceFolder": "humans",
+    "passiveAbilities": [],
+    "activeAbilities": []
+  },
+  {
+    "id": "commander",
+    "displayName": "Lord Commander",
+    "raceFolder": "humans",
+    "passiveAbilities": [
+      {
+        "name": "Lord Commander",
+        "description": "DESCRIPTION",
+        "iconAtlas": "passive_abilities",
+        "iconRow": 1,
+        "iconCol": 1,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r1_c1.png"
+      }
+    ],
+    "activeAbilities": [
+      {
+        "name": "Inject",
+        "description": "Lord Commander injects himself with powerful drug mixture, that will restore [stat:inject_hp] hit points over [stat:inject_duration] sec.",
+        "iconAtlas": "buttons",
+        "iconRow": 1,
+        "iconCol": 10,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r1_c10.png"
+      },
+      {
+        "name": "Confuse",
+        "description": "A tactical maneuvre that will force all enemies in a small area to focus their attacks on Lord Commander himself for <color=tooltip.lite>[stat:confuse_duration] sec.</> and will also increase his armor with <color=tooltip.lite>[stat:confuse_armor_perc_buff]%</> for the same time. This effect might last shorter if the affected enemies loose the Lord Commander of their sight.",
+        "iconAtlas": "buttons",
+        "iconRow": 3,
+        "iconCol": 11,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r3_c11.png"
+      }
+    ]
+  },
+  {
+    "id": "commanderboss",
+    "displayName": "CommanderBoss",
+    "raceFolder": "humans",
+    "passiveAbilities": [
+      {
+        "name": "CommanderBoss",
+        "description": null,
+        "iconAtlas": "passive_abilities",
+        "iconRow": 1,
+        "iconCol": 1,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r1_c1.png"
+      }
+    ],
+    "activeAbilities": [
+      {
+        "name": "Inject",
+        "description": "Lord Commander injects himself with powerful drug mixture, that will restore [stat:inject_hp] hit points over [stat:inject_duration] sec.",
+        "iconAtlas": "buttons",
+        "iconRow": 3,
+        "iconCol": 10,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r3_c10.png"
+      },
+      {
+        "name": "Confuse",
+        "description": "A tactical maneuvre that will force all enemies in a small area to focus their attacks on Lord Commander himself for <color=tooltip.lite>[stat:confuse_duration] sec.</> and will also increase his armor with <color=tooltip.lite>[stat:confuse_armor_perc_buff]%</> for the same time. This effect might last shorter if the affected enemies loose the Lord Commander of their sight.",
+        "iconAtlas": "buttons",
+        "iconRow": 3,
+        "iconCol": 11,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r3_c11.png"
+      }
+    ]
+  },
+  {
+    "id": "constructor",
+    "displayName": "Constructor",
+    "raceFolder": "humans",
+    "passiveAbilities": [],
+    "activeAbilities": [
+      {
+        "name": "Constructor",
+        "description": "DESCRIPTION",
+        "iconAtlas": "buttons",
+        "iconRow": 4,
+        "iconCol": 4,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r4_c4.png"
+      },
+      {
+        "name": "Nanofix",
+        "description": "The Constructor beams a cloud of highly energized microscopic Cell Bots that will instantly repair the targeted friendly machine for [stat:nano_fix_heal] hit points.",
+        "iconAtlas": "buttons",
+        "iconRow": 3,
+        "iconCol": 9,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r3_c9.png"
+      },
+      {
+        "name": "Repair Drones",
+        "description": "The Constructor activates his 3 Repair Drones that will follow him and will repair damaged machines nearby (including Constructor himself). Repair Drones will stay active for [stat:repairdrones_time_to_live] sec. Each Drone is capable of repairing [stat:repairdrones_repair_per_tick] hit points every tick.",
+        "iconAtlas": "buttons",
+        "iconRow": 8,
+        "iconCol": 6,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r8_c6.png"
+      }
+    ]
+  },
+  {
+    "id": "crew",
+    "displayName": "Hans",
+    "raceFolder": "humans",
+    "passiveAbilities": [],
+    "activeAbilities": []
+  },
+  {
+    "id": "dave",
+    "displayName": "Defiler",
+    "raceFolder": "aliens",
+    "passiveAbilities": [],
+    "activeAbilities": []
+  },
+  {
+    "id": "defender",
+    "displayName": "Defender",
+    "raceFolder": "humans",
+    "passiveAbilities": [],
+    "activeAbilities": [
+      {
+        "name": "Defender",
+        "description": "The first unit added via modding. Honor may be to DotNL and CrashDown963",
+        "iconAtlas": "buttons",
+        "iconRow": 5,
+        "iconCol": 6,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r5_c6.png"
+      },
+      {
+        "name": "Proton Rockets",
+        "description": "The Defender can launch Proton Rockets towards distant targets.",
+        "iconAtlas": "buttons",
+        "iconRow": 0,
+        "iconCol": 5,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r0_c5.png"
+      }
+    ]
+  },
+  {
+    "id": "denkar",
+    "displayName": "Denkar",
+    "raceFolder": "humans",
+    "passiveAbilities": [
+      {
+        "name": "Denkar",
+        "description": null,
+        "iconAtlas": "passive_abilities",
+        "iconRow": 1,
+        "iconCol": 1,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r1_c1.png"
+      }
+    ],
+    "activeAbilities": [
+      {
+        "name": "Inject",
+        "description": "Lord Commander injects himself with powerful drug mixture, that will restore [stat:inject_hp] hit points over [stat:inject_duration] sec.",
+        "iconAtlas": "buttons",
+        "iconRow": 3,
+        "iconCol": 10,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r3_c10.png"
+      },
+      {
+        "name": "Confuse",
+        "description": "A tactical maneuvre that will force all enemies in a small area to focus their attacks on Lord Commander himself for <color=tooltip.lite>[stat:confuse_duration] sec.</> and will also increase his armor with <color=tooltip.lite>[stat:confuse_armor_perc_buff]%</> for the same time. This effect might last shorter if the affected enemies loose the Lord Commander of their sight.",
+        "iconAtlas": "buttons",
+        "iconRow": 3,
+        "iconCol": 11,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r3_c11.png"
+      }
+    ]
+  },
+  {
+    "id": "denkarh",
+    "displayName": "DenkarH",
+    "raceFolder": "humans",
+    "passiveAbilities": [
+      {
+        "name": "DenkarH",
+        "description": null,
+        "iconAtlas": "passive_abilities",
+        "iconRow": 1,
+        "iconCol": 1,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r1_c1.png"
+      }
+    ],
+    "activeAbilities": [
+      {
+        "name": "Inject",
+        "description": "Lord Commander injects himself with powerful drug mixture, that will restore [stat:inject_hp] hit points over [stat:inject_duration] sec.",
+        "iconAtlas": "buttons",
+        "iconRow": 3,
+        "iconCol": 10,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r3_c10.png"
+      },
+      {
+        "name": "Confuse",
+        "description": "A tactical maneuvre that will force all enemies in a small area to focus their attacks on Lord Commander himself for <color=tooltip.lite>[stat:confuse_duration] sec.</> and will also increase his armor with <color=tooltip.lite>[stat:confuse_armor_perc_buff]%</> for the same time. This effect might last shorter if the affected enemies loose the Lord Commander of their sight.",
+        "iconAtlas": "buttons",
+        "iconRow": 3,
+        "iconCol": 11,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r3_c11.png"
+      }
+    ]
+  },
+  {
+    "id": "dominator",
+    "displayName": "Dominator",
+    "raceFolder": "aliens",
+    "passiveAbilities": [
+      {
+        "name": "Dominator",
+        "description": "Alien mid range DPS and CC officer",
+        "iconAtlas": "passive_abilities",
+        "iconRow": 6,
+        "iconCol": 1,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r6_c1.png"
+      },
+      {
+        "name": "Stasis shot",
+        "description": "Dominator has [stat:stasis_shot_chance]% chance to stun his target for [stat:stasis_shot_duration] seconds and to inflict double damage when shooting.",
+        "iconAtlas": "passive_abilities",
+        "iconRow": 0,
+        "iconCol": 6,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c6.png"
+      },
+      {
+        "name": "Blight ray",
+        "description": "Dominators' default attacks are completely ignoring enemy armor. Shoots every [stat:fire_rate]seconds",
+        "iconAtlas": "passive_abilities",
+        "iconRow": 0,
+        "iconCol": 1,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c1.png"
+      },
+      {
+        "name": "Siege Mode",
+        "description": "Dominators will go into siege mode and bombard enemies from afar",
+        "iconAtlas": "passive_abilities",
+        "iconRow": 0,
+        "iconCol": 5,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c5.png"
+      }
+    ],
+    "activeAbilities": [
+      {
+        "name": "Dimension Chain",
+        "description": "All enemies in the selected area are caught in a dimensional stasis for [stat:dimension_chain_duration]seconds. While under effect of the stasis the enemies are stunned and they will suffer [stat:dimension_chain_dmgbonus] additional damage from all sources.",
+        "iconAtlas": "buttons",
+        "iconRow": 2,
+        "iconCol": 12,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r2_c12.png"
+      },
+      {
+        "name": "Power Fuse",
+        "description": "All enemy units around Dominator will have their power instantly reduced by [stat:power_fuse_perc]%.",
+        "iconAtlas": "buttons",
+        "iconRow": 5,
+        "iconCol": 10,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r5_c10.png"
+      }
+    ]
+  },
+  {
+    "id": "eji",
+    "displayName": "Eji",
+    "raceFolder": "mutants",
+    "passiveAbilities": [],
+    "activeAbilities": [
+      {
+        "name": "Eji",
+        "description": "Enemies will prefer to attack someone else if possible",
+        "iconAtlas": "buttons",
+        "iconRow": 3,
+        "iconCol": 1,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r3_c1.png"
+      }
+    ]
+  },
+  {
+    "id": "eji2",
+    "displayName": "Psychic",
+    "raceFolder": "mutants",
+    "passiveAbilities": [],
+    "activeAbilities": [
+      {
+        "name": "Psychic",
+        "description": "Enemies will prefer to attack someone else if possible",
+        "iconAtlas": "buttons",
+        "iconRow": 5,
+        "iconCol": 5,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r5_c5.png"
+      }
+    ]
+  },
+  {
+    "id": "elitekairider",
+    "displayName": "Elite Kai Rider",
+    "raceFolder": "mutants",
+    "passiveAbilities": [],
+    "activeAbilities": []
+  },
+  {
+    "id": "guardian",
+    "displayName": "Guardian",
+    "raceFolder": "mutants",
+    "passiveAbilities": [
+      {
+        "name": "Guardian",
+        "description": "Guardian Placeholder Desc.",
+        "iconAtlas": "passive_abilities",
+        "iconRow": 5,
+        "iconCol": 1,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r5_c1.png"
+      },
+      {
+        "name": "Whirlwind",
+        "description": "While fighting the Guardian has [stat:whirlwind_chance]% chance to perform special move inflicting damage to all adjacent targets.",
+        "iconAtlas": "passive_abilities",
+        "iconRow": 0,
+        "iconCol": 0,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c0.png"
+      }
+    ],
+    "activeAbilities": [
+      {
+        "name": "Charge",
+        "description": "This should be hidden",
+        "iconAtlas": "buttons",
+        "iconRow": 0,
+        "iconCol": 1,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r0_c1.png"
+      },
+      {
+        "name": "Shift",
+        "description": "While fighting the Guardian can use her power to dimensionaly shift, moving herself around her target. The shifting causes double damage and also stuns the target for [stat:shift_stun_duration] seconds.",
+        "iconAtlas": "buttons",
+        "iconRow": 0,
+        "iconCol": 1,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r0_c1.png"
+      },
+      {
+        "name": "Fortify",
+        "description": "Guardian uses her powers to activate an aura that gives [stat:fortify_armor_add_perc]% plus [stat:fortify_armor] additional armor to all allied units nearby. While guardian is fortified, her power doesnt regenerate and the effect will be canceled if she is ordered to move. This effect doesnt stack.",
+        "iconAtlas": "buttons",
+        "iconRow": 5,
+        "iconCol": 8,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r5_c8.png"
+      },
+      {
+        "name": "Illusion",
+        "description": "The Guardian uses her powers to create two illusions of herself. The Illusions will last for [illusions_duration] seconds and will disapper. They are as deadly as the Guardian herself!",
+        "iconAtlas": "buttons",
+        "iconRow": 7,
+        "iconCol": 10,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r7_c10.png"
+      }
+    ]
+  },
+  {
+    "id": "harvester",
+    "displayName": "Harvester",
+    "raceFolder": "aliens",
+    "passiveAbilities": [
+      {
+        "name": "Harvester",
+        "description": "Harvester Placeholder Desc.",
+        "iconAtlas": "passive_abilities",
+        "iconRow": 6,
+        "iconCol": 3,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r6_c3.png"
+      },
+      {
+        "name": "Consume Hatchling",
+        "description": "The Harvester will consume a nearby Hatchling to restore its health",
+        "iconAtlas": "passive_abilities",
+        "iconRow": 0,
+        "iconCol": 5,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c5.png"
+      }
+    ],
+    "activeAbilities": [
+      {
+        "name": "Harvest",
+        "description": "Harvester has [stat:harvest_chance]% chance on hit to do special strike that hits all targets arround him and stuns them.",
+        "iconAtlas": "buttons",
+        "iconRow": 0,
+        "iconCol": 6,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r0_c6.png"
+      },
+      {
+        "name": "Vitality Surge",
+        "description": "Instantly heals the Harvester for [stat:vitality_surge_gain]% health.",
+        "iconAtlas": "buttons",
+        "iconRow": 6,
+        "iconCol": 3,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r6_c3.png"
+      }
+    ]
+  },
+  {
+    "id": "hatchling",
+    "displayName": "Hatchling",
+    "raceFolder": "aliens",
+    "passiveAbilities": [],
+    "activeAbilities": [
+      {
+        "name": "Hatchling",
+        "description": "Hatchling has [stat:threaten_chance]% chance on each attack to threaten its target, forsing it to focus attacks on the Hatchling itself for [stat:threaten_duration] seconds.",
+        "iconAtlas": "buttons",
+        "iconRow": 3,
+        "iconCol": 5,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r3_c5.png"
+      }
+    ]
+  },
+  {
+    "id": "heavybot",
+    "displayName": "Heavy Bot",
+    "raceFolder": "humans",
+    "passiveAbilities": [],
+    "activeAbilities": []
+  },
+  {
+    "id": "hellfire",
+    "displayName": "Hellfire",
+    "raceFolder": "humans",
+    "passiveAbilities": [
+      {
+        "name": "Sonic Shield",
+        "description": "Powerful shield that is activated automatically when the Hellfire is attacked. Sonic Shield has [stat:shield_hull] durability, [stat:shield_regen] charge rate, [stat:shield_fullabsorbchance]% chance for full deflection and [stat:shield_percentabsorbtion]% damage absorbtion.",
+        "iconAtlas": "passive_abilities",
+        "iconRow": 0,
+        "iconCol": 2,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c2.png"
+      }
+    ],
+    "activeAbilities": [
+      {
+        "name": "Fire Sweep",
+        "description": "Blasts the area around the Hellfire inflicting [stat:sweep_damage] to all targets nearby. Beware the friendly fire!",
+        "iconAtlas": "buttons",
+        "iconRow": 1,
+        "iconCol": 8,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r1_c8.png"
+      }
+    ]
+  },
+  {
+    "id": "hellfire2",
+    "displayName": "hellfire2",
+    "raceFolder": "humans",
+    "passiveAbilities": [],
+    "activeAbilities": []
+  },
+  {
+    "id": "hellfire_v3",
+    "displayName": "hellfire_v3",
+    "raceFolder": "humans",
+    "passiveAbilities": [],
+    "activeAbilities": []
+  },
+  {
+    "id": "highpriest",
+    "displayName": "High Priest",
+    "raceFolder": "mutants",
+    "passiveAbilities": [
+      {
+        "name": "High Priest",
+        "description": "HighPriest Placeholder Desc.",
+        "iconAtlas": "passive_abilities",
+        "iconRow": 1,
+        "iconCol": 2,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r1_c2.png"
+      },
+      {
+        "name": "Pyroblast",
+        "description": "High Priest has [stat:pyrowave_chance]% chance on every attack to spawn a powerful wave of fire, damaging up to 2 additional targets.",
+        "iconAtlas": "passive_abilities",
+        "iconRow": 0,
+        "iconCol": 0,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c0.png"
+      },
+      {
+        "name": "Holy Aura",
+        "description": "High Priest power is gathering nature energy around himself, healing all allied units for [stat:holy_aura_heal] hit points eavery [stat:holy_aura_tick] seconds.",
+        "iconAtlas": "passive_abilities",
+        "iconRow": 0,
+        "iconCol": 3,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c3.png"
+      }
+    ],
+    "activeAbilities": [
+      {
+        "name": "Lightning",
+        "description": "High Priest directs his power to form a deadly lightining, striking an enemy for [stat:lightning_damage] damage.",
+        "iconAtlas": "buttons",
+        "iconRow": 5,
+        "iconCol": 2,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r5_c2.png"
+      },
+      {
+        "name": "Freeze",
+        "description": "High Priest uses his power to conjure chilling blast at pointed area, causing all enemies to freeze in place for [stat:freeze_duration] seconds.",
+        "iconAtlas": "buttons",
+        "iconRow": 5,
+        "iconCol": 1,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r5_c1.png"
+      },
+      {
+        "name": "Holy Shock",
+        "description": "High Priest concentrates and uses nature powers to completely restore the hit points of an allied unit.",
+        "iconAtlas": "buttons",
+        "iconRow": 5,
+        "iconCol": 3,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r5_c3.png"
+      },
+      {
+        "name": "Mount Up",
+        "description": "Mount up",
+        "iconAtlas": "buttons",
+        "iconRow": 5,
+        "iconCol": 3,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r5_c3.png"
+      }
+    ]
+  },
+  {
+    "id": "howlinghorror",
+    "displayName": "HowlingHorror",
+    "raceFolder": "mutants",
+    "passiveAbilities": [],
+    "activeAbilities": [
+      {
+        "name": "Hollow Voice",
+        "description": "Horror has [stat:hollow_voice_chance]% chance to growl with his underworld tones and does [stat:hollow_voice_damage] damage to all enemies in front of him.",
+        "iconAtlas": "buttons",
+        "iconRow": 0,
+        "iconCol": 0,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r0_c0.png"
+      },
+      {
+        "name": "Death Rumble",
+        "description": "Horror has [stat:death_rumble_chance]% chance to stomp the ground and to invoke an Unholy Nova. The Unholy Nova does [stat:death_rumble_damage] amount of damage to all enemies nearby.",
+        "iconAtlas": "buttons",
+        "iconRow": 0,
+        "iconCol": 0,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r0_c0.png"
+      },
+      {
+        "name": "Howl",
+        "description": "Fears all enemies nearby for [stat:howl_fear_duration] sec. and turns into Ghost Horror for [stat:howl_duration] seconds. Ghost Horror heals himself for [stat:howl_hp_perc]% hit points every tick. While in Ghost form, the Horror ignores [stat:howl_ignore_perc]% of all incoming damage.",
+        "iconAtlas": "buttons",
+        "iconRow": 8,
+        "iconCol": 4,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r8_c4.png"
+      }
+    ]
+  },
+  {
+    "id": "humanship",
+    "displayName": "Personnel carrier",
+    "raceFolder": "humans",
+    "passiveAbilities": [],
+    "activeAbilities": []
+  },
+  {
+    "id": "judge",
+    "displayName": "Judge",
+    "raceFolder": "humans",
+    "passiveAbilities": [
+      {
+        "name": "Judge",
+        "description": "DESCRIPTION",
+        "iconAtlas": "passive_abilities",
+        "iconRow": 4,
+        "iconCol": 3,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r4_c3.png"
+      },
+      {
+        "name": "Leadership",
+        "description": "By attacking enemies and observing the battle, the Judge gains charges, which he automatically uses for promoting nearby Troopers into Elite status. Elite Troopers has increased chance to inflict double damage on their targets.",
+        "iconAtlas": "passive_abilities",
+        "iconRow": 0,
+        "iconCol": 2,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c2.png"
+      },
+      {
+        "name": "Discharge",
+        "description": "The Judgeâs attack has a [stat:discharge_chance]% chance to deduct [stat:discharge_damage] power from his target and convert it into damage, jumps to [stat:discharge_hops] additional targets doing damage.",
+        "iconAtlas": "passive_abilities",
+        "iconRow": 0,
+        "iconCol": 4,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c4.png"
+      }
+    ],
+    "activeAbilities": [
+      {
+        "name": "Proton Shot",
+        "description": "The Judge shoots a special parabollic proton charged grenade that inflicts [proton_shot_damage] damage to all enemies in a small area. Proton charged grenade also burns [proton_shot_power_burn] power of affected enemies, slightly increasing the total inflicted damage.",
+        "iconAtlas": "buttons",
+        "iconRow": 3,
+        "iconCol": 12,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r3_c12.png"
+      },
+      {
+        "name": "Voice of Command",
+        "description": "Commands all Troopers (and other low tier units) in a small area improving their attack efficiency with [stat:voiceofcommand_damage_perc]% for [stat:voiceofcommand_duration] seconds.",
+        "iconAtlas": "buttons",
+        "iconRow": 3,
+        "iconCol": 13,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r3_c13.png"
+      }
+    ]
+  },
+  {
+    "id": "kai_rider",
+    "displayName": "Kai_Rider",
+    "raceFolder": "mutants",
+    "passiveAbilities": [],
+    "activeAbilities": []
+  },
+  {
+    "id": "lancelot",
+    "displayName": "Lancelot",
+    "raceFolder": "humans",
+    "passiveAbilities": [
+      {
+        "name": "Lancelot",
+        "description": null,
+        "iconAtlas": "passive_abilities",
+        "iconRow": 30,
+        "iconCol": 2,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r30_c2.png"
+      }
+    ],
+    "activeAbilities": [
+      {
+        "name": "Inject",
+        "description": "Lord Commander injects himself with powerful drug mixture, that will restore [stat:inject_hp] hit points over [stat:inject_duration] sec.",
+        "iconAtlas": "buttons",
+        "iconRow": 3,
+        "iconCol": 10,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r3_c10.png"
+      },
+      {
+        "name": "Confuse",
+        "description": "A tactical maneuvre that will force all enemies in a small area to focus their attacks on Lord Commander himself for <color=tooltip.lite>[stat:confuse_duration] sec.</> and will also increase his armor with <color=tooltip.lite>[stat:confuse_armor_perc_buff]%</> for the same time. This effect might last shorter if the affected enemies loose the Lord Commander of their sight.",
+        "iconAtlas": "buttons",
+        "iconRow": 3,
+        "iconCol": 11,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r3_c11.png"
+      }
+    ]
+  },
+  {
+    "id": "manipulator",
+    "displayName": "Manipulator",
+    "raceFolder": "aliens",
+    "passiveAbilities": [
+      {
+        "name": "Manipulator",
+        "description": "DESCRIPTION",
+        "iconAtlas": "passive_abilities",
+        "iconRow": 6,
+        "iconCol": 4,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r6_c4.png"
+      },
+      {
+        "name": "Life Leech",
+        "description": "With each attack the Manipulator drains [stat:damage] life from his target and spreads it around himself, thus healing all allied unints nearby.",
+        "iconAtlas": "passive_abilities",
+        "iconRow": 0,
+        "iconCol": 3,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c3.png"
+      }
+    ],
+    "activeAbilities": [
+      {
+        "name": "Dark Vortex",
+        "description": "Creates a nether energy vortex that does strikes every now and then all allied units neabry with netherlight, thus healing them for [stat:vortex_heal] hit points. The vortex stays for [stat:vortex_duration] sec and then disappears.",
+        "iconAtlas": "buttons",
+        "iconRow": 6,
+        "iconCol": 4,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r6_c4.png"
+      },
+      {
+        "name": "manipulate",
+        "description": "Remove all harmful effects from all friendly units, increase their hitpoints by [stat:manipulate_hp_perc]% and power by [stat:manipulate_power_perc]% for [stat:manipulate_duration] seconds.",
+        "iconAtlas": "buttons",
+        "iconRow": 4,
+        "iconCol": 4,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r4_c4.png"
+      }
+    ]
+  },
+  {
+    "id": "master",
+    "displayName": "Master",
+    "raceFolder": "aliens",
+    "passiveAbilities": [
+      {
+        "name": "Master",
+        "description": "DESCRIPTION",
+        "iconAtlas": "passive_abilities",
+        "iconRow": 1,
+        "iconCol": 3,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r1_c3.png"
+      },
+      {
+        "name": "Plasma Shield",
+        "description": "Powerful shield that is activated automatically when the Master is attacked. Plasma Shield has [stat:shield_hull] durability, [stat:shield_regen] charge rate, [stat:shield_fullabsorbchance]% chance for full deflection and [stat:shield_percentabsorbtion]% damage absorbtion.",
+        "iconAtlas": "passive_abilities",
+        "iconRow": 0,
+        "iconCol": 2,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c2.png"
+      }
+    ],
+    "activeAbilities": [
+      {
+        "name": "Nether Nova",
+        "description": "The Master creates an nether energy blast, that inflicts [stat:nether_nova_damage] damage to all enemies in a small area",
+        "iconAtlas": "buttons",
+        "iconRow": 4,
+        "iconCol": 10,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r4_c10.png"
+      },
+      {
+        "name": "Feed",
+        "description": "Master channels for a few seconds a powerful nether ligh that does [stat:feed_base_damage] damage each tick for [stat:feed_duration] seconds. The nether light also drains the same amount of life out of the affected target and is spread by the Master to a nearby allies, thus healing them. The light splits on the target and jumps to other tagets as well. The healing efficiency increases with each additional target affected, but the damage inflicted decreases.",
+        "iconAtlas": "buttons",
+        "iconRow": 4,
+        "iconCol": 13,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r4_c13.png"
+      }
+    ]
+  },
+  {
+    "id": "nightmare2",
+    "displayName": "nightmare2",
+    "raceFolder": "mutants",
+    "passiveAbilities": [],
+    "activeAbilities": []
+  },
+  {
+    "id": "onk",
+    "displayName": "Onkarrr",
+    "raceFolder": "humans",
+    "passiveAbilities": [
+      {
+        "name": "Onkarrr",
+        "description": null,
+        "iconAtlas": "passive_abilities",
+        "iconRow": 1,
+        "iconCol": 1,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r1_c1.png"
+      }
+    ],
+    "activeAbilities": [
+      {
+        "name": "Inject",
+        "description": "Lord Commander injects himself with powerful drug mixture, that will restore [stat:inject_hp] hit points over [stat:inject_duration] sec.",
+        "iconAtlas": "buttons",
+        "iconRow": 3,
+        "iconCol": 10,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r3_c10.png"
+      },
+      {
+        "name": "Confuse",
+        "description": "A tactical maneuvre that will force all enemies in a small area to focus their attacks on Lord Commander himself for <color=tooltip.lite>[stat:confuse_duration] sec.</> and will also increase his armor with <color=tooltip.lite>[stat:confuse_armor_perc_buff]%</> for the same time. This effect might last shorter if the affected enemies loose the Lord Commander of their sight.",
+        "iconAtlas": "buttons",
+        "iconRow": 3,
+        "iconCol": 11,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r3_c11.png"
+      }
+    ]
+  },
+  {
+    "id": "overseer",
+    "displayName": "Field Overseer",
+    "raceFolder": "aliens",
+    "passiveAbilities": [
+      {
+        "name": "Charging Field",
+        "description": "Power Overseer has aura that fills [stat:charging_field_psi_perc]% of nearby allied units power every [stat:charging_field_tick] seconds.",
+        "iconAtlas": "passive_abilities",
+        "iconRow": 0,
+        "iconCol": 4,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c4.png"
+      },
+      {
+        "name": "Plasma Shield",
+        "description": "Powerful shield that is activated automatically when the Overseer is repaired. Plasma Shield has [stat:shield_hull] durability, [stat:shield_regen] charge rate, [stat:shield_fullabsorbchance]% chance for full deflection and [stat:shield_percentabsorbtion]% damage absorbtion.",
+        "iconAtlas": "passive_abilities",
+        "iconRow": 0,
+        "iconCol": 2,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c2.png"
+      }
+    ],
+    "activeAbilities": [
+      {
+        "name": "Morph",
+        "description": "Morphs the Field Overseer into Power Overseer",
+        "iconAtlas": "buttons",
+        "iconRow": 8,
+        "iconCol": 7,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r8_c7.png"
+      },
+      {
+        "name": "Sentinel Droid",
+        "description": "Deploy a Sentinel Droid which scouts the area and attacks enemies for [stat:attackdrone_cooldown]seconds.",
+        "iconAtlas": "buttons",
+        "iconRow": 1,
+        "iconCol": 11,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r1_c11.png"
+      }
+    ]
+  },
+  {
+    "id": "personnelcarrier",
+    "displayName": "Personnel Carrier",
+    "raceFolder": "humans",
+    "passiveAbilities": [],
+    "activeAbilities": []
+  },
+  {
+    "id": "psidetonator",
+    "displayName": "Psi Detonator",
+    "raceFolder": "aliens",
+    "passiveAbilities": [],
+    "activeAbilities": []
+  },
+  {
+    "id": "repair_drone",
+    "displayName": "repair_drone",
+    "raceFolder": "humans",
+    "passiveAbilities": [],
+    "activeAbilities": []
+  },
+  {
+    "id": "repairdrone",
+    "displayName": "Repair Drones",
+    "raceFolder": "humans",
+    "passiveAbilities": [],
+    "activeAbilities": []
+  },
+  {
+    "id": "ripper",
+    "displayName": "Ripper",
+    "raceFolder": "humans",
+    "passiveAbilities": [],
+    "activeAbilities": [
+      {
+        "name": "Overclock",
+        "description": "The Ripper overclocks his CPU and gains [stat:overclock_perc]% movement speed for [stat:overclock_duration] seconds.",
+        "iconAtlas": "buttons",
+        "iconRow": 0,
+        "iconCol": 1,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r0_c1.png"
+      },
+      {
+        "name": "Rupture",
+        "description": "Ripper attack has [stat:rupture_chance]% chance to stun its target for [stat:rupture_stun_duration] seconds and cause damage to all surrounding enemies.",
+        "iconAtlas": "buttons",
+        "iconRow": 0,
+        "iconCol": 6,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r0_c6.png"
+      }
+    ]
+  },
+  {
+    "id": "shaman",
+    "displayName": "Shaman",
+    "raceFolder": "mutants",
+    "passiveAbilities": [
+      {
+        "name": "Shaman",
+        "description": "Shaman Placeholder Desc.",
+        "iconAtlas": "passive_abilities",
+        "iconRow": 5,
+        "iconCol": 2,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r5_c2.png"
+      }
+    ],
+    "activeAbilities": [
+      {
+        "name": "Renew",
+        "description": "Shaman uses his power to instantly restore [stat:rejuvenation_amount] hit points to all friendly units in the pointed area.",
+        "iconAtlas": "buttons",
+        "iconRow": 3,
+        "iconCol": 10,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r3_c10.png"
+      },
+      {
+        "name": "Purify",
+        "description": "Instantly removes all harmful effects from all friendly units in the selected area.",
+        "iconAtlas": "buttons",
+        "iconRow": 7,
+        "iconCol": 4,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r7_c4.png"
+      }
+    ]
+  },
+  {
+    "id": "shifter",
+    "displayName": "Shifter",
+    "raceFolder": "aliens",
+    "passiveAbilities": [
+      {
+        "name": "Enfeeble",
+        "description": "Shifter has [stat:enfeeble_chance]% chance on each attack to enfeeble all enemy units around his target for [stat:enfeeble_duration] reducing their damage by [stat:enfeeble_damage_reduction_perc]%. The effect stacks up to 5 times.",
+        "iconAtlas": "passive_abilities",
+        "iconRow": 0,
+        "iconCol": 5,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c5.png"
+      },
+      {
+        "name": "Power Leak",
+        "description": "Default attack of Shifter has [stat:power_leak_chance]% chance to reduce the enemy power by [stat:power_leak_drain]%.",
+        "iconAtlas": "passive_abilities",
+        "iconRow": 0,
+        "iconCol": 4,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c4.png"
+      }
+    ],
+    "activeAbilities": [
+      {
+        "name": "Breed",
+        "description": "Shifter summons [stat:breed_hatchlings] Hatchlings at the selected area that will automatically attack nearby enemies.",
+        "iconAtlas": "buttons",
+        "iconRow": 7,
+        "iconCol": 13,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r7_c13.png"
+      }
+    ]
+  },
+  {
+    "id": "sorcerer",
+    "displayName": "Sorcerer",
+    "raceFolder": "mutants",
+    "passiveAbilities": [
+      {
+        "name": "Sorcerer",
+        "description": "Sorcerer Placeholder Desc.",
+        "iconAtlas": "passive_abilities",
+        "iconRow": 5,
+        "iconCol": 3,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r5_c3.png"
+      }
+    ],
+    "activeAbilities": [
+      {
+        "name": "Chain Lightning",
+        "description": "Chain Lightning description.",
+        "iconAtlas": "buttons",
+        "iconRow": 0,
+        "iconCol": 1,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r0_c1.png"
+      },
+      {
+        "name": "Chill",
+        "description": "Sorcerers' default attack slows down his targets' speed with [stat:chill_perc]% for [stat:chill_duration] seconds.",
+        "iconAtlas": "buttons",
+        "iconRow": 0,
+        "iconCol": 5,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r0_c5.png"
+      },
+      {
+        "name": "Frost Wave",
+        "description": "Sorcerer nstantly creates a powerful Frost Wave, that slows down all affected units with [stat:chill_perc]% for [stat:chill_duration] seconds.",
+        "iconAtlas": "buttons",
+        "iconRow": 7,
+        "iconCol": 3,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r7_c3.png"
+      },
+      {
+        "name": "Incinerate",
+        "description": "Sorcerer creates a melting spot on the ground, that inflicts [stat:incinerate_damage] damage each tick to all units in the area. The effect lasts for [stat:incinerate_duration] seconds.",
+        "iconAtlas": "buttons",
+        "iconRow": 7,
+        "iconCol": 2,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r7_c2.png"
+      }
+    ]
+  },
+  {
+    "id": "spiderboss",
+    "displayName": "spiderboss",
+    "raceFolder": "humans",
+    "passiveAbilities": [],
+    "activeAbilities": []
+  },
+  {
+    "id": "stoneghost",
+    "displayName": "StoneGhost",
+    "raceFolder": "mutants",
+    "passiveAbilities": [
+      {
+        "name": "Leech",
+        "description": "Stone Ghost has [stat:drain_psi_chance]% chance on each attack to steal up to [stat:drain_psi_amount] power from its target, and also to give same amount to all nearby friendly units.",
+        "iconAtlas": "passive_abilities",
+        "iconRow": 0,
+        "iconCol": 4,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c4.png"
+      },
+      {
+        "name": "Unholy Aura",
+        "description": "Stone Ghost maintains a link with the Underworld, healing all Underworld creatures (Stone Ghost, Ancient Shade, Howling Horror, Soul Worm) near him for [stat:unholy_aura_heal] hit points every [stat:unholy_aura_interval] seconds.",
+        "iconAtlas": "passive_abilities",
+        "iconRow": 0,
+        "iconCol": 3,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c3.png"
+      }
+    ],
+    "activeAbilities": [
+      {
+        "name": "Corruption",
+        "description": "Stone Ghost corrupts all enemy units in selected area, causing them to suffer for [stat:corruption_damage] damage every tick for [stat:corruption_duration] seconds. If the target dies while corrupted, a small number of Soul Worms will spawn protecting the area and attacking enemies.",
+        "iconAtlas": "buttons",
+        "iconRow": 7,
+        "iconCol": 8,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r7_c8.png"
+      },
+      {
+        "name": "Unholy Power",
+        "description": "Stone Ghost drains energy from the Underworld and charges all friendly units nearby. The effect adds [stat:unholy_power_restore_perc]% of the total power of the affected unit every second. The effect lasts for [stat:unholy_power_duration] seconds or until Stone Ghost is moved or killed.",
+        "iconAtlas": "buttons",
+        "iconRow": 7,
+        "iconCol": 7,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r7_c7.png"
+      }
+    ]
+  },
+  {
+    "id": "suppliescopter",
+    "displayName": "suppliescopter",
+    "raceFolder": "humans",
+    "passiveAbilities": [],
+    "activeAbilities": []
+  },
+  {
+    "id": "surgeon",
+    "displayName": "Surgeon",
+    "raceFolder": "humans",
+    "passiveAbilities": [
+      {
+        "name": "First Aid",
+        "description": "The Surgeon will automatically bandage wounded units every [stat:bandage_cooldown]seconds, healing them for [stat:bandage_amount] with a [stat:bandage_crit]% chance for twice the amount, also removing one harmful effect. Right-click on a friendly target to make the Surgeon following him and putting special attention on his hit points.",
+        "iconAtlas": "passive_abilities",
+        "iconRow": 0,
+        "iconCol": 3,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c3.png"
+      }
+    ],
+    "activeAbilities": [
+      {
+        "name": "Relief",
+        "description": "The Surgeon activates a special Relief Cell that will heal each second [stat:relief_healpersec] hit points to all friendly living units around it. Relief Cell will stay active for [stat:relief_duration] seconds.",
+        "iconAtlas": "buttons",
+        "iconRow": 1,
+        "iconCol": 9,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r1_c9.png"
+      },
+      {
+        "name": "Mend",
+        "description": "The Surgeon uses her skills to mend wounded friendly unit, healing him for [stat:mend_heal] hit points over [mend_duration] seconds.",
+        "iconAtlas": "buttons",
+        "iconRow": 2,
+        "iconCol": 13,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r2_c13.png"
+      }
+    ]
+  },
+  {
+    "id": "technician",
+    "displayName": "Technician",
+    "raceFolder": "humans",
+    "passiveAbilities": [],
+    "activeAbilities": []
+  },
+  {
+    "id": "technician2",
+    "displayName": "Engineer",
+    "raceFolder": "humans",
+    "passiveAbilities": [],
+    "activeAbilities": [
+      {
+        "name": "Turrets",
+        "description": "turrets description.",
+        "iconAtlas": "buttons",
+        "iconRow": 0,
+        "iconCol": 1,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r0_c1.png"
+      }
+    ]
+  },
+  {
+    "id": "transportcopter",
+    "displayName": "transportcopter",
+    "raceFolder": "humans",
+    "passiveAbilities": [],
+    "activeAbilities": []
+  },
+  {
+    "id": "triad",
+    "displayName": "Triad",
+    "raceFolder": "aliens",
+    "passiveAbilities": [],
+    "activeAbilities": []
+  },
+  {
+    "id": "trisat",
+    "displayName": "Trisat",
+    "raceFolder": "aliens",
+    "passiveAbilities": [],
+    "activeAbilities": []
+  },
+  {
+    "id": "tritech",
+    "displayName": "Tritech",
+    "raceFolder": "aliens",
+    "passiveAbilities": [
+      {
+        "name": "Feedback",
+        "description": "Tritech has [stat:feedback_chance]% chance on shoot to heal himself for [stat:feedback_heal] hit points.",
+        "iconAtlas": "passive_abilities",
+        "iconRow": 0,
+        "iconCol": 3,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c3.png"
+      }
+    ],
+    "activeAbilities": []
+  },
+  {
+    "id": "trooper",
+    "displayName": "Trooper",
+    "raceFolder": "humans",
+    "passiveAbilities": [
+      {
+        "name": "Throw Grenade",
+        "description": "The Troopers will have [stat:throw_grenade_chance]% chance on each attack to throw an explosive greande towards his target. The grenade will inflict [stat:grenade_damage] damage in a small area. However, the Trooper will not use this ability if there is a danger for the grenade to harm allied units as well.",
+        "iconAtlas": "passive_abilities",
+        "iconRow": 0,
+        "iconCol": 0,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c0.png"
+      }
+    ],
+    "activeAbilities": []
+  },
+  {
+    "id": "trooper_lod",
+    "displayName": "trooper_lod",
+    "raceFolder": "humans",
+    "passiveAbilities": [],
+    "activeAbilities": []
+  },
+  {
+    "id": "warrior",
+    "displayName": "Warrior",
+    "raceFolder": "mutants",
+    "passiveAbilities": [],
+    "activeAbilities": []
+  },
+  {
+    "id": "worker",
+    "displayName": "Worker",
+    "raceFolder": "mutants",
+    "passiveAbilities": [],
+    "activeAbilities": []
+  },
+  {
+    "id": "worm",
+    "displayName": "Soul Worm",
+    "raceFolder": "mutants",
+    "passiveAbilities": [],
+    "activeAbilities": []
+  },
+  {
+    "id": "xenolitebarge",
+    "displayName": "Xenolite Barge",
+    "raceFolder": "humans",
+    "passiveAbilities": [],
+    "activeAbilities": []
+  }
+]

@@ -1,0 +1,443 @@
+[
+  {
+    "row": 0,
+    "col": 0,
+    "key": "0:0",
+    "file": "assets/generated/ui_icons/passive_abilities/r0_c0.png",
+    "names": [
+      "Chain Shot",
+      "Pyroblast",
+      "Throw Grenade",
+      "Whirlwind"
+    ],
+    "sources": [
+      {
+        "source": "unit:arbiter",
+        "context": "Arbiter",
+        "name": "Chain Shot"
+      },
+      {
+        "source": "unit:trooper",
+        "context": "Trooper",
+        "name": "Throw Grenade"
+      },
+      {
+        "source": "unit:guardian",
+        "context": "Guardian",
+        "name": "Whirlwind"
+      },
+      {
+        "source": "unit:highpriest",
+        "context": "High Priest",
+        "name": "Pyroblast"
+      }
+    ]
+  },
+  {
+    "row": 0,
+    "col": 1,
+    "key": "0:1",
+    "file": "assets/generated/ui_icons/passive_abilities/r0_c1.png",
+    "names": [
+      "Blight ray",
+      "Long Range",
+      "Unholy Attack"
+    ],
+    "sources": [
+      {
+        "source": "unit:arbiter",
+        "context": "Arbiter",
+        "name": "Long Range"
+      },
+      {
+        "source": "unit:dominator",
+        "context": "Dominator",
+        "name": "Blight ray"
+      },
+      {
+        "source": "unit:ancientshade",
+        "context": "AncientShade",
+        "name": "Unholy Attack"
+      }
+    ]
+  },
+  {
+    "row": 0,
+    "col": 2,
+    "key": "0:2",
+    "file": "assets/generated/ui_icons/passive_abilities/r0_c2.png",
+    "names": [
+      "Leadership",
+      "Plasma Shield",
+      "Sonic Shield"
+    ],
+    "sources": [
+      {
+        "source": "unit:overseer",
+        "context": "Field Overseer",
+        "name": "Plasma Shield"
+      },
+      {
+        "source": "unit:master",
+        "context": "Master",
+        "name": "Plasma Shield"
+      },
+      {
+        "source": "unit:hellfire",
+        "context": "Hellfire",
+        "name": "Sonic Shield"
+      },
+      {
+        "source": "unit:judge",
+        "context": "Judge",
+        "name": "Leadership"
+      }
+    ]
+  },
+  {
+    "row": 0,
+    "col": 3,
+    "key": "0:3",
+    "file": "assets/generated/ui_icons/passive_abilities/r0_c3.png",
+    "names": [
+      "Feedback",
+      "First Aid",
+      "Holy Aura",
+      "Life Leech",
+      "Unholy Aura"
+    ],
+    "sources": [
+      {
+        "source": "unit:manipulator",
+        "context": "Manipulator",
+        "name": "Life Leech"
+      },
+      {
+        "source": "unit:tritech",
+        "context": "Tritech",
+        "name": "Feedback"
+      },
+      {
+        "source": "unit:surgeon",
+        "context": "Surgeon",
+        "name": "First Aid"
+      },
+      {
+        "source": "unit:highpriest",
+        "context": "High Priest",
+        "name": "Holy Aura"
+      },
+      {
+        "source": "unit:stoneghost",
+        "context": "StoneGhost",
+        "name": "Unholy Aura"
+      }
+    ]
+  },
+  {
+    "row": 0,
+    "col": 4,
+    "key": "0:4",
+    "file": "assets/generated/ui_icons/passive_abilities/r0_c4.png",
+    "names": [
+      "Charging Field",
+      "Discharge",
+      "Leech",
+      "Power Leak"
+    ],
+    "sources": [
+      {
+        "source": "unit:overseer",
+        "context": "Field Overseer",
+        "name": "Charging Field"
+      },
+      {
+        "source": "unit:shifter",
+        "context": "Shifter",
+        "name": "Power Leak"
+      },
+      {
+        "source": "unit:judge",
+        "context": "Judge",
+        "name": "Discharge"
+      },
+      {
+        "source": "unit:stoneghost",
+        "context": "StoneGhost",
+        "name": "Leech"
+      }
+    ]
+  },
+  {
+    "row": 0,
+    "col": 5,
+    "key": "0:5",
+    "file": "assets/generated/ui_icons/passive_abilities/r0_c5.png",
+    "names": [
+      "Concussion Rocket",
+      "Consume Hatchling",
+      "Enfeeble",
+      "Expose",
+      "Siege Mode"
+    ],
+    "sources": [
+      {
+        "source": "unit:dominator",
+        "context": "Dominator",
+        "name": "Siege Mode"
+      },
+      {
+        "source": "unit:harvester",
+        "context": "Harvester",
+        "name": "Consume Hatchling"
+      },
+      {
+        "source": "unit:shifter",
+        "context": "Shifter",
+        "name": "Enfeeble"
+      },
+      {
+        "source": "unit:assassin",
+        "context": "Assassin",
+        "name": "Expose"
+      },
+      {
+        "source": "unit:assaultbot",
+        "context": "Assault Bot",
+        "name": "Concussion Rocket"
+      }
+    ]
+  },
+  {
+    "row": 0,
+    "col": 6,
+    "key": "0:6",
+    "file": "assets/generated/ui_icons/passive_abilities/r0_c6.png",
+    "names": [
+      "Stasis shot"
+    ],
+    "sources": [
+      {
+        "source": "unit:dominator",
+        "context": "Dominator",
+        "name": "Stasis shot"
+      }
+    ]
+  },
+  {
+    "row": 1,
+    "col": 1,
+    "key": "1:1",
+    "file": "assets/generated/ui_icons/passive_abilities/r1_c1.png",
+    "names": [
+      "CommanderBoss",
+      "Denkar",
+      "DenkarH",
+      "Lord Commander",
+      "Onkarrr"
+    ],
+    "sources": [
+      {
+        "source": "unit:commanderboss",
+        "context": "CommanderBoss",
+        "name": "CommanderBoss"
+      },
+      {
+        "source": "unit:denkar",
+        "context": "Denkar",
+        "name": "Denkar"
+      },
+      {
+        "source": "unit:denkarh",
+        "context": "DenkarH",
+        "name": "DenkarH"
+      },
+      {
+        "source": "unit:commander",
+        "context": "Lord Commander",
+        "name": "Lord Commander"
+      },
+      {
+        "source": "unit:onk",
+        "context": "Onkarrr",
+        "name": "Onkarrr"
+      }
+    ]
+  },
+  {
+    "row": 1,
+    "col": 2,
+    "key": "1:2",
+    "file": "assets/generated/ui_icons/passive_abilities/r1_c2.png",
+    "names": [
+      "High Priest"
+    ],
+    "sources": [
+      {
+        "source": "unit:highpriest",
+        "context": "High Priest",
+        "name": "High Priest"
+      }
+    ]
+  },
+  {
+    "row": 1,
+    "col": 3,
+    "key": "1:3",
+    "file": "assets/generated/ui_icons/passive_abilities/r1_c3.png",
+    "names": [
+      "Master"
+    ],
+    "sources": [
+      {
+        "source": "unit:master",
+        "context": "Master",
+        "name": "Master"
+      }
+    ]
+  },
+  {
+    "row": 4,
+    "col": 3,
+    "key": "4:3",
+    "file": "assets/generated/ui_icons/passive_abilities/r4_c3.png",
+    "names": [
+      "Judge"
+    ],
+    "sources": [
+      {
+        "source": "unit:judge",
+        "context": "Judge",
+        "name": "Judge"
+      }
+    ]
+  },
+  {
+    "row": 5,
+    "col": 1,
+    "key": "5:1",
+    "file": "assets/generated/ui_icons/passive_abilities/r5_c1.png",
+    "names": [
+      "Guardian"
+    ],
+    "sources": [
+      {
+        "source": "unit:guardian",
+        "context": "Guardian",
+        "name": "Guardian"
+      }
+    ]
+  },
+  {
+    "row": 5,
+    "col": 2,
+    "key": "5:2",
+    "file": "assets/generated/ui_icons/passive_abilities/r5_c2.png",
+    "names": [
+      "Shaman"
+    ],
+    "sources": [
+      {
+        "source": "unit:shaman",
+        "context": "Shaman",
+        "name": "Shaman"
+      }
+    ]
+  },
+  {
+    "row": 5,
+    "col": 3,
+    "key": "5:3",
+    "file": "assets/generated/ui_icons/passive_abilities/r5_c3.png",
+    "names": [
+      "Sorcerer"
+    ],
+    "sources": [
+      {
+        "source": "unit:sorcerer",
+        "context": "Sorcerer",
+        "name": "Sorcerer"
+      }
+    ]
+  },
+  {
+    "row": 6,
+    "col": 1,
+    "key": "6:1",
+    "file": "assets/generated/ui_icons/passive_abilities/r6_c1.png",
+    "names": [
+      "Dominator"
+    ],
+    "sources": [
+      {
+        "source": "unit:dominator",
+        "context": "Dominator",
+        "name": "Dominator"
+      }
+    ]
+  },
+  {
+    "row": 6,
+    "col": 2,
+    "key": "6:2",
+    "file": "assets/generated/ui_icons/passive_abilities/r6_c2.png",
+    "names": [
+      "Arbiter"
+    ],
+    "sources": [
+      {
+        "source": "unit:arbiter",
+        "context": "Arbiter",
+        "name": "Arbiter"
+      }
+    ]
+  },
+  {
+    "row": 6,
+    "col": 3,
+    "key": "6:3",
+    "file": "assets/generated/ui_icons/passive_abilities/r6_c3.png",
+    "names": [
+      "Harvester"
+    ],
+    "sources": [
+      {
+        "source": "unit:harvester",
+        "context": "Harvester",
+        "name": "Harvester"
+      }
+    ]
+  },
+  {
+    "row": 6,
+    "col": 4,
+    "key": "6:4",
+    "file": "assets/generated/ui_icons/passive_abilities/r6_c4.png",
+    "names": [
+      "Manipulator"
+    ],
+    "sources": [
+      {
+        "source": "unit:manipulator",
+        "context": "Manipulator",
+        "name": "Manipulator"
+      }
+    ]
+  },
+  {
+    "row": 30,
+    "col": 2,
+    "key": "30:2",
+    "file": "assets/generated/ui_icons/passive_abilities/r30_c2.png",
+    "names": [
+      "Lancelot"
+    ],
+    "sources": [
+      {
+        "source": "unit:lancelot",
+        "context": "Lancelot",
+        "name": "Lancelot"
+      }
+    ]
+  }
+]

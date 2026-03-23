@@ -9,6 +9,16 @@ class UnitDetailScreen extends StatelessWidget {
   final GameUnit unit;
 
   String _statLabel(String key) {
+    const labelOverrides = <String, String>{
+      'hp': 'Hit Points',
+      'hit_points': 'Hit Points',
+      'psi': 'Power',
+      'power': 'Power',
+    };
+    final override = labelOverrides[key];
+    if (override != null) {
+      return override;
+    }
     for (final m in attributeList) {
       if (m['key'] == key) return m['value'] ?? key;
     }
@@ -17,15 +27,38 @@ class UnitDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final statsEntries = unit.stats.entries.toList()
-      ..sort((a, b) => a.key.compareTo(b.key));
+    final statsEntries = _sortStats(unit.stats);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF6F7FB),
       appBar: AppBar(
-        title: Text(unit.displayName ?? unit.id),
-        backgroundColor: const Color(0xFF667eea),
+        elevation: 0,
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
         foregroundColor: Colors.white,
+        title: Text(
+          unit.displayName ?? unit.id,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.2,
+          ),
+        ),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Color(0xFF667eea),
+                Color(0xFF764ba2),
+                Color(0xFFf093fb),
+              ],
+              stops: [0.0, 0.5, 1.0],
+            ),
+          ),
+        ),
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
@@ -33,47 +66,30 @@ class UnitDetailScreen extends StatelessWidget {
           _buildHero(),
           const SizedBox(height: 16),
           _buildSection(
-            title: 'Resumen',
-            children: [
-              Wrap(
-                alignment: WrapAlignment.center,
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  _buildChip(unit.raceLabel, Icons.public),
-                  _buildChip(unit.unitIconClass, Icons.image_outlined),
-                  if (unit.movementType != null)
-                    _buildChip(unit.movementType!, Icons.directions_run),
-                ],
-              ),
-              const SizedBox(height: 16),
-              _infoRow('Id', unit.id),
-              _infoRow('Carpeta', unit.raceFolder),
-              _infoRow('Fuente icono', unit.detailIconSourceLabel),
-              if (unit.mainIconCol != null && unit.mainIconRow != null)
-                _infoRow('Atlas icon', '${unit.mainIconCol}, ${unit.mainIconRow}'),
-              if (unit.conversationIconCol != null &&
-                  unit.conversationIconRow != null)
-                _infoRow(
-                  'Atlas conv',
-                  '${unit.conversationIconCol}, ${unit.conversationIconRow}',
-                ),
-              if (unit.tags != null) _infoRow('Tags', unit.tags!),
-              if (unit.auraNames.isNotEmpty)
-                _infoRow('Auras', unit.auraNames.join(', ')),
-            ],
-          ),
-          const SizedBox(height: 16),
-          _buildSection(
-            title: 'Estadísticas',
+            title: 'Stats',
             trailing: _buildStatsCount(statsEntries.length),
             children: [
               if (statsEntries.isEmpty)
                 Text(
-                  'Sin bloque `stats` parseable en el .dt.',
+                  'No parseable `stats` block found in the .dt file.',
                   style: TextStyle(color: Colors.grey.shade600),
                 )
-              else
+              else ...[
+                Wrap(
+                  spacing: 10,
+                  runSpacing: 10,
+                  children: _selectPrimaryStats(statsEntries)
+                      .map(
+                        (e) => _PrimaryStatCard(
+                          label: _statLabel(e.key),
+                          value: e.value,
+                        ),
+                      )
+                      .toList(),
+                ),
+                const SizedBox(height: 14),
+              ],
+              if (statsEntries.isNotEmpty)
                 ...statsEntries.map(
                   (e) => Container(
                     margin: const EdgeInsets.only(bottom: 10),
@@ -114,6 +130,40 @@ class UnitDetailScreen extends StatelessWidget {
                 ),
             ],
           ),
+          const SizedBox(height: 16),
+          _buildSection(
+            title: 'Abilities',
+            children: [
+              if (unit.passiveAbilities.isEmpty && unit.activeAbilities.isEmpty)
+                Text(
+                  'No abilities were parsed from the .dt file.',
+                  style: TextStyle(color: Colors.grey.shade600),
+                )
+              else ...[
+                if (unit.passiveAbilities.isNotEmpty)
+                  _buildAbilityGroup(
+                      'Passive Abilities', unit.passiveAbilities),
+                if (unit.passiveAbilities.isNotEmpty &&
+                    unit.activeAbilities.isNotEmpty)
+                  const SizedBox(height: 16),
+                if (unit.activeAbilities.isNotEmpty)
+                  _buildAbilityGroup('Active Abilities', unit.activeAbilities),
+              ],
+            ],
+          ),
+          const SizedBox(height: 16),
+          _buildSection(
+            title: 'Buffs / Debuffs',
+            children: [
+              if (unit.statusEffects.isEmpty)
+                Text(
+                  'No buff/debuff effects were parsed from the .dt file.',
+                  style: TextStyle(color: Colors.grey.shade600),
+                )
+              else
+                ...unit.statusEffects.map(_buildStatusEffectCard),
+            ],
+          ),
         ],
       ),
     );
@@ -142,23 +192,14 @@ class UnitDetailScreen extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Container(
+          SizedBox(
             width: 124,
             height: 124,
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(24),
-              boxShadow: const [
-                BoxShadow(
-                  color: Color(0x26000000),
-                  blurRadius: 18,
-                  offset: Offset(0, 8),
-                ),
-              ],
-            ),
-            child: _ResolvedAssetImage(
-              candidates: unit.detailIconAssetCandidates,
+            child: Padding(
+              padding: const EdgeInsets.all(14),
+              child: _ResolvedAssetImage(
+                candidates: unit.detailIconAssetCandidates,
+              ),
             ),
           ),
           const SizedBox(height: 16),
@@ -171,7 +212,7 @@ class UnitDetailScreen extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: 8),
           Text(
             unit.id,
             textAlign: TextAlign.center,
@@ -179,6 +220,19 @@ class UnitDetailScreen extends StatelessWidget {
               color: Colors.white.withValues(alpha: 0.82),
               fontSize: 14,
             ),
+          ),
+          const SizedBox(height: 14),
+          Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              _buildChip(unit.raceLabel, Icons.public),
+              _buildChip(
+                  _unitTypeLabel(unit.unitIconClass), Icons.badge_outlined),
+              if (unit.movementType != null)
+                _buildChip(unit.movementType!, Icons.directions_run),
+            ],
           ),
         ],
       ),
@@ -244,56 +298,205 @@ class UnitDetailScreen extends StatelessWidget {
         ),
       );
 
-  Widget _infoRow(String k, String v) => Padding(
-        padding: const EdgeInsets.only(bottom: 10),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              width: 120,
-              child: Text(
-                k,
-                style: TextStyle(
-                  color: Colors.grey.shade600,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-            Expanded(
-              child: Text(
-                v,
-                style: TextStyle(
-                  color: Colors.grey.shade900,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-
   Widget _buildChip(String label, IconData icon) => Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
-          color: const Color(0xFFF0F3FF),
+          color: const Color(0x26FFFFFF),
           borderRadius: BorderRadius.circular(999),
-          border: Border.all(color: const Color(0xFFD7DDFC)),
+          border: Border.all(color: const Color(0x4DFFFFFF)),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 16, color: const Color(0xFF667eea)),
+            Icon(icon, size: 16, color: Colors.white),
             const SizedBox(width: 6),
             Text(
               label,
               style: const TextStyle(
-                color: Color(0xFF4D5FBD),
+                color: Colors.white,
                 fontWeight: FontWeight.w600,
               ),
             ),
           ],
         ),
       );
+
+  Widget _buildAbilityGroup(
+    String title,
+    List<GameUnitAbility> abilities,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.w800,
+            color: Color(0xFF1F2937),
+          ),
+        ),
+        const SizedBox(height: 12),
+        ...abilities.map(_buildAbilityCard),
+      ],
+    );
+  }
+
+  Widget _buildAbilityCard(GameUnitAbility ability) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF8FAFC),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _IconPreview(assetPath: ability.iconAssetPath),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  ability.name,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 15,
+                    color: Color(0xFF1F2937),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          if (ability.description != null &&
+              ability.description!.trim().isNotEmpty) ...[
+            const SizedBox(height: 6),
+            Text(
+              ability.description!,
+              style: const TextStyle(
+                color: Color(0xFF475569),
+                height: 1.35,
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatusEffectCard(GameUnitStatusEffect effect) {
+    final badge = effect.isDebuff == true ? 'Debuff' : 'Buff';
+    final badgeColor = effect.isDebuff == true
+        ? const Color(0xFFB91C1C)
+        : const Color(0xFF0F766E);
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF8FAFC),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _IconPreview(assetPath: effect.iconAssetPath),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  effect.name,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 15,
+                    color: Color(0xFF1F2937),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            decoration: BoxDecoration(
+              color: badgeColor.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(999),
+            ),
+            child: Text(
+              badge,
+              style: TextStyle(
+                color: badgeColor,
+                fontWeight: FontWeight.w700,
+                fontSize: 12,
+              ),
+            ),
+          ),
+          if (effect.description != null && effect.description!.trim().isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Text(
+              effect.description!,
+              style: const TextStyle(
+                color: Color(0xFF475569),
+                height: 1.35,
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  List<MapEntry<String, String>> _sortStats(Map<String, String> stats) {
+    const priorityGroups = [
+      ['damage'],
+      ['hit_points', 'hp'],
+      ['armor'],
+      ['psi', 'power'],
+      ['range'],
+      ['speed'],
+    ];
+    final priorityByKey = <String, int>{};
+    for (var i = 0; i < priorityGroups.length; i++) {
+      for (final key in priorityGroups[i]) {
+        priorityByKey[key] = i;
+      }
+    }
+
+    final entries = stats.entries.toList();
+    entries.sort((a, b) {
+      final aPriority = priorityByKey[a.key] ?? 999;
+      final bPriority = priorityByKey[b.key] ?? 999;
+      if (aPriority != bPriority) {
+        return aPriority.compareTo(bPriority);
+      }
+      return _statLabel(a.key).compareTo(_statLabel(b.key));
+    });
+    return entries;
+  }
+
+  List<MapEntry<String, String>> _selectPrimaryStats(
+    List<MapEntry<String, String>> statsEntries,
+  ) {
+    return statsEntries.take(4).toList();
+  }
+
+  String _unitTypeLabel(String value) {
+    switch (value) {
+      case 'officer':
+        return 'Officer';
+      case 'commander':
+        return 'Commander';
+      case 'unit':
+        return 'Unit';
+      default:
+        return value;
+    }
+  }
 }
 
 class _ResolvedAssetImage extends StatelessWidget {
@@ -320,10 +523,104 @@ class _ResolvedAssetImage extends StatelessWidget {
       builder: (context, snapshot) {
         final path = snapshot.data;
         if (path == null) {
-          return const Icon(Icons.person, size: 56);
+          return const CircleAvatar(
+            backgroundColor: Color(0x26FFFFFF),
+            child: Icon(Icons.person, size: 56, color: Colors.white),
+          );
         }
-        return Image.asset(path, fit: BoxFit.contain);
+        return ClipOval(
+          child: SizedBox.expand(
+            child: Image.asset(path, fit: BoxFit.cover),
+          ),
+        );
       },
+    );
+  }
+}
+
+class _PrimaryStatCard extends StatelessWidget {
+  const _PrimaryStatCard({
+    required this.label,
+    required this.value,
+  });
+
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 140,
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF8FAFC),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(
+              color: Color(0xFF64748B),
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            value,
+            style: const TextStyle(
+              color: Color(0xFF0F172A),
+              fontSize: 18,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _IconPreview extends StatelessWidget {
+  const _IconPreview({required this.assetPath});
+
+  final String? assetPath;
+
+  @override
+  Widget build(BuildContext context) {
+    if (assetPath == null || assetPath!.isEmpty) {
+      return _placeholder();
+    }
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        width: 30,
+        height: 30,
+        color: const Color(0xFFE2E8F0),
+        child: Image.asset(
+          assetPath!,
+          fit: BoxFit.cover,
+          errorBuilder: (_, __, ___) => _placeholder(),
+        ),
+      ),
+    );
+  }
+
+  Widget _placeholder() {
+    return Container(
+      width: 30,
+      height: 30,
+      decoration: BoxDecoration(
+        color: const Color(0xFFE2E8F0),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: const Icon(
+        Icons.image_not_supported_outlined,
+        size: 16,
+        color: Color(0xFF64748B),
+      ),
     );
   }
 }

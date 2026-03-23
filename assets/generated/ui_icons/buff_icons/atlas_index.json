@@ -1,0 +1,578 @@
+[
+  {
+    "row": 0,
+    "col": 0,
+    "x": 0,
+    "y": 0,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r0_c0.png"
+  },
+  {
+    "row": 0,
+    "col": 1,
+    "x": 16,
+    "y": 0,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r0_c1.png"
+  },
+  {
+    "row": 0,
+    "col": 2,
+    "x": 32,
+    "y": 0,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r0_c2.png"
+  },
+  {
+    "row": 0,
+    "col": 3,
+    "x": 48,
+    "y": 0,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r0_c3.png"
+  },
+  {
+    "row": 0,
+    "col": 4,
+    "x": 64,
+    "y": 0,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r0_c4.png"
+  },
+  {
+    "row": 0,
+    "col": 5,
+    "x": 80,
+    "y": 0,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r0_c5.png"
+  },
+  {
+    "row": 0,
+    "col": 6,
+    "x": 96,
+    "y": 0,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r0_c6.png"
+  },
+  {
+    "row": 0,
+    "col": 7,
+    "x": 112,
+    "y": 0,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r0_c7.png"
+  },
+  {
+    "row": 0,
+    "col": 8,
+    "x": 128,
+    "y": 0,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r0_c8.png"
+  },
+  {
+    "row": 0,
+    "col": 9,
+    "x": 144,
+    "y": 0,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r0_c9.png"
+  },
+  {
+    "row": 0,
+    "col": 10,
+    "x": 160,
+    "y": 0,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r0_c10.png"
+  },
+  {
+    "row": 0,
+    "col": 11,
+    "x": 176,
+    "y": 0,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r0_c11.png"
+  },
+  {
+    "row": 0,
+    "col": 12,
+    "x": 192,
+    "y": 0,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r0_c12.png"
+  },
+  {
+    "row": 0,
+    "col": 13,
+    "x": 208,
+    "y": 0,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r0_c13.png"
+  },
+  {
+    "row": 0,
+    "col": 14,
+    "x": 224,
+    "y": 0,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r0_c14.png"
+  },
+  {
+    "row": 0,
+    "col": 15,
+    "x": 240,
+    "y": 0,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r0_c15.png"
+  },
+  {
+    "row": 1,
+    "col": 0,
+    "x": 0,
+    "y": 16,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r1_c0.png"
+  },
+  {
+    "row": 1,
+    "col": 1,
+    "x": 16,
+    "y": 16,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r1_c1.png"
+  },
+  {
+    "row": 1,
+    "col": 2,
+    "x": 32,
+    "y": 16,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r1_c2.png"
+  },
+  {
+    "row": 1,
+    "col": 3,
+    "x": 48,
+    "y": 16,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r1_c3.png"
+  },
+  {
+    "row": 1,
+    "col": 4,
+    "x": 64,
+    "y": 16,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r1_c4.png"
+  },
+  {
+    "row": 1,
+    "col": 5,
+    "x": 80,
+    "y": 16,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r1_c5.png"
+  },
+  {
+    "row": 1,
+    "col": 6,
+    "x": 96,
+    "y": 16,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r1_c6.png"
+  },
+  {
+    "row": 1,
+    "col": 7,
+    "x": 112,
+    "y": 16,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r1_c7.png"
+  },
+  {
+    "row": 1,
+    "col": 8,
+    "x": 128,
+    "y": 16,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r1_c8.png"
+  },
+  {
+    "row": 1,
+    "col": 9,
+    "x": 144,
+    "y": 16,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r1_c9.png"
+  },
+  {
+    "row": 1,
+    "col": 10,
+    "x": 160,
+    "y": 16,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r1_c10.png"
+  },
+  {
+    "row": 1,
+    "col": 11,
+    "x": 176,
+    "y": 16,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r1_c11.png"
+  },
+  {
+    "row": 1,
+    "col": 12,
+    "x": 192,
+    "y": 16,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r1_c12.png"
+  },
+  {
+    "row": 1,
+    "col": 13,
+    "x": 208,
+    "y": 16,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r1_c13.png"
+  },
+  {
+    "row": 1,
+    "col": 14,
+    "x": 224,
+    "y": 16,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r1_c14.png"
+  },
+  {
+    "row": 1,
+    "col": 15,
+    "x": 240,
+    "y": 16,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r1_c15.png"
+  },
+  {
+    "row": 2,
+    "col": 0,
+    "x": 0,
+    "y": 32,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r2_c0.png"
+  },
+  {
+    "row": 2,
+    "col": 1,
+    "x": 16,
+    "y": 32,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r2_c1.png"
+  },
+  {
+    "row": 2,
+    "col": 2,
+    "x": 32,
+    "y": 32,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r2_c2.png"
+  },
+  {
+    "row": 2,
+    "col": 3,
+    "x": 48,
+    "y": 32,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r2_c3.png"
+  },
+  {
+    "row": 2,
+    "col": 4,
+    "x": 64,
+    "y": 32,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r2_c4.png"
+  },
+  {
+    "row": 2,
+    "col": 5,
+    "x": 80,
+    "y": 32,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r2_c5.png"
+  },
+  {
+    "row": 2,
+    "col": 6,
+    "x": 96,
+    "y": 32,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r2_c6.png"
+  },
+  {
+    "row": 2,
+    "col": 7,
+    "x": 112,
+    "y": 32,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r2_c7.png"
+  },
+  {
+    "row": 2,
+    "col": 8,
+    "x": 128,
+    "y": 32,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r2_c8.png"
+  },
+  {
+    "row": 2,
+    "col": 9,
+    "x": 144,
+    "y": 32,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r2_c9.png"
+  },
+  {
+    "row": 2,
+    "col": 10,
+    "x": 160,
+    "y": 32,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r2_c10.png"
+  },
+  {
+    "row": 2,
+    "col": 11,
+    "x": 176,
+    "y": 32,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r2_c11.png"
+  },
+  {
+    "row": 2,
+    "col": 12,
+    "x": 192,
+    "y": 32,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r2_c12.png"
+  },
+  {
+    "row": 2,
+    "col": 13,
+    "x": 208,
+    "y": 32,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r2_c13.png"
+  },
+  {
+    "row": 2,
+    "col": 14,
+    "x": 224,
+    "y": 32,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r2_c14.png"
+  },
+  {
+    "row": 2,
+    "col": 15,
+    "x": 240,
+    "y": 32,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r2_c15.png"
+  },
+  {
+    "row": 3,
+    "col": 0,
+    "x": 0,
+    "y": 48,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r3_c0.png"
+  },
+  {
+    "row": 3,
+    "col": 1,
+    "x": 16,
+    "y": 48,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r3_c1.png"
+  },
+  {
+    "row": 3,
+    "col": 2,
+    "x": 32,
+    "y": 48,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r3_c2.png"
+  },
+  {
+    "row": 3,
+    "col": 3,
+    "x": 48,
+    "y": 48,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r3_c3.png"
+  },
+  {
+    "row": 3,
+    "col": 4,
+    "x": 64,
+    "y": 48,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r3_c4.png"
+  },
+  {
+    "row": 3,
+    "col": 5,
+    "x": 80,
+    "y": 48,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r3_c5.png"
+  },
+  {
+    "row": 3,
+    "col": 6,
+    "x": 96,
+    "y": 48,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r3_c6.png"
+  },
+  {
+    "row": 3,
+    "col": 7,
+    "x": 112,
+    "y": 48,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r3_c7.png"
+  },
+  {
+    "row": 3,
+    "col": 8,
+    "x": 128,
+    "y": 48,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r3_c8.png"
+  },
+  {
+    "row": 3,
+    "col": 9,
+    "x": 144,
+    "y": 48,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r3_c9.png"
+  },
+  {
+    "row": 3,
+    "col": 10,
+    "x": 160,
+    "y": 48,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r3_c10.png"
+  },
+  {
+    "row": 3,
+    "col": 11,
+    "x": 176,
+    "y": 48,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r3_c11.png"
+  },
+  {
+    "row": 3,
+    "col": 12,
+    "x": 192,
+    "y": 48,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r3_c12.png"
+  },
+  {
+    "row": 3,
+    "col": 13,
+    "x": 208,
+    "y": 48,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r3_c13.png"
+  },
+  {
+    "row": 3,
+    "col": 14,
+    "x": 224,
+    "y": 48,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r3_c14.png"
+  },
+  {
+    "row": 3,
+    "col": 15,
+    "x": 240,
+    "y": 48,
+    "width": 16,
+    "height": 16,
+    "file": "assets/generated/ui_icons/buff_icons/r3_c15.png"
+  }
+]
