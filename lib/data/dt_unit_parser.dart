@@ -171,13 +171,21 @@ class DtUnitParser {
     final seenActive = <String>{};
 
     for (final block in _extractBlocks(source)) {
+      // El bloque raíz de la unidad incluye name/descr de placeholder y suele
+      // contener `when : abi.` en sub-bloques; no debe interpretarse como una pasiva.
+      if (_isUnitDefinitionRootBlock(block.header)) {
+        continue;
+      }
+
       if (_isAbilitiesContainer(block.header)) {
         for (final child in _extractBlocks(block.body)) {
           final ability = _buildAbility(
             child.body,
             iconAtlas: 'passive_abilities',
           );
-          if (ability == null || !_shouldKeepAbility(ability.name)) {
+          if (ability == null ||
+              !_shouldKeepAbility(ability.name) ||
+              !ability.isListableAbility) {
             continue;
           }
           if (seenPassive.add(ability.name)) {
@@ -191,7 +199,9 @@ class DtUnitParser {
         block.body,
         iconAtlas: _isActiveAbilityBlock(block) ? 'buttons' : 'passive_abilities',
       );
-      if (ability == null || !_shouldKeepAbility(ability.name)) {
+      if (ability == null ||
+          !_shouldKeepAbility(ability.name) ||
+          !ability.isListableAbility) {
         continue;
       }
 
@@ -211,6 +221,21 @@ class DtUnitParser {
 
   static bool _isAbilitiesContainer(String header) {
     return header.trim().endsWith('Abilities');
+  }
+
+  /// Cabeceras del bloque principal de definición de unidad en `.dt` (no son habilidades).
+  static bool _isUnitDefinitionRootBlock(String header) {
+    final h = header.trim();
+    if (RegExp(r'^Unit\s+\w+\s*:\s*\w').hasMatch(h)) {
+      return true;
+    }
+    // Variantes tipo `Trooper Trooper : BaseUnit`, `Guardian Guardian : BaseUnit`, etc.
+    if (RegExp(
+      r'^\w+\s+\w+\s*:\s*(BaseUnit|MachineUnit|AlienUnit|UnderworldUnit|Trooper|Guardian)\b',
+    ).hasMatch(h)) {
+      return true;
+    }
+    return false;
   }
 
   static bool _isActiveAbilityBlock(_DtBlock block) {
@@ -248,38 +273,46 @@ class DtUnitParser {
       return null;
     }
     final description = _cleanNameValue(descriptionMatch?.group(1));
-    final icon = _matchIconPair(body);
-    String? resolvedAtlas;
-    int? resolvedCol;
-    int? resolvedRow;
-    if (icon != null) {
-      final normalizedAtlas = _normalizeAbilityAtlas(
-        preferredAtlas: iconAtlas,
-        col: icon.$1,
-        row: icon.$2,
-      );
-      final normalizedCoords = _normalizeAbilityCoords(
-        atlas: normalizedAtlas,
-        col: icon.$1,
-        row: icon.$2,
-      );
-      if (_isValidAbilityIconCoord(
-        atlas: normalizedAtlas,
-        col: normalizedCoords.$1,
-        row: normalizedCoords.$2,
-      )) {
-        resolvedAtlas = normalizedAtlas;
-        resolvedCol = normalizedCoords.$1;
-        resolvedRow = normalizedCoords.$2;
-      }
-    }
+    final resolved = _resolveAbilityIconOnly(
+      body,
+      preferredIconAtlas: iconAtlas,
+    );
     return GameUnitAbility(
       name: name,
       description: description,
-      iconAtlas: resolvedAtlas,
-      iconCol: resolvedCol,
-      iconRow: resolvedRow,
+      iconAtlas: resolved.$1,
+      iconCol: resolved.$2,
+      iconRow: resolved.$3,
     );
+  }
+
+  /// Resuelve `icon = col, row` del cuerpo de una habilidad (pasiva o activa).
+  static (String? atlas, int? col, int? row) _resolveAbilityIconOnly(
+    String body, {
+    required String preferredIconAtlas,
+  }) {
+    final icon = _matchIconPair(body);
+    if (icon == null) {
+      return (null, null, null);
+    }
+    final normalizedAtlas = _normalizeAbilityAtlas(
+      preferredAtlas: preferredIconAtlas,
+      col: icon.$1,
+      row: icon.$2,
+    );
+    final normalizedCoords = _normalizeAbilityCoords(
+      atlas: normalizedAtlas,
+      col: icon.$1,
+      row: icon.$2,
+    );
+    if (!_isValidAbilityIconCoord(
+      atlas: normalizedAtlas,
+      col: normalizedCoords.$1,
+      row: normalizedCoords.$2,
+    )) {
+      return (null, null, null);
+    }
+    return (normalizedAtlas, normalizedCoords.$1, normalizedCoords.$2);
   }
 
   static String _normalizeAbilityAtlas({
@@ -338,37 +371,54 @@ class DtUnitParser {
     final effects = <GameUnitStatusEffect>[];
     final seen = <String>{};
 
-    void visit(String text) {
+    void visit(String text, _DtBlock? containingAbility) {
       for (final block in _extractBlocks(text)) {
+        final nextContext = _isAbilityIconSourceBlock(block)
+            ? block
+            : containingAbility;
+
         if (_isStatusEffectBlock(block)) {
-          final effect = _buildStatusEffect(block.body);
+          final effect = _buildStatusEffect(
+            block.body,
+            parentAbility: nextContext,
+          );
           if (effect != null && seen.add(effect.name)) {
             effects.add(effect);
           }
         }
-        final children = _extractBlocks(block.body);
-        if (children.isNotEmpty) {
-          visit(block.body);
-        }
+
+        visit(block.body, nextContext);
       }
     }
 
-    visit(source);
+    visit(source, null);
     return effects;
+  }
+
+  /// Bloque de habilidad (activa o pasiva) cuyo `icon =` queremos reutilizar en efectos anidados.
+  static bool _isAbilityIconSourceBlock(_DtBlock block) {
+    return _isActiveAbilityBlock(block) || _isPassiveAbilityBlock(block);
   }
 
   static bool _isStatusEffectBlock(_DtBlock block) {
     final header = block.header.trim();
-    final body = block.body;
+    // Do NOT treat whole *Abi / spell blocks as status effects just because they
+    // contain `debuff = 1` nested inside `effect = E_chain { ... }` — that made
+    // us read the ability's `text`/`descr` instead of the inner effect's (see
+    // e.g. ChainShotAbi in arbiter.dt vs its `effect = E_chain` block).
     return header.startsWith('CBuffEffect ') ||
         header.startsWith('E_debuff ') ||
         header.startsWith('E_multidebuff ') ||
         header.startsWith('S_stun ') ||
         header.startsWith('S_multistun ') ||
-        RegExp(r'^\s*debuff\s*=\s*1\b', multiLine: true).hasMatch(body);
+        RegExp(r'^effect\s*=\s*E_', caseSensitive: false).hasMatch(header) ||
+        RegExp(r'^effect\s*=\s*S_', caseSensitive: false).hasMatch(header);
   }
 
-  static GameUnitStatusEffect? _buildStatusEffect(String body) {
+  static GameUnitStatusEffect? _buildStatusEffect(
+    String body, {
+    _DtBlock? parentAbility,
+  }) {
     final nameMatch = RegExp(
       r'^\s*name\s*=\s*(?:"([^"]*)"|([^\n]+))',
       multiLine: true,
@@ -382,8 +432,35 @@ class DtUnitParser {
       return null;
     }
     final description = _cleanNameValue(descMatch?.group(1));
-    final icon = _matchIconPair(body);
-    final iconAtlas = icon == null ? null : _guessStatusEffectAtlas(icon.$1, icon.$2);
+    String? iconAtlas;
+    int? iconCol;
+    int? iconRow;
+
+    // Mismo icono que la habilidad (activa o pasiva) que define el efecto anidado.
+    if (parentAbility != null && _isAbilityIconSourceBlock(parentAbility)) {
+      final preferred = _isActiveAbilityBlock(parentAbility)
+          ? 'buttons'
+          : 'passive_abilities';
+      final inherited = _resolveAbilityIconOnly(
+        parentAbility.body,
+        preferredIconAtlas: preferred,
+      );
+      if (inherited.$1 != null && inherited.$2 != null && inherited.$3 != null) {
+        iconAtlas = inherited.$1;
+        iconCol = inherited.$2;
+        iconRow = inherited.$3;
+      }
+    }
+
+    if (iconAtlas == null) {
+      final icon = _matchIconPair(body);
+      if (icon != null) {
+        final resolved = _resolveStatusEffectIcon(icon.$1, icon.$2);
+        iconAtlas = resolved.$1;
+        iconCol = resolved.$2;
+        iconRow = resolved.$3;
+      }
+    }
     final isDebuff =
         RegExp(r'^\s*debuff\s*=\s*1\b', multiLine: true).hasMatch(body) ? true : null;
     return GameUnitStatusEffect(
@@ -391,16 +468,20 @@ class DtUnitParser {
       description: description,
       isDebuff: isDebuff,
       iconAtlas: iconAtlas,
-      iconCol: icon?.$1,
-      iconRow: icon?.$2,
+      iconCol: iconCol,
+      iconRow: iconRow,
     );
   }
 
-  static String? _guessStatusEffectAtlas(int col, int row) {
-    if (row >= 0 && row <= 3 && col >= 0 && col <= 15) {
-      return 'buff_icons';
+  /// Solo para efectos **sin** habilidad activa padre (p. ej. definidos a nivel unidad).
+  static (String? atlas, int? col, int? row) _resolveStatusEffectIcon(
+    int col,
+    int row,
+  ) {
+    if (col < 0 || row < 0 || col > 31 || row > 31) {
+      return (null, null, null);
     }
-    return null;
+    return ('buff_icons', col, row);
   }
 
   static List<_DtBlock> _extractBlocks(String source) {

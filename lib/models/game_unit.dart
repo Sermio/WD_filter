@@ -17,6 +17,32 @@ class GameUnitAbility {
 
   bool get hasIcon => iconAtlas != null && iconCol != null && iconRow != null;
 
+  /// Textos de relleno / plantilla que no deben mostrarse.
+  bool get isPlaceholderDescription {
+    final raw = description?.trim();
+    if (raw == null || raw.isEmpty) {
+      return false;
+    }
+    final d = raw.toLowerCase();
+    if (d == 'description') {
+      return true;
+    }
+    if (RegExp(r'^[a-z0-9_]+\s+description\.?\s*$').hasMatch(d)) {
+      return true;
+    }
+    return d.contains('placeholder desc') ||
+        d.contains('placeholder description');
+  }
+
+  /// Incluir en catálogo / ficha: no placeholder y con texto de descripción.
+  bool get isListableAbility {
+    if (isPlaceholderDescription) {
+      return false;
+    }
+    final d = description?.trim();
+    return d != null && d.isNotEmpty;
+  }
+
   String? get iconAssetPath {
     if (iconAssetPathOverride != null && iconAssetPathOverride!.isNotEmpty) {
       return iconAssetPathOverride;

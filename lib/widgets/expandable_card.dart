@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:worldshift_assistant/utils/unit_icon_candidates.dart';
 import 'package:worldshift_assistant/utils/utils.dart';
 import 'package:worldshift_assistant/widgets/item_description_widget.dart';
+import 'package:worldshift_assistant/widgets/resolved_mini_asset_image.dart';
 
 class ExpandableCard extends StatefulWidget {
   final String name;
@@ -300,7 +301,7 @@ class _ExpandableCardState extends State<ExpandableCard> {
         affectedUnits.add(
           _AffectedUnitChipData(
             label: _formatUnitLabel(entry.key),
-            assetCandidates: _buildUnitIconCandidates(entry.key),
+            assetCandidates: unitIconAssetCandidates(entry.key),
           ),
         );
       }
@@ -317,40 +318,14 @@ class _ExpandableCardState extends State<ExpandableCard> {
     );
   }
 
-  List<String> _buildUnitIconCandidates(String unitKey) {
-    const aliasByUnitKey = <String, List<String>>{
-      'Engineer': ['technician2'],
-      'Psychic': ['eji2'],
-      'Commander': ['commander', 'lancelot'],
-    };
-
-    final normalized =
-        unitKey.replaceAll(RegExp(r'[^A-Za-z0-9]+'), '').toLowerCase();
-    final aliases = <String>[
-      ...?aliasByUnitKey[unitKey],
-      normalized,
-    ];
-    final seen = <String>{};
-    final candidates = <String>[];
-
-    for (final id in aliases) {
-      if (!seen.add(id) || id.isEmpty) {
-        continue;
-      }
-      candidates.add('assets/generated/unit_icons/named/units/$id.png');
-      candidates.add('assets/generated/unit_icons/named/officers/$id.png');
-    }
-
-    return candidates;
-  }
-
+  /// Vista previa de stats por unidad. Debe listar **todas** las unidades afectadas;
+  /// antes se cortaba tras 3 líneas en total y solo se veía la primera unidad.
   List<_PreviewStatGroup> _buildPreviewGroups(dynamic rawAttributes) {
     if (rawAttributes is! Map<String, dynamic>) {
       return const [];
     }
 
     final groups = <_PreviewStatGroup>[];
-    var statCount = 0;
     for (final entry in rawAttributes.entries) {
       final unitName = _formatUnitLabel(entry.key);
       final value = entry.value;
@@ -365,16 +340,9 @@ class _ExpandableCardState extends State<ExpandableCard> {
               attribute: getAttributeValue(attrEntry.key),
             ),
           );
-          statCount++;
-          if (statCount >= 3) {
-            break;
-          }
         }
         if (lines.isNotEmpty) {
           groups.add(_PreviewStatGroup(unit: unitName, lines: lines));
-        }
-        if (statCount >= 3) {
-          return groups;
         }
       } else {
         groups.add(
@@ -388,10 +356,6 @@ class _ExpandableCardState extends State<ExpandableCard> {
             ],
           ),
         );
-        statCount++;
-        if (statCount >= 3) {
-          return groups;
-        }
       }
     }
     return groups;
@@ -570,7 +534,7 @@ class _UnitInfoChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _ResolvedMiniAssetImage(candidates: assetCandidates),
+          ResolvedMiniAssetImage(candidates: assetCandidates),
           const SizedBox(width: 6),
           Text(
             label,
@@ -737,46 +701,3 @@ class _PreviewStatLine {
   final String attribute;
 }
 
-class _ResolvedMiniAssetImage extends StatelessWidget {
-  const _ResolvedMiniAssetImage({required this.candidates});
-
-  final List<String> candidates;
-
-  Future<String?> _resolve() async {
-    for (final path in candidates) {
-      try {
-        await rootBundle.load(path);
-        return path;
-      } catch (_) {
-        continue;
-      }
-    }
-    return null;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<String?>(
-      future: _resolve(),
-      builder: (context, snapshot) {
-        final path = snapshot.data;
-        if (path == null) {
-          return const Icon(
-            Icons.category_outlined,
-            size: 14,
-            color: Color(0xFF5E6678),
-          );
-        }
-        return ClipRRect(
-          borderRadius: BorderRadius.circular(4),
-          child: Image.asset(
-            path,
-            width: 16,
-            height: 16,
-            fit: BoxFit.cover,
-          ),
-        );
-      },
-    );
-  }
-}

@@ -10,6 +10,7 @@ import 'package:worldshift_assistant/data/worldshift_assets.dart';
 import 'package:worldshift_assistant/models/item_filters_model.dart';
 import 'package:provider/provider.dart';
 import 'package:worldshift_assistant/utils/utils.dart';
+import 'package:worldshift_assistant/widgets/catalog_filter_widgets.dart';
 import 'package:worldshift_assistant/widgets/expandable_card.dart';
 import 'package:worldshift_assistant/widgets/multi_chip.dart';
 import 'package:worldshift_assistant/widgets/rarity_indicator.dart';
@@ -317,70 +318,59 @@ class _CardListScreenState extends State<CardListScreen> {
       body: GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: () => FocusScope.of(context).unfocus(),
-        child: Column(
-          children: [
+        child: FutureBuilder<List<Item>>(
+          future: _itemsFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            }
+            final items = snapshot.data ?? const <Item>[];
+            return Consumer<FilterProvider>(
+              builder: (context, filterProvider, _) {
+                _attributeController.text = filterProvider.attributeFilter;
+                _unitController.text = filterProvider.unitFilter.isEmpty
+                    ? ''
+                    : _formatUnitLabel(filterProvider.unitFilter);
+                final filteredItems = _filterItems(items, filterProvider);
+                return Column(
+                  children: [
             if (_isFilterVisible)
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                height: 280,
-                child: Container(
-                  margin: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 20,
-                        offset: const Offset(0, 10),
-                      ),
-                    ],
-                  ),
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(20),
-                    child: Consumer<FilterProvider>(
-                        builder: (context, filterProvider, child) {
-                      _nameController.text = filterProvider.nameFilter;
-                      _attributeController.text =
-                          filterProvider.attributeFilter;
-                      _unitController.text = filterProvider.unitFilter.isEmpty
-                          ? ''
-                          : _formatUnitLabel(filterProvider.unitFilter);
-
-                      return Column(
-                        children: [
-                          // TypeAheadField<String>(
-                          //   controller: _nameController,
-                          //   builder: (context, controller, focusNode) {
-                          //     return TextField(
-                          //         controller: controller,
-                          //         focusNode: focusNode,
-                          //         autofocus: false,
-                          //         decoration: const InputDecoration(
-                          //           border: OutlineInputBorder(),
-                          //           labelText: 'Name',
-                          //         ));
-                          //   },
-                          //   // textFieldConfiguration: TextFieldConfiguration(
-                          //   //   controller: _nameController,
-                          //   //   decoration:
-                          //   //       const InputDecoration(labelText: 'Item Name'),
-                          //   // ),
-                          //   suggestionsCallback: (pattern) async {
-                          //     return getSuggestions(pattern, 'name');
-                          //   },
-                          //   itemBuilder: (context, suggestion) {
-                          //     return ListTile(
-                          //       title: Text(suggestion),
-                          //     );
-                          //   },
-                          //   onSelected: (suggestion) {
-                          //     filterProvider.setNameFilter(suggestion.toLowerCase());
-                          //     _nameController.text =
-                          //         suggestion; // Sincronizar el valor
-                          //   },
-                          // ),
-                          const SizedBox(height: 12),
+              Container(
+                margin: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+                constraints: const BoxConstraints(maxHeight: 520),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 20,
+                      offset: const Offset(0, 10),
+                    ),
+                  ],
+                ),
+                clipBehavior: Clip.antiAlias,
+                child: ListView(
+                  shrinkWrap: true,
+                  physics: const ClampingScrollPhysics(),
+                  padding: const EdgeInsets.fromLTRB(12, 12, 12, 10),
+                  children: [
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                          CatalogSearchBar(
+                            controller: _nameController,
+                            hintText: 'Search item by name…',
+                            onChanged: (text) {
+                              filterProvider.setNameFilter(text);
+                              setState(() {});
+                            },
+                          ),
+                          const SizedBox(height: 8),
                           Container(
                             decoration: BoxDecoration(
                               color: Colors.white,
@@ -474,7 +464,7 @@ class _CardListScreenState extends State<CardListScreen> {
                               },
                             ),
                           ),
-                          const SizedBox(height: 12),
+                          const SizedBox(height: 8),
                           Container(
                             decoration: BoxDecoration(
                               color: Colors.white,
@@ -601,11 +591,11 @@ class _CardListScreenState extends State<CardListScreen> {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 8),
                           MultiSelectChip(
                             labels: races,
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 8),
                           Row(
                             children: [
                               Expanded(
@@ -780,7 +770,7 @@ class _CardListScreenState extends State<CardListScreen> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 8),
                           Row(
                             children: [
                               Expanded(
@@ -855,93 +845,40 @@ class _CardListScreenState extends State<CardListScreen> {
                               ),
                               const SizedBox(width: 12),
                               Expanded(
-                                child: Container(
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                    gradient: const LinearGradient(
-                                      colors: [
-                                        Color(0xFF667eea),
-                                        Color(0xFF764ba2)
-                                      ],
-                                    ),
-                                    borderRadius: BorderRadius.circular(15),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: const Color(0xFF667eea)
-                                            .withOpacity(0.3),
-                                        blurRadius: 8,
-                                        offset: const Offset(0, 4),
-                                      ),
-                                    ],
-                                  ),
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      Provider.of<FilterProvider>(context,
-                                              listen: false)
-                                          .clearFilters();
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.transparent,
-                                      shadowColor: Colors.transparent,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(15),
-                                      ),
-                                    ),
-                                    child: const Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          Icons.clear_all,
-                                          color: Colors.white,
-                                          size: 20,
-                                        ),
-                                        SizedBox(width: 8),
-                                        Text(
-                                          'Clear Filters',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 14,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                                child: CatalogClearFiltersButton(
+                                  label: 'Clear Filters',
+                                  onPressed: () {
+                                    Provider.of<FilterProvider>(context,
+                                            listen: false)
+                                        .clearFilters();
+                                    _nameController.clear();
+                                    _attributeController.clear();
+                                    _unitController.clear();
+                                    setState(() {});
+                                  },
                                 ),
                               ),
                             ],
                           ),
+                          const SizedBox(height: 6),
+                          Center(
+                            child: Text(
+                              '${filteredItems.length} items',
+                              style: TextStyle(
+                                color: Colors.grey.shade600,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
                         ],
-                      );
-                    }),
-                  ),
+                    ),
+                  ],
                 ),
               ),
             if (_isFilterVisible) const Divider(),
             Expanded(
-              child: FutureBuilder<List<Item>>(
-                future: _itemsFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
-                  }
-                  final items = snapshot.data ?? const <Item>[];
-                  final filterProvider = Provider.of<FilterProvider>(context);
-
-                  // Filtrar la lista antes de mostrarla
-                  final filteredItems = items.where((item) {
-                    final itemData = item.toMap();
-                    final name = item.name;
-                    final rarity = item.rarity;
-                    return _matchesFilters(
-                        itemData, name, rarity, filterProvider);
-                  }).toList();
-
-                  return filteredItems.isEmpty
+              child: filteredItems.isEmpty
                       ? Center(
                           child: Container(
                             margin: const EdgeInsets.symmetric(horizontal: 24),
@@ -968,7 +905,7 @@ class _CardListScreenState extends State<CardListScreen> {
                                 ),
                                 const SizedBox(height: 14),
                                 const Text(
-                                  'No hay items con esos filtros',
+                                  'No items match these filters',
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.w800,
@@ -977,7 +914,7 @@ class _CardListScreenState extends State<CardListScreen> {
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
-                                  'Prueba a cambiar la rareza, el slot o el mapa para ampliar los resultados.',
+                                  'Try changing rarity, slot, or map to broaden results.',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: Colors.grey.shade600,
@@ -1012,11 +949,13 @@ class _CardListScreenState extends State<CardListScreen> {
                               itemData: itemData,
                             );
                           },
-                        );
-                },
-              ),
+                        ),
             ),
           ],
+                );
+              },
+            );
+          },
         ),
       ),
     );
@@ -1028,6 +967,15 @@ class _CardListScreenState extends State<CardListScreen> {
     _attributeController.dispose();
     _unitController.dispose();
     super.dispose();
+  }
+
+  List<Item> _filterItems(List<Item> items, FilterProvider filterProvider) {
+    return items.where((item) {
+      final itemData = item.toMap();
+      final name = item.name;
+      final rarity = item.rarity;
+      return _matchesFilters(itemData, name, rarity, filterProvider);
+    }).toList();
   }
 
   // Método optimizado para verificar filtros

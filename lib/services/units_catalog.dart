@@ -20,13 +20,14 @@ class UnitsCatalog {
   }
 
   List<GameUnit> filter({
-    String? raceFolder,
+    List<String>? raceFolders,
     String? search,
   }) {
     var result = units;
-    if (raceFolder != null && raceFolder.isNotEmpty) {
-      result =
-          result.where((u) => u.raceFolder == raceFolder).toList();
+    if (raceFolders != null && raceFolders.isNotEmpty) {
+      result = result
+          .where((u) => raceFolders.contains(u.raceFolder))
+          .toList();
     }
     if (search != null && search.trim().isNotEmpty) {
       final q = search.toLowerCase();

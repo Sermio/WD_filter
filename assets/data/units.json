@@ -80,14 +80,6 @@
     ],
     "passiveAbilities": [
       {
-        "name": "Arbiter",
-        "description": "Arbiter Placeholder Desc.",
-        "iconAtlas": "buttons",
-        "iconCol": 1,
-        "iconRow": 5,
-        "iconAssetPath": "assets/generated/ui_icons/buttons/r5_c1.png"
-      },
-      {
         "name": "Long Range",
         "description": "Arbiter does great damage, but is only efficient at his maximum range. Attacking from close distance will reduce his damage dramatically.",
         "iconAtlas": "passive_abilities",
@@ -117,12 +109,21 @@
     "statusEffects": [
       {
         "name": "Chain Shot",
-        "description": "Arbiter has [stat:chain_shot_chance]% chance with every shot to trigger plasma chain reaction, damaging [stat:chain_shot_hops] additional enemies.",
+        "description": "This unit is taking damage from a Chain Shot.",
         "isDebuff": true,
-        "iconAtlas": "buff_icons",
+        "iconAtlas": "passive_abilities",
         "iconCol": 0,
         "iconRow": 0,
-        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r0_c0.png"
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c0.png"
+      },
+      {
+        "name": "Fear Shock",
+        "description": null,
+        "isDebuff": null,
+        "iconAtlas": "buttons",
+        "iconCol": 12,
+        "iconRow": 5,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r5_c12.png"
       }
     ]
   },
@@ -140,16 +141,7 @@
     "conversationIconRow": null,
     "stats": {},
     "auraNames": [],
-    "passiveAbilities": [
-      {
-        "name": "Attack Drone",
-        "description": "The Sentinel is scouting the area",
-        "iconAtlas": null,
-        "iconCol": null,
-        "iconRow": null,
-        "iconAssetPath": null
-      }
-    ],
+    "passiveAbilities": [],
     "activeAbilities": [],
     "statusEffects": []
   },
@@ -236,14 +228,6 @@
     ],
     "passiveAbilities": [
       {
-        "name": "Dominator",
-        "description": "Alien mid range DPS and CC officer",
-        "iconAtlas": "buttons",
-        "iconCol": 0,
-        "iconRow": 5,
-        "iconAssetPath": "assets/generated/ui_icons/buttons/r5_c0.png"
-      },
-      {
         "name": "Stasis shot",
         "description": "Dominator has [stat:stasis_shot_chance]% chance to stun his target for [stat:stasis_shot_duration] seconds and to inflict double damage when shooting.",
         "iconAtlas": "passive_abilities",
@@ -286,7 +270,17 @@
         "iconAssetPath": "assets/generated/ui_icons/buttons/r4_c9.png"
       }
     ],
-    "statusEffects": []
+    "statusEffects": [
+      {
+        "name": "Dimension Chain",
+        "description": "This unit is caught in a Dimension Chain and cannot move.",
+        "isDebuff": null,
+        "iconAtlas": "buttons",
+        "iconCol": 11,
+        "iconRow": 1,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r1_c11.png"
+      }
+    ]
   },
   {
     "id": "alienegg",
@@ -312,7 +306,26 @@
     "auraNames": [],
     "passiveAbilities": [],
     "activeAbilities": [],
-    "statusEffects": []
+    "statusEffects": [
+      {
+        "name": "Sizzle",
+        "description": "This unit is weakened by the influence of alien Eggs nearby.",
+        "isDebuff": null,
+        "iconAtlas": "buff_icons",
+        "iconCol": 1,
+        "iconRow": 1,
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r1_c1.png"
+      },
+      {
+        "name": "Acid Burst",
+        "description": "This units armor is weakened by an Acid Burst.",
+        "isDebuff": null,
+        "iconAtlas": "buff_icons",
+        "iconCol": 1,
+        "iconRow": 2,
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r2_c1.png"
+      }
+    ]
   },
   {
     "id": "overseer",
@@ -385,7 +398,17 @@
         "iconAssetPath": "assets/generated/ui_icons/buttons/r0_c10.png"
       }
     ],
-    "statusEffects": []
+    "statusEffects": [
+      {
+        "name": "Charging field",
+        "description": "This unitï¿½s energy is begin replenished by a Charging Field.",
+        "isDebuff": null,
+        "iconAtlas": "buff_icons",
+        "iconCol": 3,
+        "iconRow": 3,
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r3_c3.png"
+      }
+    ]
   },
   {
     "id": "harvester",
@@ -427,14 +450,6 @@
     ],
     "passiveAbilities": [
       {
-        "name": "Harvester",
-        "description": "Harvester Placeholder Desc.",
-        "iconAtlas": "buttons",
-        "iconCol": 2,
-        "iconRow": 5,
-        "iconAssetPath": "assets/generated/ui_icons/buttons/r5_c2.png"
-      },
-      {
         "name": "Consume Hatchling",
         "description": "The Harvester will consume a nearby Hatchling to restore its health",
         "iconAtlas": "passive_abilities",
@@ -461,7 +476,26 @@
         "iconAssetPath": "assets/generated/ui_icons/buttons/r5_c2.png"
       }
     ],
-    "statusEffects": []
+    "statusEffects": [
+      {
+        "name": "Paralyzing Field",
+        "description": "This unit is slowed down by a Paralyzing field.",
+        "isDebuff": null,
+        "iconAtlas": "buttons",
+        "iconCol": 2,
+        "iconRow": 5,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r5_c2.png"
+      },
+      {
+        "name": "Imminence",
+        "description": "This unit is threatened by a Harvester and cannot attack anyone else.",
+        "isDebuff": null,
+        "iconAtlas": "passive_abilities",
+        "iconCol": 6,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c6.png"
+      }
+    ]
   },
   {
     "id": "hatchling",
@@ -487,17 +521,18 @@
       "RestorationCoreAura"
     ],
     "passiveAbilities": [],
-    "activeAbilities": [
+    "activeAbilities": [],
+    "statusEffects": [
       {
-        "name": "Hatchling",
-        "description": "Hatchling has [stat:threaten_chance]% chance on each attack to threaten its target, forsing it to focus attacks on the Hatchling itself for [stat:threaten_duration] seconds.",
+        "name": "Threaten",
+        "description": "This unit is threatened by a Hatchling and cannot attack anyone else.",
+        "isDebuff": null,
         "iconAtlas": "buttons",
-        "iconCol": 4,
-        "iconRow": 2,
-        "iconAssetPath": "assets/generated/ui_icons/buttons/r2_c4.png"
+        "iconCol": 5,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r0_c5.png"
       }
-    ],
-    "statusEffects": []
+    ]
   },
   {
     "id": "manipulator",
@@ -540,14 +575,6 @@
     ],
     "passiveAbilities": [
       {
-        "name": "Manipulator",
-        "description": "DESCRIPTION",
-        "iconAtlas": "buttons",
-        "iconCol": 3,
-        "iconRow": 5,
-        "iconAssetPath": "assets/generated/ui_icons/buttons/r5_c3.png"
-      },
-      {
         "name": "Life Leech",
         "description": "With each attack the Manipulator drains [stat:damage] life from his target and spreads it around himself, thus healing all allied unints nearby.",
         "iconAtlas": "passive_abilities",
@@ -574,7 +601,17 @@
         "iconAssetPath": "assets/generated/ui_icons/buttons/r3_c3.png"
       }
     ],
-    "statusEffects": []
+    "statusEffects": [
+      {
+        "name": "Manipulation",
+        "description": "Increased maximum Hit Points",
+        "isDebuff": null,
+        "iconAtlas": "buttons",
+        "iconCol": 3,
+        "iconRow": 3,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r3_c3.png"
+      }
+    ]
   },
   {
     "id": "master",
@@ -613,14 +650,6 @@
     ],
     "passiveAbilities": [
       {
-        "name": "Master",
-        "description": "DESCRIPTION",
-        "iconAtlas": "passive_abilities",
-        "iconCol": 3,
-        "iconRow": 1,
-        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r1_c3.png"
-      },
-      {
         "name": "Plasma Shield",
         "description": "Powerful shield that is activated automatically when the Master is attacked. Plasma Shield has [stat:shield_hull] durability, [stat:shield_regen] charge rate, [stat:shield_fullabsorbchance]% chance for full deflection and [stat:shield_percentabsorbtion]% damage absorbtion.",
         "iconAtlas": "passive_abilities",
@@ -650,12 +679,12 @@
     "statusEffects": [
       {
         "name": "Feed",
-        "description": "Master channels for a few seconds a powerful nether ligh that does [stat:feed_base_damage] damage each tick for [stat:feed_duration] seconds. The nether light also drains the same amount of life out of the affected target and is spread by the Master to a nearby allies, thus healing them. The light splits on the target and jumps to other tagets as well. The healing efficiency increases with each additional target affected, but the damage inflicted decreases.",
+        "description": "This unit is taking damage from a Feed action.",
         "isDebuff": true,
-        "iconAtlas": null,
-        "iconCol": 13,
-        "iconRow": 4,
-        "iconAssetPath": null
+        "iconAtlas": "buttons",
+        "iconCol": 12,
+        "iconRow": 3,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r3_c12.png"
       }
     ]
   },
@@ -689,7 +718,17 @@
     "auraNames": [],
     "passiveAbilities": [],
     "activeAbilities": [],
-    "statusEffects": []
+    "statusEffects": [
+      {
+        "name": "Psi Aura",
+        "description": "Increased maximum Power.",
+        "isDebuff": null,
+        "iconAtlas": "buff_icons",
+        "iconCol": 2,
+        "iconRow": 4,
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r4_c2.png"
+      }
+    ]
   },
   {
     "id": "shifter",
@@ -764,7 +803,17 @@
         "iconAssetPath": "assets/generated/ui_icons/buttons/r6_c12.png"
       }
     ],
-    "statusEffects": []
+    "statusEffects": [
+      {
+        "name": "Enfeeble",
+        "description": "This unit has been weakened by a Shifterï¿½s attack.",
+        "isDebuff": null,
+        "iconAtlas": "passive_abilities",
+        "iconCol": 5,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c5.png"
+      }
+    ]
   },
   {
     "id": "triad",
@@ -824,7 +873,26 @@
     ],
     "passiveAbilities": [],
     "activeAbilities": [],
-    "statusEffects": []
+    "statusEffects": [
+      {
+        "name": "Frenzy",
+        "description": "This unit is frenzied. Its armor and damage points are increased.",
+        "isDebuff": null,
+        "iconAtlas": "buff_icons",
+        "iconCol": 3,
+        "iconRow": 14,
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r14_c3.png"
+      },
+      {
+        "name": "Paralyzing Field",
+        "description": "This unit is slowed down by a Trisatï¿½s Paralazyng Field.",
+        "isDebuff": null,
+        "iconAtlas": "buff_icons",
+        "iconCol": 3,
+        "iconRow": 15,
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r15_c3.png"
+      }
+    ]
   },
   {
     "id": "tritech",
@@ -955,10 +1023,19 @@
         "name": "Slowing Poison",
         "description": "Worldshift devs can suck on this one",
         "isDebuff": true,
-        "iconAtlas": null,
+        "iconAtlas": "buff_icons",
         "iconCol": 2,
         "iconRow": 14,
-        "iconAssetPath": null
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r14_c2.png"
+      },
+      {
+        "name": "Expose Target",
+        "description": "This units armor is weakened by an Assassins shot.",
+        "isDebuff": null,
+        "iconAtlas": "passive_abilities",
+        "iconCol": 5,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c5.png"
       }
     ]
   },
@@ -1010,7 +1087,17 @@
         "iconAssetPath": "assets/generated/ui_icons/buttons/r0_c4.png"
       }
     ],
-    "statusEffects": []
+    "statusEffects": [
+      {
+        "name": "Reduced Damage",
+        "description": "This unitï¿½s effectiveness has been weakened by a concussion rocket.",
+        "isDebuff": null,
+        "iconAtlas": "passive_abilities",
+        "iconCol": 5,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c5.png"
+      }
+    ]
   },
   {
     "id": "commanderboss",
@@ -1042,25 +1129,8 @@
     "auraNames": [
       "RestorationCoreAura"
     ],
-    "passiveAbilities": [
-      {
-        "name": "CommanderBoss",
-        "description": null,
-        "iconAtlas": "passive_abilities",
-        "iconCol": 1,
-        "iconRow": 1,
-        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r1_c1.png"
-      }
-    ],
+    "passiveAbilities": [],
     "activeAbilities": [
-      {
-        "name": "Teleport Officer",
-        "description": null,
-        "iconAtlas": null,
-        "iconCol": null,
-        "iconRow": null,
-        "iconAssetPath": null
-      },
       {
         "name": "Inject",
         "description": "Lord Commander injects himself with powerful drug mixture, that will restore [stat:inject_hp] hit points over [stat:inject_duration] sec.",
@@ -1078,17 +1148,7 @@
         "iconAssetPath": "assets/generated/ui_icons/buttons/r2_c10.png"
       }
     ],
-    "statusEffects": [
-      {
-        "name": "Confuse",
-        "description": "A tactical maneuvre that will force all enemies in a small area to focus their attacks on Lord Commander himself for <color=tooltip.lite>[stat:confuse_duration] sec.</> and will also increase his armor with <color=tooltip.lite>[stat:confuse_armor_perc_buff]%</> for the same time. This effect might last shorter if the affected enemies loose the Lord Commander of their sight.",
-        "isDebuff": true,
-        "iconAtlas": "buff_icons",
-        "iconCol": 11,
-        "iconRow": 3,
-        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r3_c11.png"
-      }
-    ]
+    "statusEffects": []
   },
   {
     "id": "constructor",
@@ -1106,14 +1166,6 @@
     "auraNames": [],
     "passiveAbilities": [],
     "activeAbilities": [
-      {
-        "name": "Constructor",
-        "description": "DESCRIPTION",
-        "iconAtlas": "buttons",
-        "iconCol": 3,
-        "iconRow": 3,
-        "iconAssetPath": "assets/generated/ui_icons/buttons/r3_c3.png"
-      },
       {
         "name": "Nanofix",
         "description": "The Constructor beams a cloud of highly energized microscopic Cell Bots that will instantly repair the targeted friendly machine for [stat:nano_fix_heal] hit points.",
@@ -1157,14 +1209,6 @@
     "passiveAbilities": [],
     "activeAbilities": [
       {
-        "name": "Defender",
-        "description": "The first unit added via modding. Honor may be to DotNL and CrashDown963",
-        "iconAtlas": "buttons",
-        "iconCol": 5,
-        "iconRow": 4,
-        "iconAssetPath": "assets/generated/ui_icons/buttons/r4_c5.png"
-      },
-      {
         "name": "Proton Rockets",
         "description": "The Defender can launch Proton Rockets towards distant targets.",
         "iconAtlas": "buttons",
@@ -1173,7 +1217,17 @@
         "iconAssetPath": "assets/generated/ui_icons/buttons/r0_c4.png"
       }
     ],
-    "statusEffects": []
+    "statusEffects": [
+      {
+        "name": "Charging Proton Rocket",
+        "description": "The Defender is charging up his next Proton Rocket volley.",
+        "isDebuff": null,
+        "iconAtlas": "buttons",
+        "iconCol": 3,
+        "iconRow": 4,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r4_c3.png"
+      }
+    ]
   },
   {
     "id": "denkar",
@@ -1205,25 +1259,8 @@
     "auraNames": [
       "RestorationCoreAura"
     ],
-    "passiveAbilities": [
-      {
-        "name": "Denkar",
-        "description": null,
-        "iconAtlas": "passive_abilities",
-        "iconCol": 1,
-        "iconRow": 1,
-        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r1_c1.png"
-      }
-    ],
+    "passiveAbilities": [],
     "activeAbilities": [
-      {
-        "name": "Teleport Officer",
-        "description": null,
-        "iconAtlas": null,
-        "iconCol": null,
-        "iconRow": null,
-        "iconAssetPath": null
-      },
       {
         "name": "Inject",
         "description": "Lord Commander injects himself with powerful drug mixture, that will restore [stat:inject_hp] hit points over [stat:inject_duration] sec.",
@@ -1241,17 +1278,7 @@
         "iconAssetPath": "assets/generated/ui_icons/buttons/r2_c10.png"
       }
     ],
-    "statusEffects": [
-      {
-        "name": "Confuse",
-        "description": "A tactical maneuvre that will force all enemies in a small area to focus their attacks on Lord Commander himself for <color=tooltip.lite>[stat:confuse_duration] sec.</> and will also increase his armor with <color=tooltip.lite>[stat:confuse_armor_perc_buff]%</> for the same time. This effect might last shorter if the affected enemies loose the Lord Commander of their sight.",
-        "isDebuff": true,
-        "iconAtlas": "buff_icons",
-        "iconCol": 11,
-        "iconRow": 3,
-        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r3_c11.png"
-      }
-    ]
+    "statusEffects": []
   },
   {
     "id": "denkarh",
@@ -1283,25 +1310,8 @@
     "auraNames": [
       "RestorationCoreAura"
     ],
-    "passiveAbilities": [
-      {
-        "name": "DenkarH",
-        "description": null,
-        "iconAtlas": "passive_abilities",
-        "iconCol": 1,
-        "iconRow": 1,
-        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r1_c1.png"
-      }
-    ],
+    "passiveAbilities": [],
     "activeAbilities": [
-      {
-        "name": "Teleport Officer",
-        "description": null,
-        "iconAtlas": null,
-        "iconCol": null,
-        "iconRow": null,
-        "iconAssetPath": null
-      },
       {
         "name": "Inject",
         "description": "Lord Commander injects himself with powerful drug mixture, that will restore [stat:inject_hp] hit points over [stat:inject_duration] sec.",
@@ -1319,17 +1329,7 @@
         "iconAssetPath": "assets/generated/ui_icons/buttons/r2_c10.png"
       }
     ],
-    "statusEffects": [
-      {
-        "name": "Confuse",
-        "description": "A tactical maneuvre that will force all enemies in a small area to focus their attacks on Lord Commander himself for <color=tooltip.lite>[stat:confuse_duration] sec.</> and will also increase his armor with <color=tooltip.lite>[stat:confuse_armor_perc_buff]%</> for the same time. This effect might last shorter if the affected enemies loose the Lord Commander of their sight.",
-        "isDebuff": true,
-        "iconAtlas": "buff_icons",
-        "iconCol": 11,
-        "iconRow": 3,
-        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r3_c11.png"
-      }
-    ]
+    "statusEffects": []
   },
   {
     "id": "technician2",
@@ -1365,16 +1365,7 @@
         "iconAssetPath": null
       }
     ],
-    "activeAbilities": [
-      {
-        "name": "Turrets",
-        "description": "turrets description.",
-        "iconAtlas": "buttons",
-        "iconCol": 0,
-        "iconRow": 0,
-        "iconAssetPath": "assets/generated/ui_icons/buttons/r0_c0.png"
-      }
-    ],
+    "activeAbilities": [],
     "statusEffects": []
   },
   {
@@ -1500,14 +1491,6 @@
     ],
     "passiveAbilities": [
       {
-        "name": "Judge",
-        "description": "DESCRIPTION",
-        "iconAtlas": "buttons",
-        "iconCol": 2,
-        "iconRow": 3,
-        "iconAssetPath": "assets/generated/ui_icons/buttons/r3_c2.png"
-      },
-      {
         "name": "Leadership",
         "description": "By attacking enemies and observing the battle, the Judge gains charges, which he automatically uses for promoting nearby Troopers into Elite status. Elite Troopers has increased chance to inflict double damage on their targets.",
         "iconAtlas": "passive_abilities",
@@ -1544,22 +1527,22 @@
     ],
     "statusEffects": [
       {
-        "name": "Discharge",
-        "description": "The Judgeâs attack has a [stat:discharge_chance]% chance to deduct [stat:discharge_damage] power from his target and convert it into damage, jumps to [stat:discharge_hops] additional targets doing damage.",
-        "isDebuff": true,
-        "iconAtlas": "buff_icons",
-        "iconCol": 4,
-        "iconRow": 0,
-        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r0_c4.png"
-      },
-      {
         "name": "Chain Shot",
         "description": "This unit is taking damage from a Chain Shot.",
         "isDebuff": true,
-        "iconAtlas": null,
-        "iconCol": 1,
-        "iconRow": 10,
-        "iconAssetPath": null
+        "iconAtlas": "passive_abilities",
+        "iconCol": 4,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c4.png"
+      },
+      {
+        "name": "Voice of Command",
+        "description": "The efficiency is unitï¿½s attacks has been improved by a nearby Judge.",
+        "isDebuff": null,
+        "iconAtlas": "buttons",
+        "iconCol": 12,
+        "iconRow": 2,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r2_c12.png"
       }
     ]
   },
@@ -1593,25 +1576,8 @@
     "auraNames": [
       "RestorationCoreAura"
     ],
-    "passiveAbilities": [
-      {
-        "name": "Lancelot",
-        "description": null,
-        "iconAtlas": null,
-        "iconCol": null,
-        "iconRow": null,
-        "iconAssetPath": null
-      }
-    ],
+    "passiveAbilities": [],
     "activeAbilities": [
-      {
-        "name": "Teleport Officer",
-        "description": null,
-        "iconAtlas": null,
-        "iconCol": null,
-        "iconRow": null,
-        "iconAssetPath": null
-      },
       {
         "name": "Inject",
         "description": "Lord Commander injects himself with powerful drug mixture, that will restore [stat:inject_hp] hit points over [stat:inject_duration] sec.",
@@ -1629,17 +1595,7 @@
         "iconAssetPath": "assets/generated/ui_icons/buttons/r2_c10.png"
       }
     ],
-    "statusEffects": [
-      {
-        "name": "Confuse",
-        "description": "A tactical maneuvre that will force all enemies in a small area to focus their attacks on Lord Commander himself for <color=tooltip.lite>[stat:confuse_duration] sec.</> and will also increase his armor with <color=tooltip.lite>[stat:confuse_armor_perc_buff]%</> for the same time. This effect might last shorter if the affected enemies loose the Lord Commander of their sight.",
-        "isDebuff": true,
-        "iconAtlas": "buff_icons",
-        "iconCol": 11,
-        "iconRow": 3,
-        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r3_c11.png"
-      }
-    ]
+    "statusEffects": []
   },
   {
     "id": "commander",
@@ -1671,25 +1627,8 @@
     "auraNames": [
       "RestorationCoreAura"
     ],
-    "passiveAbilities": [
-      {
-        "name": "Lord Commander",
-        "description": "DESCRIPTION",
-        "iconAtlas": "passive_abilities",
-        "iconCol": 1,
-        "iconRow": 1,
-        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r1_c1.png"
-      }
-    ],
+    "passiveAbilities": [],
     "activeAbilities": [
-      {
-        "name": "Teleport Officer",
-        "description": null,
-        "iconAtlas": null,
-        "iconCol": null,
-        "iconRow": null,
-        "iconAssetPath": null
-      },
       {
         "name": "Inject",
         "description": "Lord Commander injects himself with powerful drug mixture, that will restore [stat:inject_hp] hit points over [stat:inject_duration] sec.",
@@ -1709,22 +1648,22 @@
     ],
     "statusEffects": [
       {
-        "name": "Confuse",
-        "description": "A tactical maneuvre that will force all enemies in a small area to focus their attacks on Lord Commander himself for <color=tooltip.lite>[stat:confuse_duration] sec.</> and will also increase his armor with <color=tooltip.lite>[stat:confuse_armor_perc_buff]%</> for the same time. This effect might last shorter if the affected enemies loose the Lord Commander of their sight.",
-        "isDebuff": true,
-        "iconAtlas": "buff_icons",
-        "iconCol": 11,
-        "iconRow": 3,
-        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r3_c11.png"
+        "name": "Inject",
+        "description": "The Lord Commander is regenerating his health under the influence of injected medications.",
+        "isDebuff": null,
+        "iconAtlas": "buttons",
+        "iconCol": 9,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r0_c9.png"
       },
       {
         "name": "Confusion",
         "description": "The Lord Commanderï¿½s armor is increased during a Confusion maneuver.",
         "isDebuff": true,
-        "iconAtlas": null,
-        "iconCol": 1,
-        "iconRow": 12,
-        "iconAssetPath": null
+        "iconAtlas": "buttons",
+        "iconCol": 10,
+        "iconRow": 2,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r2_c10.png"
       }
     ]
   },
@@ -1758,25 +1697,8 @@
     "auraNames": [
       "RestorationCoreAura"
     ],
-    "passiveAbilities": [
-      {
-        "name": "Onkarrr",
-        "description": null,
-        "iconAtlas": "passive_abilities",
-        "iconCol": 1,
-        "iconRow": 1,
-        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r1_c1.png"
-      }
-    ],
+    "passiveAbilities": [],
     "activeAbilities": [
-      {
-        "name": "Teleport Officer",
-        "description": null,
-        "iconAtlas": null,
-        "iconCol": null,
-        "iconRow": null,
-        "iconAssetPath": null
-      },
       {
         "name": "Inject",
         "description": "Lord Commander injects himself with powerful drug mixture, that will restore [stat:inject_hp] hit points over [stat:inject_duration] sec.",
@@ -1794,17 +1716,7 @@
         "iconAssetPath": "assets/generated/ui_icons/buttons/r2_c10.png"
       }
     ],
-    "statusEffects": [
-      {
-        "name": "Confuse",
-        "description": "A tactical maneuvre that will force all enemies in a small area to focus their attacks on Lord Commander himself for <color=tooltip.lite>[stat:confuse_duration] sec.</> and will also increase his armor with <color=tooltip.lite>[stat:confuse_armor_perc_buff]%</> for the same time. This effect might last shorter if the affected enemies loose the Lord Commander of their sight.",
-        "isDebuff": true,
-        "iconAtlas": "buff_icons",
-        "iconCol": 11,
-        "iconRow": 3,
-        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r3_c11.png"
-      }
-    ]
+    "statusEffects": []
   },
   {
     "id": "personnelcarrier",
@@ -1904,7 +1816,17 @@
         "iconAssetPath": "assets/generated/ui_icons/buttons/r0_c5.png"
       }
     ],
-    "statusEffects": []
+    "statusEffects": [
+      {
+        "name": "Overclock",
+        "description": "Increased movement speed",
+        "isDebuff": null,
+        "iconAtlas": "buttons",
+        "iconCol": 0,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r0_c0.png"
+      }
+    ]
   },
   {
     "id": "surgeon",
@@ -2264,7 +2186,26 @@
         "iconAssetPath": "assets/generated/ui_icons/buttons/r3_c0.png"
       }
     ],
-    "statusEffects": []
+    "statusEffects": [
+      {
+        "name": "Terrified",
+        "description": "Terrified",
+        "isDebuff": null,
+        "iconAtlas": "buttons",
+        "iconCol": 3,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r0_c3.png"
+      },
+      {
+        "name": "Fate Link",
+        "description": "This unit is currently linked by an Ancient Shade, all damage taken will be split between you and him.",
+        "isDebuff": null,
+        "iconAtlas": "buttons",
+        "iconCol": 0,
+        "iconRow": 3,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r3_c0.png"
+      }
+    ]
   },
   {
     "id": "brute",
@@ -2292,17 +2233,27 @@
     },
     "auraNames": [],
     "passiveAbilities": [],
-    "activeAbilities": [
+    "activeAbilities": [],
+    "statusEffects": [
       {
-        "name": "Brute",
-        "description": "DESCRIPTION",
+        "name": "Growl",
+        "description": "This unit is threatened by a Brute and cannot attack anyone else.",
+        "isDebuff": null,
         "iconAtlas": "buttons",
+        "iconCol": 5,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r0_c5.png"
+      },
+      {
+        "name": "Ignite",
+        "description": "This unit is in a special state that raises its effectiveness.",
+        "isDebuff": null,
+        "iconAtlas": "passive_abilities",
         "iconCol": 1,
-        "iconRow": 1,
-        "iconAssetPath": "assets/generated/ui_icons/buttons/r1_c1.png"
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c1.png"
       }
-    ],
-    "statusEffects": []
+    ]
   },
   {
     "id": "eji",
@@ -2328,16 +2279,7 @@
       "RestorationCoreAura"
     ],
     "passiveAbilities": [],
-    "activeAbilities": [
-      {
-        "name": "Eji",
-        "description": "Enemies will prefer to attack someone else if possible",
-        "iconAtlas": "buttons",
-        "iconCol": 0,
-        "iconRow": 2,
-        "iconAssetPath": "assets/generated/ui_icons/buttons/r2_c0.png"
-      }
-    ],
+    "activeAbilities": [],
     "statusEffects": []
   },
   {
@@ -2364,7 +2306,17 @@
     ],
     "passiveAbilities": [],
     "activeAbilities": [],
-    "statusEffects": []
+    "statusEffects": [
+      {
+        "name": "Frenzy",
+        "description": "This unit is frenzied. Its critical chance is increased.",
+        "isDebuff": null,
+        "iconAtlas": "buff_icons",
+        "iconCol": 4,
+        "iconRow": 3,
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r3_c4.png"
+      }
+    ]
   },
   {
     "id": "guardian",
@@ -2396,14 +2348,6 @@
       "RestorationCoreAura"
     ],
     "passiveAbilities": [
-      {
-        "name": "Guardian",
-        "description": "Guardian Placeholder Desc.",
-        "iconAtlas": "buttons",
-        "iconCol": 0,
-        "iconRow": 4,
-        "iconAssetPath": "assets/generated/ui_icons/buttons/r4_c0.png"
-      },
       {
         "name": "Whirlwind",
         "description": "While fighting the Guardian has [stat:whirlwind_chance]% chance to perform special move inflicting damage to all adjacent targets.",
@@ -2447,7 +2391,17 @@
         "iconAssetPath": "assets/generated/ui_icons/buttons/r6_c9.png"
       }
     ],
-    "statusEffects": []
+    "statusEffects": [
+      {
+        "name": "Fortify",
+        "description": "This unitï¿½s armor is strengthened by the Fortify aura of a nearby Guardian.",
+        "isDebuff": null,
+        "iconAtlas": "buttons",
+        "iconCol": 0,
+        "iconRow": 4,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r4_c0.png"
+      }
+    ]
   },
   {
     "id": "highpriest",
@@ -2480,14 +2434,6 @@
       "RestorationCoreAura"
     ],
     "passiveAbilities": [
-      {
-        "name": "High Priest",
-        "description": "HighPriest Placeholder Desc.",
-        "iconAtlas": "passive_abilities",
-        "iconCol": 2,
-        "iconRow": 1,
-        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r1_c2.png"
-      },
       {
         "name": "Pyroblast",
         "description": "High Priest has [stat:pyrowave_chance]% chance on every attack to spawn a powerful wave of fire, damaging up to 2 additional targets.",
@@ -2611,19 +2557,19 @@
         "name": "Howl Armor",
         "description": "This unit is in a special state that increases its armor.",
         "isDebuff": null,
-        "iconAtlas": null,
+        "iconAtlas": "buff_icons",
         "iconCol": 2,
         "iconRow": 9,
-        "iconAssetPath": null
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r9_c2.png"
       },
       {
         "name": "Howl Heal",
         "description": "This unit is in a special state that boosts its health regeneration.",
         "isDebuff": null,
-        "iconAtlas": null,
+        "iconAtlas": "buff_icons",
         "iconCol": 2,
         "iconRow": 11,
-        "iconAssetPath": null
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r11_c2.png"
       }
     ]
   },
@@ -2648,7 +2594,17 @@
     "auraNames": [],
     "passiveAbilities": [],
     "activeAbilities": [],
-    "statusEffects": []
+    "statusEffects": [
+      {
+        "name": "Frenzy",
+        "description": "This unit is frenzied. Its critical chance is increased.",
+        "isDebuff": null,
+        "iconAtlas": "buff_icons",
+        "iconCol": 4,
+        "iconRow": 3,
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r3_c4.png"
+      }
+    ]
   },
   {
     "id": "eji2",
@@ -2675,14 +2631,6 @@
     ],
     "passiveAbilities": [],
     "activeAbilities": [
-      {
-        "name": "Psychic",
-        "description": "Enemies will prefer to attack someone else if possible",
-        "iconAtlas": "buttons",
-        "iconCol": 4,
-        "iconRow": 4,
-        "iconAssetPath": "assets/generated/ui_icons/buttons/r4_c4.png"
-      },
       {
         "name": "Corrupted Mind",
         "description": "Eji can mind control big enemies when they get too close",
@@ -2723,16 +2671,7 @@
     "auraNames": [
       "RestorationCoreAura"
     ],
-    "passiveAbilities": [
-      {
-        "name": "Shaman",
-        "description": "Shaman Placeholder Desc.",
-        "iconAtlas": "buttons",
-        "iconCol": 1,
-        "iconRow": 4,
-        "iconAssetPath": "assets/generated/ui_icons/buttons/r4_c1.png"
-      }
-    ],
+    "passiveAbilities": [],
     "activeAbilities": [
       {
         "name": "Renew",
@@ -2787,16 +2726,7 @@
       "xp_boost;",
       "RestorationCoreAura"
     ],
-    "passiveAbilities": [
-      {
-        "name": "Sorcerer",
-        "description": "Sorcerer Placeholder Desc.",
-        "iconAtlas": "buttons",
-        "iconCol": 2,
-        "iconRow": 4,
-        "iconAssetPath": "assets/generated/ui_icons/buttons/r4_c2.png"
-      }
-    ],
+    "passiveAbilities": [],
     "activeAbilities": [
       {
         "name": "Chain Lightning",
@@ -2834,12 +2764,30 @@
     "statusEffects": [
       {
         "name": "Chain Lightning",
-        "description": "Chain Lightning description.",
+        "description": "The Sorcerer is casting Chain Lightning which spreads to nearby enemies.",
         "isDebuff": true,
-        "iconAtlas": "buff_icons",
-        "iconCol": 1,
+        "iconAtlas": "buttons",
+        "iconCol": 0,
         "iconRow": 0,
-        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r0_c1.png"
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r0_c0.png"
+      },
+      {
+        "name": "Chill",
+        "description": "This unit is slowed down by a Sorcererï¿½s attack.",
+        "isDebuff": null,
+        "iconAtlas": "buttons",
+        "iconCol": 4,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r0_c4.png"
+      },
+      {
+        "name": "Incinerate",
+        "description": "This unit is taking fire damage from an Incinerate spell.",
+        "isDebuff": null,
+        "iconAtlas": "buff_icons",
+        "iconCol": 2,
+        "iconRow": 12,
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r12_c2.png"
       }
     ]
   },
@@ -2943,7 +2891,26 @@
         "iconAssetPath": "assets/generated/ui_icons/buttons/r6_c6.png"
       }
     ],
-    "statusEffects": []
+    "statusEffects": [
+      {
+        "name": "Unholy Power",
+        "description": "This unitï¿½s power is being replenished by a nearby Stone Ghost.",
+        "isDebuff": null,
+        "iconAtlas": "buff_icons",
+        "iconCol": 3,
+        "iconRow": 11,
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r11_c3.png"
+      },
+      {
+        "name": "Corruption",
+        "description": "This unit is taking poison damage from a Corruption spell.",
+        "isDebuff": null,
+        "iconAtlas": "buttons",
+        "iconCol": 7,
+        "iconRow": 6,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r6_c7.png"
+      }
+    ]
   },
   {
     "id": "warrior",

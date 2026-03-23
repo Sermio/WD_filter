@@ -361,7 +361,7 @@ Future<void> uploadItemsToFirebase(List<Item> items) async {
       };
 
       await firestore.collection('items').doc(item.id.toString()).set(itemData);
-      print('Item subido correctamente: ${item.id}');
+      print('Item uploaded: ${item.id}');
     }
   } catch (e) {
     print('Error subiendo los items: $e');
@@ -379,7 +379,7 @@ void copySetToClipboard(Set<String> mySet) {
 
   // Copia al portapapeles
   Clipboard.setData(ClipboardData(text: content)).then((_) {
-    print("¡Datos copiados al portapapeles!");
+    print('Copied to clipboard.');
   });
 }
 
@@ -422,7 +422,7 @@ Future<WorldshiftPipelineResult> processAndUploadItems({
       excelPath = await downloadItemsExcel(combinedItems);
       print('Excel exportado: $excelPath');
     } catch (e) {
-      print('Excel no generado (permisos / plataforma): $e');
+      print('Excel not generated (permissions / platform): $e');
     }
   }
 
@@ -431,7 +431,7 @@ Future<WorldshiftPipelineResult> processAndUploadItems({
   }
 
   print(
-    'Pipeline ítems: ${combinedItems.length} documentos; drop.tsv ~$dropRows líneas.',
+    'Items pipeline: ${combinedItems.length} documents; drop.tsv ~$dropRows lines.',
   );
 
   return WorldshiftPipelineResult(
@@ -498,12 +498,12 @@ Future<void> saveSpritesAsPngs() async {
           // Guardar la imagen en la carpeta de descargas
           final file = File('${downloadPath.path}/sprite_${y}_$x.png');
           await file.writeAsBytes(pngBytes);
-          print('Imagen guardada: ${file.path}');
+          print('Image saved: ${file.path}');
         }
       }
     }
   } else {
-    print('Permisos de almacenamiento denegados.');
+    print('Storage permission denied.');
   }
 }
 

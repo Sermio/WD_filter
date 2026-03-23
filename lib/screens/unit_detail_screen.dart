@@ -1,7 +1,12 @@
+import 'dart:math' show min;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:worldshift_assistant/data/ability_icon_fallbacks.dart';
 import 'package:worldshift_assistant/data/data.dart';
 import 'package:worldshift_assistant/models/game_unit.dart';
+import 'package:worldshift_assistant/widgets/ability_icon_preview.dart';
+import 'package:worldshift_assistant/widgets/game_description_highlights.dart';
 
 class UnitDetailScreen extends StatelessWidget {
   const UnitDetailScreen({super.key, required this.unit});
@@ -28,6 +33,12 @@ class UnitDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final statsEntries = _sortStats(unit.stats);
+    final listablePassive = unit.passiveAbilities
+        .where((a) => a.isListableAbility)
+        .toList();
+    final listableActive = unit.activeAbilities
+        .where((a) => a.isListableAbility)
+        .toList();
 
     return Scaffold(
       backgroundColor: const Color(0xFFF6F7FB),
@@ -65,89 +76,41 @@ class UnitDetailScreen extends StatelessWidget {
         children: [
           _buildHero(),
           const SizedBox(height: 16),
-          _buildSection(
-            title: 'Stats',
-            trailing: _buildStatsCount(statsEntries.length),
-            children: [
-              if (statsEntries.isEmpty)
-                Text(
-                  'No parseable `stats` block found in the .dt file.',
-                  style: TextStyle(color: Colors.grey.shade600),
+          statsEntries.isEmpty
+              ? _buildSection(
+                  title: 'Stats',
+                  children: [
+                    Text(
+                      'This unit has no stats on record.',
+                      style: TextStyle(color: Colors.grey.shade600),
+                    ),
+                  ],
                 )
-              else ...[
-                Wrap(
-                  spacing: 10,
-                  runSpacing: 10,
-                  children: _selectPrimaryStats(statsEntries)
-                      .map(
-                        (e) => _PrimaryStatCard(
-                          label: _statLabel(e.key),
-                          value: e.value,
-                        ),
-                      )
-                      .toList(),
-                ),
-                const SizedBox(height: 14),
-              ],
-              if (statsEntries.isNotEmpty)
-                ...statsEntries.map(
-                  (e) => Container(
-                    margin: const EdgeInsets.only(bottom: 10),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 10,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade50,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.grey.shade200),
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          flex: 3,
-                          child: Text(
-                            _statLabel(e.key),
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Text(
-                            e.value,
-                            textAlign: TextAlign.right,
-                            style: TextStyle(
-                              color: Colors.grey.shade800,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-            ],
-          ),
+              : _buildStatsSection(context, statsEntries),
           const SizedBox(height: 16),
           _buildSection(
             title: 'Abilities',
             children: [
-              if (unit.passiveAbilities.isEmpty && unit.activeAbilities.isEmpty)
+              if (listablePassive.isEmpty && listableActive.isEmpty)
                 Text(
-                  'No abilities were parsed from the .dt file.',
+                  'This unit has no abilities on record.',
                   style: TextStyle(color: Colors.grey.shade600),
                 )
               else ...[
-                if (unit.passiveAbilities.isNotEmpty)
+                if (listablePassive.isNotEmpty)
                   _buildAbilityGroup(
-                      'Passive Abilities', unit.passiveAbilities),
-                if (unit.passiveAbilities.isNotEmpty &&
-                    unit.activeAbilities.isNotEmpty)
+                    'Passive Abilities',
+                    listablePassive,
+                    fallbackKind: AbilityIconFallbackKind.passive,
+                  ),
+                if (listablePassive.isNotEmpty && listableActive.isNotEmpty)
                   const SizedBox(height: 16),
-                if (unit.activeAbilities.isNotEmpty)
-                  _buildAbilityGroup('Active Abilities', unit.activeAbilities),
+                if (listableActive.isNotEmpty)
+                  _buildAbilityGroup(
+                    'Active Abilities',
+                    listableActive,
+                    fallbackKind: AbilityIconFallbackKind.active,
+                  ),
               ],
             ],
           ),
@@ -157,7 +120,7 @@ class UnitDetailScreen extends StatelessWidget {
             children: [
               if (unit.statusEffects.isEmpty)
                 Text(
-                  'No buff/debuff effects were parsed from the .dt file.',
+                  'This unit has no buff or debuff effects listed.',
                   style: TextStyle(color: Colors.grey.shade600),
                 )
               else
@@ -239,6 +202,107 @@ class UnitDetailScreen extends StatelessWidget {
     );
   }
 
+  static const _sectionTitleStyle = TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.bold,
+    color: Color(0xFF667eea),
+  );
+
+  static const int _primaryStatCount = 4;
+
+  /// Estadísticas que no están ya en las tarjetas principales (evita duplicar filas).
+  List<MapEntry<String, String>> _additionalStatsEntries(
+    List<MapEntry<String, String>> statsEntries,
+  ) {
+    if (statsEntries.length <= _primaryStatCount) {
+      return const [];
+    }
+    return statsEntries.skip(_primaryStatCount).toList();
+  }
+
+  Widget _buildStatsSection(
+    BuildContext context,
+    List<MapEntry<String, String>> statsEntries,
+  ) {
+    final primary = _selectPrimaryStats(statsEntries);
+    final additional = _additionalStatsEntries(statsEntries);
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFFE8EAF2)),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x12000000),
+            blurRadius: 18,
+            offset: Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('Stats', style: _sectionTitleStyle),
+          const SizedBox(height: 14),
+          Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            children: primary
+                .map(
+                  (e) => _PrimaryStatCard(
+                    label: _statLabel(e.key),
+                    value: e.value,
+                  ),
+                )
+                .toList(),
+          ),
+          if (additional.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Theme(
+              data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+              child: ExpansionTile(
+                initiallyExpanded: false,
+                tilePadding: EdgeInsets.zero,
+                childrenPadding: const EdgeInsets.only(top: 4),
+                expandedAlignment: Alignment.topLeft,
+                expandedCrossAxisAlignment: CrossAxisAlignment.start,
+                iconColor: const Color(0xFF667eea),
+                collapsedIconColor: const Color(0xFF667eea),
+                shape: const Border(),
+                collapsedShape: const Border(),
+                title: Text(
+                  'More stats',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.grey.shade800,
+                  ),
+                ),
+                subtitle: Text(
+                  additional.length == 1
+                      ? '1 more'
+                      : '${additional.length} more',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+                children: [
+                  _ExpandableStatList(
+                    entries: additional,
+                    statLabel: _statLabel,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
   Widget _buildSection({
     required String title,
     Widget? trailing,
@@ -266,11 +330,7 @@ class UnitDetailScreen extends StatelessWidget {
               Expanded(
                 child: Text(
                   title,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF667eea),
-                  ),
+                  style: _sectionTitleStyle,
                 ),
               ),
               if (trailing != null) trailing,
@@ -282,21 +342,6 @@ class UnitDetailScreen extends StatelessWidget {
       ),
     );
   }
-
-  Widget _buildStatsCount(int count) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-        decoration: BoxDecoration(
-          color: const Color(0xFFF0F3FF),
-          borderRadius: BorderRadius.circular(999),
-        ),
-        child: Text(
-          '$count',
-          style: const TextStyle(
-            color: Color(0xFF4D5FBD),
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      );
 
   Widget _buildChip(String label, IconData icon) => Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -323,8 +368,9 @@ class UnitDetailScreen extends StatelessWidget {
 
   Widget _buildAbilityGroup(
     String title,
-    List<GameUnitAbility> abilities,
-  ) {
+    List<GameUnitAbility> abilities, {
+    required AbilityIconFallbackKind fallbackKind,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -337,12 +383,17 @@ class UnitDetailScreen extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 12),
-        ...abilities.map(_buildAbilityCard),
+        ...abilities.map(
+          (a) => _buildAbilityCard(a, fallbackKind: fallbackKind),
+        ),
       ],
     );
   }
 
-  Widget _buildAbilityCard(GameUnitAbility ability) {
+  Widget _buildAbilityCard(
+    GameUnitAbility ability, {
+    required AbilityIconFallbackKind fallbackKind,
+  }) {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(14),
@@ -357,7 +408,11 @@ class UnitDetailScreen extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _IconPreview(assetPath: ability.iconAssetPath),
+              AbilityIconPreview(
+                assetPath: ability.iconAssetPath,
+                size: 30,
+                fallbackKind: fallbackKind,
+              ),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
@@ -374,9 +429,9 @@ class UnitDetailScreen extends StatelessWidget {
           if (ability.description != null &&
               ability.description!.trim().isNotEmpty) ...[
             const SizedBox(height: 6),
-            Text(
+            GameDescriptionText(
               ability.description!,
-              style: const TextStyle(
+              baseStyle: const TextStyle(
                 color: Color(0xFF475569),
                 height: 1.35,
               ),
@@ -406,7 +461,10 @@ class UnitDetailScreen extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _IconPreview(assetPath: effect.iconAssetPath),
+              AbilityIconPreview(
+                assetPath: effect.iconAssetPath,
+                size: 30,
+              ),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
@@ -438,9 +496,9 @@ class UnitDetailScreen extends StatelessWidget {
           ),
           if (effect.description != null && effect.description!.trim().isNotEmpty) ...[
             const SizedBox(height: 8),
-            Text(
+            GameDescriptionText(
               effect.description!,
-              style: const TextStyle(
+              baseStyle: const TextStyle(
                 color: Color(0xFF475569),
                 height: 1.35,
               ),
@@ -482,7 +540,7 @@ class UnitDetailScreen extends StatelessWidget {
   List<MapEntry<String, String>> _selectPrimaryStats(
     List<MapEntry<String, String>> statsEntries,
   ) {
-    return statsEntries.take(4).toList();
+    return statsEntries.take(_primaryStatCount).toList();
   }
 
   String _unitTypeLabel(String value) {
@@ -496,6 +554,95 @@ class UnitDetailScreen extends StatelessWidget {
       default:
         return value;
     }
+  }
+}
+
+/// Lista de filas de estadísticas: muestra 6 por defecto y permite desplegar el resto.
+class _ExpandableStatList extends StatefulWidget {
+  const _ExpandableStatList({
+    required this.entries,
+    required this.statLabel,
+  });
+
+  final List<MapEntry<String, String>> entries;
+  final String Function(String key) statLabel;
+
+  @override
+  State<_ExpandableStatList> createState() => _ExpandableStatListState();
+}
+
+class _ExpandableStatListState extends State<_ExpandableStatList> {
+  static const int _previewCount = 6;
+  bool _showAll = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final entries = widget.entries;
+    final total = entries.length;
+    final visibleCount =
+        _showAll ? total : min(_previewCount, total);
+    final hidden = total - _previewCount;
+    final canToggle = total > _previewCount;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ...entries.take(visibleCount).map(_statRow),
+        if (canToggle)
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton(
+              onPressed: () => setState(() => _showAll = !_showAll),
+              child: Text(
+                _showAll
+                    ? 'Show less'
+                    : (hidden == 1
+                        ? 'Show 1 more stat'
+                        : 'Show $hidden more stats'),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _statRow(MapEntry<String, String> e) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 12,
+        vertical: 10,
+      ),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 3,
+            child: Text(
+              widget.statLabel(e.key),
+              style: const TextStyle(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 2,
+            child: Text(
+              e.value,
+              textAlign: TextAlign.right,
+              style: TextStyle(
+                color: Colors.grey.shade800,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -583,44 +730,3 @@ class _PrimaryStatCard extends StatelessWidget {
   }
 }
 
-class _IconPreview extends StatelessWidget {
-  const _IconPreview({required this.assetPath});
-
-  final String? assetPath;
-
-  @override
-  Widget build(BuildContext context) {
-    if (assetPath == null || assetPath!.isEmpty) {
-      return _placeholder();
-    }
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(8),
-      child: Container(
-        width: 30,
-        height: 30,
-        color: const Color(0xFFE2E8F0),
-        child: Image.asset(
-          assetPath!,
-          fit: BoxFit.cover,
-          errorBuilder: (_, __, ___) => _placeholder(),
-        ),
-      ),
-    );
-  }
-
-  Widget _placeholder() {
-    return Container(
-      width: 30,
-      height: 30,
-      decoration: BoxDecoration(
-        color: const Color(0xFFE2E8F0),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: const Icon(
-        Icons.image_not_supported_outlined,
-        size: 16,
-        color: Color(0xFF64748B),
-      ),
-    );
-  }
-}

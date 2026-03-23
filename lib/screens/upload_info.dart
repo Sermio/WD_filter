@@ -30,16 +30,16 @@ class _UploadScreenState extends State<UploadScreen> {
       if (!mounted) return;
       setState(() {
         _lastLog =
-            'Ítems combinados: ${r.itemCount}. Líneas drop.tsv: ${r.dropLineCount}.'
-            '${r.uploaded ? ' Subido a Firestore.' : ''}'
+            'Combined items: ${r.itemCount}. drop.tsv lines: ${r.dropLineCount}.'
+            '${r.uploaded ? ' Uploaded to Firestore.' : ''}'
             '${r.excelPath != null ? ' Excel: ${r.excelPath}' : ''}';
       });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
             r.itemCount > 0
-                ? 'Pipeline completado (${r.itemCount} ítems).'
-                : 'No se obtuvieron ítems; revisa los assets.',
+                ? 'Pipeline finished (${r.itemCount} items).'
+                : 'No items produced; check assets.',
           ),
         ),
       );
@@ -57,7 +57,7 @@ class _UploadScreenState extends State<UploadScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Pipeline Worldshift'),
+        title: const Text('Worldshift pipeline'),
         backgroundColor: const Color(0xFF764ba2),
         foregroundColor: Colors.white,
       ),
@@ -65,34 +65,36 @@ class _UploadScreenState extends State<UploadScreen> {
         padding: const EdgeInsets.all(24),
         children: [
           Text(
-            'Combina loot + definiciones de ítem desde assets, opcionalmente '
-            'exporta Excel y sube la colección `items` a Firestore.',
+            'Merge loot + item definitions from assets; optionally export Excel '
+            'and upload the `items` collection to Firestore.',
             style: TextStyle(color: Colors.grey.shade800, height: 1.4),
           ),
           const SizedBox(height: 20),
           Text(
-            'Archivos',
+            'Files',
             style: Theme.of(context).textTheme.titleMedium,
           ),
           const SizedBox(height: 8),
           Text(
             '· ${WorldshiftAssets.lootTableFile}\n'
             '· ${WorldshiftAssets.itemsDefinitionFile}\n'
-            '· ${WorldshiftAssets.dropFile} (validado en pantalla Loot)',
+            '· ${WorldshiftAssets.dropFile} (validated on Loot screen)',
             style: TextStyle(fontSize: 13, color: Colors.grey.shade700),
           ),
           const SizedBox(height: 24),
           SwitchListTile(
-            title: const Text('Subir a Firestore'),
-            subtitle: const Text('Colección "items" (requiere Firebase inicializado)'),
+            title: const Text('Upload to Firestore'),
+            subtitle: const Text(
+              '"items" collection (requires initialized Firebase)',
+            ),
             value: _uploadFirebase,
             onChanged: _busy
                 ? null
                 : (v) => setState(() => _uploadFirebase = v),
           ),
           SwitchListTile(
-            title: const Text('Generar Excel'),
-            subtitle: const Text('items_history.xlsx en Descargas'),
+            title: const Text('Generate Excel'),
+            subtitle: const Text('items_history.xlsx in Downloads'),
             value: _writeExcel,
             onChanged: _busy ? null : (v) => setState(() => _writeExcel = v),
           ),
@@ -106,7 +108,7 @@ class _UploadScreenState extends State<UploadScreen> {
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
                 : const Icon(Icons.play_arrow),
-            label: Text(_busy ? 'Procesando…' : 'Ejecutar pipeline'),
+            label: Text(_busy ? 'Running…' : 'Run pipeline'),
           ),
           if (_lastLog != null) ...[
             const SizedBox(height: 24),
@@ -117,7 +119,7 @@ class _UploadScreenState extends State<UploadScreen> {
           ],
           const SizedBox(height: 32),
           Text(
-            'Unidades: ejecuta en consola\n'
+            'Units: run in terminal\n'
             'dart run tool/generate_worldshift_assets.dart',
             style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
           ),

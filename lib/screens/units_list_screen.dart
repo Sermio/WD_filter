@@ -4,6 +4,7 @@ import 'package:worldshift_assistant/data/data.dart';
 import 'package:worldshift_assistant/models/game_unit.dart';
 import 'package:worldshift_assistant/screens/unit_detail_screen.dart';
 import 'package:worldshift_assistant/services/units_catalog.dart';
+import 'package:worldshift_assistant/widgets/catalog_filter_widgets.dart';
 
 class UnitsListScreen extends StatefulWidget {
   const UnitsListScreen({super.key});
@@ -14,8 +15,10 @@ class UnitsListScreen extends StatefulWidget {
 
 class _UnitsListScreenState extends State<UnitsListScreen> {
   Future<UnitsCatalog>? _catalogFuture;
-  String _raceFilter = '';
+  bool _isFilterVisible = false;
   final _search = TextEditingController();
+  /// Mismas etiquetas que en ítems: Humans, Tribes, Aliens (vacío = todas las razas).
+  List<String> _selectedRaceLabels = [];
 
   @override
   void initState() {
@@ -29,39 +32,36 @@ class _UnitsListScreenState extends State<UnitsListScreen> {
     super.dispose();
   }
 
+  void _clearFilters() {
+    _search.clear();
+    setState(() => _selectedRaceLabels = []);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        foregroundColor: Colors.white,
-        title: const Center(
-          child: Text(
-            'Units',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1.2,
+      appBar: CatalogListAppBar(
+        title: 'Units',
+        actions: [
+          Container(
+            margin: const EdgeInsets.only(right: 8),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: IconButton(
+              icon: Icon(
+                _isFilterVisible ? Icons.close : Icons.tune,
+                color: Colors.white,
+                size: 24,
+              ),
+              onPressed: () {
+                setState(() => _isFilterVisible = !_isFilterVisible);
+              },
             ),
           ),
-        ),
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Color(0xFF667eea),
-                Color(0xFF764ba2),
-                Color(0xFFf093fb),
-              ],
-              stops: [0.0, 0.5, 1.0],
-            ),
-          ),
-        ),
+        ],
       ),
       body: FutureBuilder<UnitsCatalog>(
         future: _catalogFuture,
@@ -74,7 +74,7 @@ class _UnitsListScreenState extends State<UnitsListScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(24),
                 child: Text(
-                  'Could not load the units catalog.\n'
+                  'Could not load units catalog.\n'
                   'Run: dart run tool/generate_worldshift_assets.dart\n'
                   '${snap.error}',
                   textAlign: TextAlign.center,
@@ -83,108 +83,51 @@ class _UnitsListScreenState extends State<UnitsListScreen> {
             );
           }
           final catalog = snap.data!;
+          final folders =
+              RaceFilterToggleButtons.raceFoldersFromLabels(_selectedRaceLabels);
           final filtered = catalog.filter(
-            raceFolder: _raceFilter.isEmpty ? null : _raceFilter,
+            raceFolders: folders.isEmpty ? null : folders,
             search: _search.text,
           );
 
           return Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 10),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(18),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.06),
-                        blurRadius: 16,
-                        offset: const Offset(0, 6),
+              if (_isFilterVisible) ...[
+                CatalogFilterPanel(
+                  maxHeight: 320,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      CatalogSearchBar(
+                        controller: _search,
+                        hintText: 'Search by name or id…',
+                        onChanged: (_) => setState(() {}),
+                      ),
+                      const SizedBox(height: 8),
+                      RaceFilterToggleButtons(
+                        selectedRaces: _selectedRaceLabels,
+                        onChanged: (v) =>
+                            setState(() => _selectedRaceLabels = v),
+                      ),
+                      const SizedBox(height: 10),
+                      CatalogClearFiltersButton(onPressed: _clearFilters),
+                      const SizedBox(height: 6),
+                      Center(
+                        child: Text(
+                          '${filtered.length} ${filtered.length == 1 ? 'unit' : 'units'}',
+                          style: TextStyle(
+                            color: Colors.grey.shade600,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                       ),
                     ],
                   ),
-                  child: TextField(
-                    controller: _search,
-                    decoration: InputDecoration(
-                      hintText: 'Search by name or id...',
-                      prefixIcon: const Icon(Icons.search),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(18),
-                        borderSide: BorderSide.none,
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(18),
-                        borderSide: BorderSide.none,
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(18),
-                        borderSide: const BorderSide(
-                          color: Color(0xFF667eea),
-                          width: 1.4,
-                        ),
-                      ),
-                      filled: true,
-                      fillColor: Colors.white,
-                      suffixIcon: _search.text.isNotEmpty
-                          ? IconButton(
-                              icon: const Icon(Icons.clear),
-                              onPressed: () {
-                                _search.clear();
-                                setState(() {});
-                              },
-                            )
-                          : null,
-                    ),
-                    onChanged: (_) => setState(() {}),
-                  ),
                 ),
-              ),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  children: [
-                    _buildRaceChip(
-                      label: 'All',
-                      selected: _raceFilter.isEmpty,
-                      onTap: () => setState(() => _raceFilter = ''),
-                    ),
-                    const SizedBox(width: 8),
-                    _buildRaceChip(
-                      label: 'Humans',
-                      selected: _raceFilter == 'humans',
-                      onTap: () => setState(() => _raceFilter = 'humans'),
-                    ),
-                    const SizedBox(width: 8),
-                    _buildRaceChip(
-                      label: 'Tribes',
-                      selected: _raceFilter == 'mutants',
-                      onTap: () => setState(() => _raceFilter = 'mutants'),
-                    ),
-                    const SizedBox(width: 8),
-                    _buildRaceChip(
-                      label: 'Aliens',
-                      selected: _raceFilter == 'aliens',
-                      onTap: () => setState(() => _raceFilter = 'aliens'),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-                child: Row(
-                  children: [
-                    Text(
-                      '${filtered.length} units',
-                      style: TextStyle(
-                        color: Colors.grey.shade700,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+                const Divider(height: 1),
+              ],
               Expanded(
                 child: ListView.builder(
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
@@ -208,32 +151,6 @@ class _UnitsListScreenState extends State<UnitsListScreen> {
           );
         },
       ),
-    );
-  }
-
-  Widget _buildRaceChip({
-    required String label,
-    required bool selected,
-    required VoidCallback onTap,
-  }) {
-    return FilterChip(
-      label: Text(
-        label,
-        style: TextStyle(
-          color: selected ? Colors.white : const Color(0xFF4D5FBD),
-          fontWeight: FontWeight.w700,
-        ),
-      ),
-      selected: selected,
-      onSelected: (_) => onTap(),
-      selectedColor: const Color(0xFF667eea),
-      backgroundColor: Colors.white,
-      side: BorderSide(
-        color: selected ? const Color(0xFF667eea) : const Color(0xFFD7DDFC),
-      ),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
-      showCheckmark: false,
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
     );
   }
 }

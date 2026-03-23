@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:worldshift_assistant/screens/abilities_list_screen.dart';
 import 'package:worldshift_assistant/screens/card_list.dart';
 import 'package:worldshift_assistant/screens/loot_explorer_screen.dart';
 import 'package:worldshift_assistant/screens/units_list_screen.dart';
@@ -22,6 +23,7 @@ class _HomeShellState extends State<HomeShell> {
         children: const [
           CardListScreen(),
           UnitsListScreen(),
+          AbilitiesListScreen(),
           LootExplorerScreen(),
           UploadScreen(),
         ],
@@ -33,12 +35,17 @@ class _HomeShellState extends State<HomeShell> {
           NavigationDestination(
             icon: Icon(Icons.inventory_2_outlined),
             selectedIcon: Icon(Icons.inventory_2),
-            label: 'Ítems',
+            label: 'Items',
           ),
           NavigationDestination(
             icon: Icon(Icons.groups_outlined),
             selectedIcon: Icon(Icons.groups),
-            label: 'Unidades',
+            label: 'Units',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.auto_awesome_outlined),
+            selectedIcon: Icon(Icons.auto_awesome),
+            label: 'Abilities',
           ),
           NavigationDestination(
             icon: Icon(Icons.map_outlined),
@@ -48,7 +55,7 @@ class _HomeShellState extends State<HomeShell> {
           NavigationDestination(
             icon: Icon(Icons.cloud_upload_outlined),
             selectedIcon: Icon(Icons.cloud_upload),
-            label: 'Datos',
+            label: 'Data',
           ),
         ],
       ),
