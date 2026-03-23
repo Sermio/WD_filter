@@ -79,4 +79,10 @@ final List<String> unitsFlat = [
   'Tritech',
   'Shifter',
   'Overseer',
+  'Engineer',
+  'Defender',
+  'Psychic',
+  'EliteKaiRider',
+  'PsiDetonator',
+  'Defiler',
 ];

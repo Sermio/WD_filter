@@ -1,0 +1,299 @@
+[
+  {
+    "race": "aliens",
+    "col": 1,
+    "x": 0,
+    "y": 243,
+    "width": 81,
+    "height": 81,
+    "file": "assets/generated/item_icons/raw_overlays/aliens_c1.png"
+  },
+  {
+    "race": "aliens",
+    "col": 2,
+    "x": 81,
+    "y": 243,
+    "width": 81,
+    "height": 81,
+    "file": "assets/generated/item_icons/raw_overlays/aliens_c2.png"
+  },
+  {
+    "race": "aliens",
+    "col": 3,
+    "x": 162,
+    "y": 243,
+    "width": 81,
+    "height": 81,
+    "file": "assets/generated/item_icons/raw_overlays/aliens_c3.png"
+  },
+  {
+    "race": "aliens",
+    "col": 4,
+    "x": 243,
+    "y": 243,
+    "width": 81,
+    "height": 81,
+    "file": "assets/generated/item_icons/raw_overlays/aliens_c4.png"
+  },
+  {
+    "race": "aliens",
+    "col": 5,
+    "x": 324,
+    "y": 243,
+    "width": 81,
+    "height": 81,
+    "file": "assets/generated/item_icons/raw_overlays/aliens_c5.png"
+  },
+  {
+    "race": "aliens",
+    "col": 6,
+    "x": 405,
+    "y": 243,
+    "width": 81,
+    "height": 81,
+    "file": "assets/generated/item_icons/raw_overlays/aliens_c6.png"
+  },
+  {
+    "race": "aliens",
+    "col": 7,
+    "x": 486,
+    "y": 243,
+    "width": 81,
+    "height": 81,
+    "file": "assets/generated/item_icons/raw_overlays/aliens_c7.png"
+  },
+  {
+    "race": "aliens",
+    "col": 8,
+    "x": 567,
+    "y": 243,
+    "width": 81,
+    "height": 81,
+    "file": "assets/generated/item_icons/raw_overlays/aliens_c8.png"
+  },
+  {
+    "race": "aliens",
+    "col": 9,
+    "x": 648,
+    "y": 243,
+    "width": 81,
+    "height": 81,
+    "file": "assets/generated/item_icons/raw_overlays/aliens_c9.png"
+  },
+  {
+    "race": "aliens",
+    "col": 10,
+    "x": 729,
+    "y": 243,
+    "width": 81,
+    "height": 81,
+    "file": "assets/generated/item_icons/raw_overlays/aliens_c10.png"
+  },
+  {
+    "race": "aliens",
+    "col": 11,
+    "x": 810,
+    "y": 243,
+    "width": 81,
+    "height": 81,
+    "file": "assets/generated/item_icons/raw_overlays/aliens_c11.png"
+  },
+  {
+    "race": "aliens",
+    "col": 12,
+    "x": 891,
+    "y": 243,
+    "width": 81,
+    "height": 81,
+    "file": "assets/generated/item_icons/raw_overlays/aliens_c12.png"
+  },
+  {
+    "race": "humans",
+    "col": 1,
+    "x": 0,
+    "y": 567,
+    "width": 81,
+    "height": 81,
+    "file": "assets/generated/item_icons/raw_overlays/humans_c1.png"
+  },
+  {
+    "race": "humans",
+    "col": 2,
+    "x": 81,
+    "y": 567,
+    "width": 81,
+    "height": 81,
+    "file": "assets/generated/item_icons/raw_overlays/humans_c2.png"
+  },
+  {
+    "race": "humans",
+    "col": 3,
+    "x": 162,
+    "y": 567,
+    "width": 81,
+    "height": 81,
+    "file": "assets/generated/item_icons/raw_overlays/humans_c3.png"
+  },
+  {
+    "race": "humans",
+    "col": 4,
+    "x": 243,
+    "y": 567,
+    "width": 81,
+    "height": 81,
+    "file": "assets/generated/item_icons/raw_overlays/humans_c4.png"
+  },
+  {
+    "race": "humans",
+    "col": 5,
+    "x": 324,
+    "y": 567,
+    "width": 81,
+    "height": 81,
+    "file": "assets/generated/item_icons/raw_overlays/humans_c5.png"
+  },
+  {
+    "race": "humans",
+    "col": 6,
+    "x": 405,
+    "y": 567,
+    "width": 81,
+    "height": 81,
+    "file": "assets/generated/item_icons/raw_overlays/humans_c6.png"
+  },
+  {
+    "race": "humans",
+    "col": 7,
+    "x": 486,
+    "y": 567,
+    "width": 81,
+    "height": 81,
+    "file": "assets/generated/item_icons/raw_overlays/humans_c7.png"
+  },
+  {
+    "race": "humans",
+    "col": 8,
+    "x": 567,
+    "y": 567,
+    "width": 81,
+    "height": 81,
+    "file": "assets/generated/item_icons/raw_overlays/humans_c8.png"
+  },
+  {
+    "race": "humans",
+    "col": 9,
+    "x": 648,
+    "y": 567,
+    "width": 81,
+    "height": 81,
+    "file": "assets/generated/item_icons/raw_overlays/humans_c9.png"
+  },
+  {
+    "race": "humans",
+    "col": 10,
+    "x": 729,
+    "y": 567,
+    "width": 81,
+    "height": 81,
+    "file": "assets/generated/item_icons/raw_overlays/humans_c10.png"
+  },
+  {
+    "race": "humans",
+    "col": 12,
+    "x": 891,
+    "y": 567,
+    "width": 81,
+    "height": 81,
+    "file": "assets/generated/item_icons/raw_overlays/humans_c12.png"
+  },
+  {
+    "race": "mutants",
+    "col": 1,
+    "x": 0,
+    "y": 891,
+    "width": 81,
+    "height": 81,
+    "file": "assets/generated/item_icons/raw_overlays/mutants_c1.png"
+  },
+  {
+    "race": "mutants",
+    "col": 2,
+    "x": 81,
+    "y": 891,
+    "width": 81,
+    "height": 81,
+    "file": "assets/generated/item_icons/raw_overlays/mutants_c2.png"
+  },
+  {
+    "race": "mutants",
+    "col": 3,
+    "x": 162,
+    "y": 891,
+    "width": 81,
+    "height": 81,
+    "file": "assets/generated/item_icons/raw_overlays/mutants_c3.png"
+  },
+  {
+    "race": "mutants",
+    "col": 4,
+    "x": 243,
+    "y": 891,
+    "width": 81,
+    "height": 81,
+    "file": "assets/generated/item_icons/raw_overlays/mutants_c4.png"
+  },
+  {
+    "race": "mutants",
+    "col": 5,
+    "x": 324,
+    "y": 891,
+    "width": 81,
+    "height": 81,
+    "file": "assets/generated/item_icons/raw_overlays/mutants_c5.png"
+  },
+  {
+    "race": "mutants",
+    "col": 6,
+    "x": 405,
+    "y": 891,
+    "width": 81,
+    "height": 81,
+    "file": "assets/generated/item_icons/raw_overlays/mutants_c6.png"
+  },
+  {
+    "race": "mutants",
+    "col": 7,
+    "x": 486,
+    "y": 891,
+    "width": 81,
+    "height": 81,
+    "file": "assets/generated/item_icons/raw_overlays/mutants_c7.png"
+  },
+  {
+    "race": "mutants",
+    "col": 8,
+    "x": 567,
+    "y": 891,
+    "width": 81,
+    "height": 81,
+    "file": "assets/generated/item_icons/raw_overlays/mutants_c8.png"
+  },
+  {
+    "race": "mutants",
+    "col": 9,
+    "x": 648,
+    "y": 891,
+    "width": 81,
+    "height": 81,
+    "file": "assets/generated/item_icons/raw_overlays/mutants_c9.png"
+  },
+  {
+    "race": "mutants",
+    "col": 10,
+    "x": 729,
+    "y": 891,
+    "width": 81,
+    "height": 81,
+    "file": "assets/generated/item_icons/raw_overlays/mutants_c10.png"
+  }
+]

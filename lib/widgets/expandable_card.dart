@@ -19,7 +19,7 @@ class ExpandableCard extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ExpandableCardState createState() => _ExpandableCardState();
+  State<ExpandableCard> createState() => _ExpandableCardState();
 }
 
 class _ExpandableCardState extends State<ExpandableCard> {
@@ -27,236 +27,373 @@ class _ExpandableCardState extends State<ExpandableCard> {
 
   @override
   Widget build(BuildContext context) {
+    final rarityColor = getRarityColor(widget.itemData['rarity']);
+    final readableAccent = _buildReadableAccent(rarityColor);
+    final previewGroups = _buildPreviewGroups(widget.itemData['attributes']);
+    final sourceText = _buildSourceText();
+
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
-      margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 16),
-      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
             Colors.white,
-            Colors.grey.shade50,
+            rarityColor.withValues(alpha: 0.025),
           ],
         ),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: Colors.black.withValues(alpha: 0.08),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
         ],
         border: Border.all(
-          color: Colors.grey.shade200,
+          color: rarityColor.withValues(alpha: 0.12),
           width: 1,
         ),
       ),
       child: Column(
         children: [
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            title: Text(
-              widget.name,
-              style: TextStyle(
-                color: getRarityColor(widget.itemData['rarity']),
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-                letterSpacing: 0.5,
-              ),
-            ),
-            subtitle: Padding(
-              padding: const EdgeInsets.only(top: 4),
-              child: Text(
-                (widget.map.isNotEmpty &&
-                        widget.itemData['obtainedFrom'] != null &&
-                        widget.itemData['obtainedFrom'].isNotEmpty)
-                    ? "${widget.map} - ${widget.itemData['obtainedFrom']}"
-                    : widget.map.isNotEmpty
-                        ? widget.map
-                        : widget.itemData['obtainedFrom']?.isNotEmpty ?? false
-                            ? widget.itemData['obtainedFrom']
-                            : 'Unknown',
-                style: TextStyle(
-                  color: Colors.grey.shade600,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-            leading: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 8,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: ItemCompleteFrame(
-                slot: widget.itemData['slot'],
-                race: widget.itemData['race'],
-                rarity: widget.rarity,
-              ),
-            ),
-            trailing: Container(
-              decoration: BoxDecoration(
-                color: Colors.grey.shade100,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: IconButton(
-                icon: Icon(
-                  Icons.info_outline,
-                  color: Colors.grey.shade600,
-                  size: 20,
-                ),
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (ctx) => AlertDialog(
-                      backgroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      elevation: 20,
-                      title: Text(
-                        widget.name,
-                        style: TextStyle(
-                            color: getRarityColor(widget.itemData['rarity']),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20),
-                      ),
-                      content: Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              Colors.grey.shade50,
-                              Colors.white,
-                            ],
-                          ),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: SingleChildScrollView(
-                          child: ItemDescription(
-                              itemName: widget.name,
-                              rarity: widget.rarity,
-                              slot: widget.itemData['slot'],
-                              obtainedFrom: widget.obtainedFrom,
-                              attributes: widget.itemData['attributes']),
-                        ),
-                      ),
-                      actions: [
-                        Container(
-                          decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              colors: [Color(0xFF667eea), Color(0xFF764ba2)],
-                            ),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: TextButton(
-                            onPressed: () => Navigator.pop(context),
-                            style: TextButton.styleFrom(
-                              backgroundColor: Colors.transparent,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                            child: const Text(
-                              'Accept',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ),
+          InkWell(
+            borderRadius: BorderRadius.circular(14),
             onTap: () {
               setState(() {
                 _isExpanded = !_isExpanded;
               });
             },
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(14),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.1),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: ItemCompleteFrame(
+                    slot: widget.itemData['slot'],
+                    rarity: widget.rarity,
+                  ),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width: 34,
+                                  height: 4,
+                                  decoration: BoxDecoration(
+                                    color: rarityColor.withValues(alpha: 0.85),
+                                    borderRadius: BorderRadius.circular(999),
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  widget.name,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color: readableAccent,
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 17,
+                                    height: 1.1,
+                                    letterSpacing: 0.2,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          _IconButtonChip(
+                            icon: _isExpanded
+                                ? Icons.keyboard_arrow_up
+                                : Icons.keyboard_arrow_down,
+                            onPressed: () {
+                              setState(() {
+                                _isExpanded = !_isExpanded;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: [
+                          _InfoChip(
+                            label: rarityToString(widget.rarity),
+                            color: rarityColor,
+                            icon: Icons.stars_rounded,
+                          ),
+                          _InfoChip(
+                            label: getSlotValueOrDescription(widget.itemData['slot']),
+                            color: const Color(0xFF5E6678),
+                            icon: Icons.category_outlined,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.place_outlined,
+                            size: 16,
+                            color: Colors.grey.shade600,
+                          ),
+                          const SizedBox(width: 6),
+                          Expanded(
+                            child: Text(
+                              sourceText,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                color: Color(0xFF525A69),
+                                fontSize: 13,
+                                fontWeight: FontWeight.w700,
+                                height: 1.2,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (previewGroups.isNotEmpty) ...[
+                        const SizedBox(height: 12),
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF6F7FB),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: Colors.grey.shade200,
+                            ),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: previewGroups
+                                .map(
+                                  (group) => Padding(
+                                    padding: const EdgeInsets.only(bottom: 6),
+                                    child: _PreviewStatGroupRow(group: group),
+                                  ),
+                                )
+                                .toList(),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
           if (_isExpanded)
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ItemDescription(
-                itemName: widget.itemData['name'],
-                rarity: widget.itemData['rarity'],
-                slot: widget.itemData['slot'],
-                obtainedFrom: widget.obtainedFrom,
-                attributes: widget.itemData['attributes'],
+            Container(
+              margin: const EdgeInsets.only(top: 14),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: Colors.grey.shade200),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ItemDescription(
+                  itemName: widget.itemData['name'],
+                  rarity: widget.itemData['rarity'],
+                  slot: widget.itemData['slot'],
+                  obtainedFrom: widget.obtainedFrom,
+                  attributes: widget.itemData['attributes'],
+                ),
               ),
             ),
         ],
       ),
     );
   }
+
+  String _buildSourceText() {
+    final map = widget.map.trim();
+    final obtainedFrom = '${widget.itemData['obtainedFrom'] ?? ''}'.trim();
+    if (map.isNotEmpty && obtainedFrom.isNotEmpty) {
+      return '$map · $obtainedFrom';
+    }
+    if (map.isNotEmpty) {
+      return map;
+    }
+    if (obtainedFrom.isNotEmpty) {
+      return obtainedFrom;
+    }
+    return 'Origen desconocido';
+  }
+
+  Color _buildReadableAccent(Color base) {
+    final darkness = base.computeLuminance() > 0.6 ? 0.72 : 0.42;
+    return Color.alphaBlend(
+      Colors.black.withValues(alpha: darkness),
+      base,
+    );
+  }
+
+  List<_PreviewStatGroup> _buildPreviewGroups(dynamic rawAttributes) {
+    if (rawAttributes is! Map<String, dynamic>) {
+      return const [];
+    }
+
+    final groups = <_PreviewStatGroup>[];
+    var statCount = 0;
+    for (final entry in rawAttributes.entries) {
+      final unitName = getUnitValue(entry.key);
+      final value = entry.value;
+
+      if (value is Map<String, dynamic>) {
+        final lines = <_PreviewStatLine>[];
+        for (final attrEntry in value.entries) {
+          final amount = '${attrEntry.value}';
+          lines.add(
+            _PreviewStatLine(
+              amount: amount.startsWith('-') ? amount : '+$amount',
+              attribute: getAttributeValue(attrEntry.key),
+            ),
+          );
+          statCount++;
+          if (statCount >= 3) {
+            break;
+          }
+        }
+        if (lines.isNotEmpty) {
+          groups.add(_PreviewStatGroup(unit: unitName, lines: lines));
+        }
+        if (statCount >= 3) {
+          return groups;
+        }
+      } else {
+        groups.add(
+          _PreviewStatGroup(
+            unit: unitName,
+            lines: [
+              _PreviewStatLine(
+                amount: '$value',
+                attribute: '',
+              ),
+            ],
+          ),
+        );
+        statCount++;
+        if (statCount >= 3) {
+          return groups;
+        }        
+      }
+    }
+    return groups;
+  }
 }
 
 class ItemCompleteFrame extends StatelessWidget {
   final String slot;
-  final String race;
   final String rarity;
 
   const ItemCompleteFrame({
     super.key,
     required this.slot,
-    required this.race,
     required this.rarity,
   });
 
   @override
   Widget build(BuildContext context) {
-    final String basePath = getImagePath(race);
+    final String repo = slot.toUpperCase();
+    final String iconPath =
+        'assets/generated/item_icons/named/icons/$repo.png';
+    final String framePath =
+        'assets/generated/item_icons/named/frames/${repo}_frame.png';
+    final String overlayPath =
+        'assets/generated/item_icons/named/overlays/${repo}_overlay.png';
+    final Color highlightColor = getRarityHighlightColor(rarity);
 
     return Container(
       width: 62,
       height: 62,
       color: Colors.transparent,
       child: Stack(
+        alignment: Alignment.center,
         children: [
-          Container(
-            width: 60,
-            height: 60,
-            color: Colors.white,
-            child: Image.asset(
-              'assets/images/items/$basePath/${slot.toUpperCase()}.png',
-              scale: 1.5,
-              width: 60,
-              height: 60,
-              cacheWidth: 60,
-              cacheHeight: 60,
-              fit: BoxFit.contain,
-              colorBlendMode: BlendMode.multiply,
+          Positioned.fill(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: const Color(0xFFF7F7F9),
+                borderRadius: BorderRadius.circular(10),
+              ),
             ),
           ),
-          BorderRarityColor(
-            rarity: rarity,
-          ),
-          Center(
+          Padding(
+            padding: const EdgeInsets.all(7),
             child: Image.asset(
-              'assets/images/items/$basePath/${slot.toUpperCase()}_frame.png',
-              width: 62,
-              height: 62,
-              cacheWidth: 62,
-              cacheHeight: 62,
-              fit: BoxFit.cover,
+              iconPath,
+              width: 48,
+              height: 48,
+              cacheWidth: 96,
+              cacheHeight: 96,
+              fit: BoxFit.contain,
+              errorBuilder: (context, error, stackTrace) {
+                return const Icon(Icons.inventory_2_outlined,
+                    size: 28, color: Color(0xFF8F96A3));
+              },
+            ),
+          ),
+          Positioned.fill(
+            child: IgnorePointer(
+              child: Image.asset(
+                overlayPath,
+                width: 62,
+                height: 62,
+                cacheWidth: 124,
+                cacheHeight: 124,
+                fit: BoxFit.contain,
+                color: highlightColor,
+                colorBlendMode: BlendMode.srcIn,
+                errorBuilder: (context, error, stackTrace) {
+                  return const SizedBox.shrink();
+                },
+              ),
+            ),
+          ),
+          Positioned.fill(
+            child: IgnorePointer(
+              child: Image.asset(
+                framePath,
+                width: 62,
+                height: 62,
+                cacheWidth: 124,
+                cacheHeight: 124,
+                fit: BoxFit.contain,
+                errorBuilder: (context, error, stackTrace) {
+                  return const SizedBox.shrink();
+                },
+              ),
             ),
           ),
         ],
@@ -265,106 +402,196 @@ class ItemCompleteFrame extends StatelessWidget {
   }
 }
 
-class BorderRarityColor extends StatelessWidget {
-  final String rarity;
-
-  const BorderRarityColor({
-    super.key,
-    required this.rarity,
+class _InfoChip extends StatelessWidget {
+  const _InfoChip({
+    required this.label,
+    required this.color,
+    required this.icon,
   });
+
+  final String label;
+  final Color color;
+  final IconData icon;
 
   @override
   Widget build(BuildContext context) {
-    // Replicar el efecto antiguo: cuatro bordes con degradados superpuestos
-    final Color c = getRarityColor(rarity);
-    final Color d = c.withOpacity(0.55); // intensidad suavizada para diagonales
-    final Color v = c.withOpacity(
-        0.35); // intensidad suavizada para bandas vertical/horizontal
-    return Positioned(
-      top: 5.5,
-      left: 8,
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [d, Colors.transparent],
-            stops: const [0.12, 0.2],
-          ),
+    final isBright = color.computeLuminance() > 0.6;
+    final textColor = Color.alphaBlend(
+      Colors.black.withValues(alpha: isBright ? 0.72 : 0.6),
+      color,
+    );
+    final iconColor = isBright
+        ? Color.alphaBlend(
+            Colors.black.withValues(alpha: 0.58),
+            color,
+          )
+        : color;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: isBright ? 0.055 : 0.08),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(
+          color: color.withValues(alpha: isBright ? 0.1 : 0.14),
         ),
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topRight,
-              end: Alignment.bottomLeft,
-              colors: [d, Colors.transparent],
-              stops: const [0.12, 0.2],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 14, color: iconColor),
+          const SizedBox(width: 6),
+          Text(
+            label,
+            style: TextStyle(
+              color: textColor,
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
             ),
           ),
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.bottomLeft,
-                end: Alignment.topRight,
-                colors: [d, Colors.transparent],
-                stops: const [0.12, 0.2],
-              ),
-            ),
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.bottomRight,
-                  end: Alignment.topLeft,
-                  colors: [d, Colors.transparent],
-                  stops: const [0.2, 0.3],
-                ),
-              ),
-              child: Container(
-                width: 45,
-                height: 45,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [v, Colors.transparent],
-                    stops: const [0.05, 0.25],
-                  ),
-                ),
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                      colors: [v, Colors.transparent],
-                      stops: const [0.05, 0.25],
-                    ),
-                  ),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.bottomCenter,
-                        end: Alignment.topCenter,
-                        colors: [v, Colors.transparent],
-                        stops: const [0.05, 0.25],
-                      ),
-                    ),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.centerRight,
-                          end: Alignment.centerLeft,
-                          colors: [v, Colors.transparent],
-                          stops: const [0.05, 0.3],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _IconButtonChip extends StatelessWidget {
+  const _IconButtonChip({
+    required this.icon,
+    required this.onPressed,
+  });
+
+  final IconData icon;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: const Color(0xFFF1F3F7),
+      borderRadius: BorderRadius.circular(10),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(10),
+        onTap: onPressed,
+        child: SizedBox(
+          width: 34,
+          height: 34,
+          child: Icon(icon, size: 18, color: const Color(0xFF5F6677)),
         ),
       ),
     );
   }
+}
+
+class _PreviewStatGroupRow extends StatelessWidget {
+  const _PreviewStatGroupRow({
+    required this.group,
+  });
+
+  final _PreviewStatGroup group;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          constraints: const BoxConstraints(minWidth: 84),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+          decoration: BoxDecoration(
+            color: const Color(0xFFECEFF5),
+            borderRadius: BorderRadius.circular(999),
+          ),
+          child: Text(
+            group.unit,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              color: Color(0xFF566072),
+              fontSize: 11.5,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: group.lines
+                .map(
+                  (line) => Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: _PreviewStatLineRow(line: line),
+                  ),
+                )
+                .toList(),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _PreviewStatLineRow extends StatelessWidget {
+  const _PreviewStatLineRow({
+    required this.line,
+  });
+
+  final _PreviewStatLine line;
+
+  @override
+  Widget build(BuildContext context) {
+    final isNegative = line.amount.trim().startsWith('-');
+    final amountColor =
+        isNegative ? const Color(0xFFC75A5A) : const Color(0xFF2E9B62);
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          line.amount,
+          style: TextStyle(
+            color: amountColor,
+            fontSize: 12.5,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        if (line.attribute.isNotEmpty) ...[
+          const SizedBox(width: 6),
+          Expanded(
+            child: Text(
+              line.attribute,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                color: Color(0xFF3D4452),
+                fontSize: 12.5,
+                fontWeight: FontWeight.w700,
+                height: 1.2,
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _PreviewStatGroup {
+  const _PreviewStatGroup({
+    required this.unit,
+    required this.lines,
+  });
+
+  final String unit;
+  final List<_PreviewStatLine> lines;
+}
+
+class _PreviewStatLine {
+  const _PreviewStatLine({
+    required this.amount,
+    required this.attribute,
+  });
+
+  final String amount;
+  final String attribute;
 }

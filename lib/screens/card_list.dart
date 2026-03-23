@@ -15,7 +15,7 @@ class CardListScreen extends StatefulWidget {
   const CardListScreen({super.key});
 
   @override
-  _CardListScreenState createState() => _CardListScreenState();
+  State<CardListScreen> createState() => _CardListScreenState();
 }
 
 class _CardListScreenState extends State<CardListScreen> {
@@ -50,6 +50,8 @@ class _CardListScreenState extends State<CardListScreen> {
       'Ripper',
       'AssaultBot',
       'Hellfire',
+      'Engineer',
+      'Defender',
     ],
     'Tribes': [
       'HighPriest',
@@ -61,6 +63,8 @@ class _CardListScreenState extends State<CardListScreen> {
       'Brute',
       'AncientShade',
       'HowlingHorror',
+      'Psychic',
+      'EliteKaiRider',
     ],
     'Aliens': [
       'Master',
@@ -72,6 +76,8 @@ class _CardListScreenState extends State<CardListScreen> {
       'Tritech',
       'Shifter',
       'Overseer',
+      'Defiler',
+      'PsiDetonator',
     ],
   };
 
@@ -741,27 +747,141 @@ class _CardListScreenState extends State<CardListScreen> {
                       itemData, name, rarity, filterProvider);
                 }).toList();
 
-                return Padding(
-                  padding: const EdgeInsets.only(top: 15),
-                  child: ListView.separated(
-                    itemCount: filteredItems.length,
-                    separatorBuilder: (context, index) =>
-                        const SizedBox(height: 4),
-                    itemBuilder: (context, index) {
-                      var itemData =
-                          filteredItems[index].data() as Map<String, dynamic>;
-                      String name = itemData['name'] ?? '';
-                      String rarity = itemData['rarity'] ?? 'unknown';
+                return Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 14,
+                              vertical: 10,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(14),
+                              border: Border.all(color: Colors.grey.shade200),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.04),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(
+                                  Icons.inventory_2_outlined,
+                                  size: 18,
+                                  color: Color(0xFF5F6677),
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  '${filteredItems.length} items',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 13,
+                                    color: Color(0xFF3F4655),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                              'Vista previa rapida con icono, overlay de rareza y marco original.',
+                              style: TextStyle(
+                                color: Colors.grey.shade600,
+                                fontSize: 12.5,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              textAlign: TextAlign.right,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: filteredItems.isEmpty
+                          ? Center(
+                              child: Container(
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 24),
+                                padding: const EdgeInsets.all(24),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(20),
+                                  border:
+                                      Border.all(color: Colors.grey.shade200),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color:
+                                          Colors.black.withValues(alpha: 0.05),
+                                      blurRadius: 18,
+                                      offset: const Offset(0, 8),
+                                    ),
+                                  ],
+                                ),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(
+                                      Icons.search_off_rounded,
+                                      size: 42,
+                                      color: Color(0xFF8A90A0),
+                                    ),
+                                    const SizedBox(height: 14),
+                                    const Text(
+                                      'No hay items con esos filtros',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w800,
+                                        color: Color(0xFF313846),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      'Prueba a cambiar la rareza, el slot o el mapa para ampliar los resultados.',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: Colors.grey.shade600,
+                                        fontSize: 13,
+                                        height: 1.35,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                          : ListView.separated(
+                              padding: const EdgeInsets.only(
+                                top: 4,
+                                bottom: 20,
+                              ),
+                              itemCount: filteredItems.length,
+                              separatorBuilder: (context, index) =>
+                                  const SizedBox(height: 4),
+                              itemBuilder: (context, index) {
+                                final itemData = filteredItems[index].data()
+                                    as Map<String, dynamic>;
+                                final name = itemData['name'] ?? '';
+                                final rarity = itemData['rarity'] ?? 'unknown';
 
-                      return ExpandableCard(
-                        name: name,
-                        map: itemData['map'] ?? '',
-                        rarity: rarity,
-                        obtainedFrom: itemData['obtainedFrom'],
-                        itemData: itemData,
-                      );
-                    },
-                  ),
+                                return ExpandableCard(
+                                  name: name,
+                                  map: itemData['map'] ?? '',
+                                  rarity: rarity,
+                                  obtainedFrom: itemData['obtainedFrom'],
+                                  itemData: itemData,
+                                );
+                              },
+                            ),
+                    ),
+                  ],
                 );
               },
             ),

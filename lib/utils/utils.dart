@@ -1,41 +1,16 @@
 import 'dart:io';
 import 'dart:ui';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:excel/excel.dart';
+import 'package:flame/components.dart';
+import 'package:flame/flame.dart';
+import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:worldshift_assistant/data/data.dart';
 import 'package:worldshift_assistant/data/item.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'dart:typed_data';
-import 'package:flame/flame.dart';
-import 'package:flame/sprite.dart';
-import 'package:image/image.dart' as img;
-import 'package:flutter/services.dart';
-import 'package:flame/flame.dart';
-import 'package:flame/components.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart'; // Incluye Vector2
-import 'dart:io';
-import 'dart:convert';
-import 'package:excel/excel.dart';
-import 'package:flutter/services.dart' show rootBundle;
-import 'package:path_provider/path_provider.dart';
-import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:intl/intl.dart';
-import 'package:excel/excel.dart';
-import 'package:intl/intl.dart';
-import 'dart:io';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:excel/excel.dart';
-import 'package:intl/intl.dart';
-import 'dart:io';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:flutter/material.dart';
+import 'package:worldshift_assistant/data/worldshift_assets.dart';
 
 List<Item> itemsFile1 = [];
 List<Item> itemsFile2 = [];
@@ -92,17 +67,34 @@ String cleanString(String input) {
 Color getRarityColor(String value) {
   switch (value) {
     case "1":
-      return const Color.fromARGB(255, 142, 147, 156);
+      return const Color.fromARGB(255, 183, 187, 200);
     case "2":
-      return const Color.fromARGB(255, 104, 191, 72);
+      return const Color.fromARGB(255, 119, 224, 80);
     case "3":
-      return const Color.fromARGB(255, 236, 211, 21);
+      return const Color.fromARGB(255, 255, 255, 0);
     case "4":
-      return const Color.fromARGB(255, 219, 149, 49);
+      return const Color.fromARGB(255, 255, 172, 49);
     case "5":
-      return const Color.fromARGB(255, 109, 10, 144);
+      return const Color.fromARGB(255, 204, 0, 204);
     default:
-      return const Color.fromARGB(255, 120, 122, 128);
+      return const Color.fromARGB(255, 183, 187, 200);
+  }
+}
+
+Color getRarityHighlightColor(String value) {
+  switch (value) {
+    case "1":
+      return const Color.fromARGB(255, 183, 187, 200);
+    case "2":
+      return const Color.fromARGB(255, 119, 224, 80);
+    case "3":
+      return const Color.fromARGB(255, 255, 255, 0);
+    case "4":
+      return const Color.fromARGB(255, 255, 172, 49);
+    case "5":
+      return const Color.fromARGB(255, 130, 5, 177);
+    default:
+      return const Color.fromARGB(255, 183, 187, 200);
   }
 }
 
@@ -275,7 +267,6 @@ Future<void> parseLootFile2(String path) async {
       String rarity = match.group(2) ?? '';
       String race = match.group(3) ?? '';
       String slot = match.group(4) ?? '';
-      String attributes = match.group(5)?.trim() ?? '';
       slotsSet.add(slot);
 
       int startIndex = line.indexOf(slot) + slot.length;
@@ -426,29 +417,74 @@ void copySetToClipboard(Set<String> mySet) {
   });
 }
 
-Future<void> processAndUploadItems(String pathFile1, String pathFile2) async {
+/// Pipeline: [loot_complete] + [items.tsv] → Excel opcional + Firestore opcional.
+/// `drop.tsv` se valida al cargar [LootDropRepository] en la pantalla Loot.
+Future<WorldshiftPipelineResult> processAndUploadItems({
+  String? pathFile1,
+  String? pathFile2,
+  bool uploadToFirebase = false,
+  bool writeExcel = true,
+}) async {
+  final p1 = pathFile1 ?? WorldshiftAssets.lootTableFile;
+  final p2 = pathFile2 ?? WorldshiftAssets.itemsDefinitionFile;
+
+  final combinedItems = await combineLootData(p1, p2);
+
+  int dropRows = 0;
   try {
-    await Firebase.initializeApp();
-
-    List<Item> combinedItems = await combineLootData(pathFile1, pathFile2);
-
-    if (combinedItems.isNotEmpty) {
-      print(attributeKeys);
-      print(mapsSet);
-      print(slotsSet);
-      print(lootTableSet);
-      print(namesSet);
-      // copySetToClipboard(namesSet);
-      downloadItemsExcel(combinedItems);
-      // await uploadItemsToFirebase(combinedItems);
-      print(
-          'Todos los items han sido subidos correctamente. Cantidad: ${combinedItems.length}');
-    } else {
-      print('No se encontraron items para subir.');
-    }
-  } catch (e) {
-    print('Error procesando y subiendo los items: $e');
+    final dropRaw = await loadFileFromAssets(WorldshiftAssets.dropFile);
+    dropRows = dropRaw.split(RegExp(r'\r?\n')).where((l) => l.trim().isNotEmpty).length;
+  } catch (_) {
+    /* drop opcional */
   }
+
+  if (combinedItems.isEmpty) {
+    return WorldshiftPipelineResult(
+      itemCount: 0,
+      dropLineCount: dropRows,
+      uploaded: false,
+      excelPath: null,
+    );
+  }
+
+  String? excelPath;
+  if (writeExcel) {
+    try {
+      excelPath = await downloadItemsExcel(combinedItems);
+      print('Excel exportado: $excelPath');
+    } catch (e) {
+      print('Excel no generado (permisos / plataforma): $e');
+    }
+  }
+
+  if (uploadToFirebase) {
+    await uploadItemsToFirebase(combinedItems);
+  }
+
+  print(
+    'Pipeline ítems: ${combinedItems.length} documentos; drop.tsv ~$dropRows líneas.',
+  );
+
+  return WorldshiftPipelineResult(
+    itemCount: combinedItems.length,
+    dropLineCount: dropRows,
+    uploaded: uploadToFirebase,
+    excelPath: excelPath,
+  );
+}
+
+class WorldshiftPipelineResult {
+  final int itemCount;
+  final int dropLineCount;
+  final bool uploaded;
+  final String? excelPath;
+
+  WorldshiftPipelineResult({
+    required this.itemCount,
+    required this.dropLineCount,
+    required this.uploaded,
+    required this.excelPath,
+  });
 }
 
 Future<void> saveSpritesAsPngs() async {
@@ -544,38 +580,24 @@ Future<String> downloadItemsExcel(List<Item> items) async {
     ]);
   }
 
-  var status = await Permission.manageExternalStorage.request();
-  if (!status.isGranted) {
-    throw Exception('No se otorgaron permisos de almacenamiento.');
-  }
-
   Directory? downloadsDirectory;
   if (Platform.isAndroid) {
+    final status = await Permission.manageExternalStorage.request();
+    if (!status.isGranted) {
+      throw Exception('No se otorgaron permisos de almacenamiento.');
+    }
     downloadsDirectory = Directory('/storage/emulated/0/Download');
+  } else {
+    downloadsDirectory = await getDownloadsDirectory();
   }
 
   if (downloadsDirectory == null) {
     throw Exception('No se pudo acceder al directorio de descargas.');
   }
 
-  String fileName = 'items_history.xlsx';
-  var file = File('${downloadsDirectory.path}/$fileName');
+  const fileName = 'items_history.xlsx';
+  final file = File('${downloadsDirectory.path}/$fileName');
   await file.writeAsBytes(excel.encode()!);
 
-  // try {
-  //   final result = await Share.shareXFiles(
-  //     [XFile(file.path)],
-  //     text: 'Aquí está la historia de los items.',
-  //   );
-
-  //   if (result.status == ShareResultStatus.success) {
-  //     print('Archivo compartido con éxito.');
-  //   } else if (result.status == ShareResultStatus.dismissed) {
-  //     print('El usuario descartó el compartir.');
-  //   }
-  // } catch (e) {
-  //   print('Error al compartir el archivo: $e');
-  // }
-
-  return 'items_history.xlsx';
+  return file.path;
 }

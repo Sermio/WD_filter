@@ -1,0 +1,722 @@
+[
+  {
+    "repo": "HUMAN_COMMANDER",
+    "race": "humans",
+    "icon": {
+      "col": 1,
+      "row": 2,
+      "present": true,
+      "file": "assets/generated/item_icons/named/icons/HUMAN_COMMANDER.png"
+    },
+    "frame": {
+      "frameIdx": 1,
+      "sourceFrameIdx": 1,
+      "top": 324,
+      "present": true,
+      "file": "assets/generated/item_icons/named/frames/HUMAN_COMMANDER_frame.png"
+    },
+    "overlay": {
+      "frameIdx": 1,
+      "sourceFrameIdx": 1,
+      "top": 567,
+      "present": true,
+      "file": "assets/generated/item_icons/named/overlays/HUMAN_COMMANDER_overlay.png"
+    }
+  },
+  {
+    "repo": "HUMAN_SURGEON",
+    "race": "humans",
+    "icon": {
+      "col": 3,
+      "row": 5,
+      "present": true,
+      "file": "assets/generated/item_icons/named/icons/HUMAN_SURGEON.png"
+    },
+    "frame": {
+      "frameIdx": 3,
+      "sourceFrameIdx": 3,
+      "top": 324,
+      "present": true,
+      "file": "assets/generated/item_icons/named/frames/HUMAN_SURGEON_frame.png"
+    },
+    "overlay": {
+      "frameIdx": 3,
+      "sourceFrameIdx": 3,
+      "top": 567,
+      "present": true,
+      "file": "assets/generated/item_icons/named/overlays/HUMAN_SURGEON_overlay.png"
+    }
+  },
+  {
+    "repo": "HUMAN_CONSTRUCTOR",
+    "race": "humans",
+    "icon": {
+      "col": 5,
+      "row": 2,
+      "present": true,
+      "file": "assets/generated/item_icons/named/icons/HUMAN_CONSTRUCTOR.png"
+    },
+    "frame": {
+      "frameIdx": 5,
+      "sourceFrameIdx": 5,
+      "top": 324,
+      "present": true,
+      "file": "assets/generated/item_icons/named/frames/HUMAN_CONSTRUCTOR_frame.png"
+    },
+    "overlay": {
+      "frameIdx": 5,
+      "sourceFrameIdx": 5,
+      "top": 567,
+      "present": true,
+      "file": "assets/generated/item_icons/named/overlays/HUMAN_CONSTRUCTOR_overlay.png"
+    }
+  },
+  {
+    "repo": "HUMAN_ASSASSIN",
+    "race": "humans",
+    "icon": {
+      "col": 4,
+      "row": 2,
+      "present": true,
+      "file": "assets/generated/item_icons/named/icons/HUMAN_ASSASSIN.png"
+    },
+    "frame": {
+      "frameIdx": 4,
+      "sourceFrameIdx": 4,
+      "top": 324,
+      "present": true,
+      "file": "assets/generated/item_icons/named/frames/HUMAN_ASSASSIN_frame.png"
+    },
+    "overlay": {
+      "frameIdx": 4,
+      "sourceFrameIdx": 4,
+      "top": 567,
+      "present": true,
+      "file": "assets/generated/item_icons/named/overlays/HUMAN_ASSASSIN_overlay.png"
+    }
+  },
+  {
+    "repo": "HUMAN_JUDGE",
+    "race": "humans",
+    "icon": {
+      "col": 2,
+      "row": 2,
+      "present": true,
+      "file": "assets/generated/item_icons/named/icons/HUMAN_JUDGE.png"
+    },
+    "frame": {
+      "frameIdx": 2,
+      "sourceFrameIdx": 2,
+      "top": 324,
+      "present": true,
+      "file": "assets/generated/item_icons/named/frames/HUMAN_JUDGE_frame.png"
+    },
+    "overlay": {
+      "frameIdx": 2,
+      "sourceFrameIdx": 2,
+      "top": 567,
+      "present": true,
+      "file": "assets/generated/item_icons/named/overlays/HUMAN_JUDGE_overlay.png"
+    }
+  },
+  {
+    "repo": "HUMAN_ENGINEER",
+    "race": "humans",
+    "icon": {
+      "col": 2,
+      "row": 5,
+      "present": true,
+      "file": "assets/generated/item_icons/named/icons/HUMAN_ENGINEER.png"
+    },
+    "frame": {
+      "frameIdx": 9,
+      "sourceFrameIdx": 9,
+      "top": 324,
+      "present": true,
+      "file": "assets/generated/item_icons/named/frames/HUMAN_ENGINEER_frame.png"
+    },
+    "overlay": {
+      "frameIdx": 9,
+      "sourceFrameIdx": 9,
+      "top": 567,
+      "present": true,
+      "file": "assets/generated/item_icons/named/overlays/HUMAN_ENGINEER_overlay.png"
+    }
+  },
+  {
+    "repo": "HUMAN_DEFENCE",
+    "race": "humans",
+    "icon": {
+      "col": 7,
+      "row": 2,
+      "present": true,
+      "file": "assets/generated/item_icons/named/icons/HUMAN_DEFENCE.png"
+    },
+    "frame": {
+      "frameIdx": 7,
+      "sourceFrameIdx": 7,
+      "top": 324,
+      "present": true,
+      "file": "assets/generated/item_icons/named/frames/HUMAN_DEFENCE_frame.png"
+    },
+    "overlay": {
+      "frameIdx": 7,
+      "sourceFrameIdx": 7,
+      "top": 567,
+      "present": true,
+      "file": "assets/generated/item_icons/named/overlays/HUMAN_DEFENCE_overlay.png"
+    }
+  },
+  {
+    "repo": "HUMAN_IMPLANTS",
+    "race": "humans",
+    "icon": {
+      "col": 8,
+      "row": 2,
+      "present": true,
+      "file": "assets/generated/item_icons/named/icons/HUMAN_IMPLANTS.png"
+    },
+    "frame": {
+      "frameIdx": 8,
+      "sourceFrameIdx": 8,
+      "top": 324,
+      "present": true,
+      "file": "assets/generated/item_icons/named/frames/HUMAN_IMPLANTS_frame.png"
+    },
+    "overlay": {
+      "frameIdx": 8,
+      "sourceFrameIdx": 8,
+      "top": 567,
+      "present": true,
+      "file": "assets/generated/item_icons/named/overlays/HUMAN_IMPLANTS_overlay.png"
+    }
+  },
+  {
+    "repo": "HUMAN_WEAPONS",
+    "race": "humans",
+    "icon": {
+      "col": 6,
+      "row": 2,
+      "present": true,
+      "file": "assets/generated/item_icons/named/icons/HUMAN_WEAPONS.png"
+    },
+    "frame": {
+      "frameIdx": 6,
+      "sourceFrameIdx": 6,
+      "top": 324,
+      "present": true,
+      "file": "assets/generated/item_icons/named/frames/HUMAN_WEAPONS_frame.png"
+    },
+    "overlay": {
+      "frameIdx": 6,
+      "sourceFrameIdx": 6,
+      "top": 567,
+      "present": true,
+      "file": "assets/generated/item_icons/named/overlays/HUMAN_WEAPONS_overlay.png"
+    }
+  },
+  {
+    "repo": "HUMAN_NEUROSCIENCE",
+    "race": "humans",
+    "icon": {
+      "col": 5,
+      "row": 5,
+      "present": true,
+      "file": "assets/generated/item_icons/named/icons/HUMAN_NEUROSCIENCE.png"
+    },
+    "frame": {
+      "frameIdx": 10,
+      "sourceFrameIdx": 10,
+      "top": 324,
+      "present": true,
+      "file": "assets/generated/item_icons/named/frames/HUMAN_NEUROSCIENCE_frame.png"
+    },
+    "overlay": {
+      "frameIdx": 10,
+      "sourceFrameIdx": 10,
+      "top": 567,
+      "present": true,
+      "file": "assets/generated/item_icons/named/overlays/HUMAN_NEUROSCIENCE_overlay.png"
+    }
+  },
+  {
+    "repo": "MUTANT_HIGHPRIEST",
+    "race": "mutants",
+    "icon": {
+      "col": 1,
+      "row": 3,
+      "present": true,
+      "file": "assets/generated/item_icons/named/icons/MUTANT_HIGHPRIEST.png"
+    },
+    "frame": {
+      "frameIdx": 1,
+      "sourceFrameIdx": 1,
+      "top": 648,
+      "present": true,
+      "file": "assets/generated/item_icons/named/frames/MUTANT_HIGHPRIEST_frame.png"
+    },
+    "overlay": {
+      "frameIdx": 1,
+      "sourceFrameIdx": 1,
+      "top": 891,
+      "present": true,
+      "file": "assets/generated/item_icons/named/overlays/MUTANT_HIGHPRIEST_overlay.png"
+    }
+  },
+  {
+    "repo": "MUTANT_SHAMAN",
+    "race": "mutants",
+    "icon": {
+      "col": 3,
+      "row": 3,
+      "present": true,
+      "file": "assets/generated/item_icons/named/icons/MUTANT_SHAMAN.png"
+    },
+    "frame": {
+      "frameIdx": 3,
+      "sourceFrameIdx": 3,
+      "top": 648,
+      "present": true,
+      "file": "assets/generated/item_icons/named/frames/MUTANT_SHAMAN_frame.png"
+    },
+    "overlay": {
+      "frameIdx": 3,
+      "sourceFrameIdx": 3,
+      "top": 891,
+      "present": true,
+      "file": "assets/generated/item_icons/named/overlays/MUTANT_SHAMAN_overlay.png"
+    }
+  },
+  {
+    "repo": "MUTANT_STONEGHOST",
+    "race": "mutants",
+    "icon": {
+      "col": 5,
+      "row": 3,
+      "present": true,
+      "file": "assets/generated/item_icons/named/icons/MUTANT_STONEGHOST.png"
+    },
+    "frame": {
+      "frameIdx": 5,
+      "sourceFrameIdx": 5,
+      "top": 648,
+      "present": true,
+      "file": "assets/generated/item_icons/named/frames/MUTANT_STONEGHOST_frame.png"
+    },
+    "overlay": {
+      "frameIdx": 5,
+      "sourceFrameIdx": 5,
+      "top": 891,
+      "present": true,
+      "file": "assets/generated/item_icons/named/overlays/MUTANT_STONEGHOST_overlay.png"
+    }
+  },
+  {
+    "repo": "MUTANT_ADEPT",
+    "race": "mutants",
+    "icon": {
+      "col": 4,
+      "row": 3,
+      "present": true,
+      "file": "assets/generated/item_icons/named/icons/MUTANT_ADEPT.png"
+    },
+    "frame": {
+      "frameIdx": 4,
+      "sourceFrameIdx": 4,
+      "top": 648,
+      "present": true,
+      "file": "assets/generated/item_icons/named/frames/MUTANT_ADEPT_frame.png"
+    },
+    "overlay": {
+      "frameIdx": 4,
+      "sourceFrameIdx": 4,
+      "top": 891,
+      "present": true,
+      "file": "assets/generated/item_icons/named/overlays/MUTANT_ADEPT_overlay.png"
+    }
+  },
+  {
+    "repo": "MUTANT_GUARDIAN",
+    "race": "mutants",
+    "icon": {
+      "col": 2,
+      "row": 3,
+      "present": true,
+      "file": "assets/generated/item_icons/named/icons/MUTANT_GUARDIAN.png"
+    },
+    "frame": {
+      "frameIdx": 2,
+      "sourceFrameIdx": 2,
+      "top": 648,
+      "present": true,
+      "file": "assets/generated/item_icons/named/frames/MUTANT_GUARDIAN_frame.png"
+    },
+    "overlay": {
+      "frameIdx": 2,
+      "sourceFrameIdx": 2,
+      "top": 891,
+      "present": true,
+      "file": "assets/generated/item_icons/named/overlays/MUTANT_GUARDIAN_overlay.png"
+    }
+  },
+  {
+    "repo": "MUTANT_PSYCHIC",
+    "race": "mutants",
+    "icon": {
+      "col": 5,
+      "row": 6,
+      "present": true,
+      "file": "assets/generated/item_icons/named/icons/MUTANT_PSYCHIC.png"
+    },
+    "frame": {
+      "frameIdx": 9,
+      "sourceFrameIdx": 9,
+      "top": 648,
+      "present": true,
+      "file": "assets/generated/item_icons/named/frames/MUTANT_PSYCHIC_frame.png"
+    },
+    "overlay": {
+      "frameIdx": 9,
+      "sourceFrameIdx": 9,
+      "top": 891,
+      "present": true,
+      "file": "assets/generated/item_icons/named/overlays/MUTANT_PSYCHIC_overlay.png"
+    }
+  },
+  {
+    "repo": "MUTANT_BLOOD",
+    "race": "mutants",
+    "icon": {
+      "col": 7,
+      "row": 3,
+      "present": true,
+      "file": "assets/generated/item_icons/named/icons/MUTANT_BLOOD.png"
+    },
+    "frame": {
+      "frameIdx": 7,
+      "sourceFrameIdx": 7,
+      "top": 648,
+      "present": true,
+      "file": "assets/generated/item_icons/named/frames/MUTANT_BLOOD_frame.png"
+    },
+    "overlay": {
+      "frameIdx": 7,
+      "sourceFrameIdx": 7,
+      "top": 891,
+      "present": true,
+      "file": "assets/generated/item_icons/named/overlays/MUTANT_BLOOD_overlay.png"
+    }
+  },
+  {
+    "repo": "MUTANT_NATURE",
+    "race": "mutants",
+    "icon": {
+      "col": 8,
+      "row": 3,
+      "present": true,
+      "file": "assets/generated/item_icons/named/icons/MUTANT_NATURE.png"
+    },
+    "frame": {
+      "frameIdx": 8,
+      "sourceFrameIdx": 8,
+      "top": 648,
+      "present": true,
+      "file": "assets/generated/item_icons/named/frames/MUTANT_NATURE_frame.png"
+    },
+    "overlay": {
+      "frameIdx": 8,
+      "sourceFrameIdx": 8,
+      "top": 891,
+      "present": true,
+      "file": "assets/generated/item_icons/named/overlays/MUTANT_NATURE_overlay.png"
+    }
+  },
+  {
+    "repo": "MUTANT_MIND",
+    "race": "mutants",
+    "icon": {
+      "col": 6,
+      "row": 3,
+      "present": true,
+      "file": "assets/generated/item_icons/named/icons/MUTANT_MIND.png"
+    },
+    "frame": {
+      "frameIdx": 6,
+      "sourceFrameIdx": 6,
+      "top": 648,
+      "present": true,
+      "file": "assets/generated/item_icons/named/frames/MUTANT_MIND_frame.png"
+    },
+    "overlay": {
+      "frameIdx": 6,
+      "sourceFrameIdx": 6,
+      "top": 891,
+      "present": true,
+      "file": "assets/generated/item_icons/named/overlays/MUTANT_MIND_overlay.png"
+    }
+  },
+  {
+    "repo": "MUTANT_SPIRIT",
+    "race": "mutants",
+    "icon": {
+      "col": 2,
+      "row": 6,
+      "present": true,
+      "file": "assets/generated/item_icons/named/icons/MUTANT_SPIRIT.png"
+    },
+    "frame": {
+      "frameIdx": 10,
+      "sourceFrameIdx": 10,
+      "top": 648,
+      "present": true,
+      "file": "assets/generated/item_icons/named/frames/MUTANT_SPIRIT_frame.png"
+    },
+    "overlay": {
+      "frameIdx": 10,
+      "sourceFrameIdx": 10,
+      "top": 891,
+      "present": true,
+      "file": "assets/generated/item_icons/named/overlays/MUTANT_SPIRIT_overlay.png"
+    }
+  },
+  {
+    "repo": "ALIEN_MASTER",
+    "race": "aliens",
+    "icon": {
+      "col": 1,
+      "row": 1,
+      "present": true,
+      "file": "assets/generated/item_icons/named/icons/ALIEN_MASTER.png"
+    },
+    "frame": {
+      "frameIdx": 1,
+      "sourceFrameIdx": 1,
+      "top": 0,
+      "present": true,
+      "file": "assets/generated/item_icons/named/frames/ALIEN_MASTER_frame.png"
+    },
+    "overlay": {
+      "frameIdx": 1,
+      "sourceFrameIdx": 1,
+      "top": 243,
+      "present": true,
+      "file": "assets/generated/item_icons/named/overlays/ALIEN_MASTER_overlay.png"
+    }
+  },
+  {
+    "repo": "ALIEN_DOMINATOR",
+    "race": "aliens",
+    "icon": {
+      "col": 3,
+      "row": 1,
+      "present": true,
+      "file": "assets/generated/item_icons/named/icons/ALIEN_DOMINATOR.png"
+    },
+    "frame": {
+      "frameIdx": 3,
+      "sourceFrameIdx": 3,
+      "top": 0,
+      "present": true,
+      "file": "assets/generated/item_icons/named/frames/ALIEN_DOMINATOR_frame.png"
+    },
+    "overlay": {
+      "frameIdx": 3,
+      "sourceFrameIdx": 3,
+      "top": 243,
+      "present": true,
+      "file": "assets/generated/item_icons/named/overlays/ALIEN_DOMINATOR_overlay.png"
+    }
+  },
+  {
+    "repo": "ALIEN_HARVESTER",
+    "race": "aliens",
+    "icon": {
+      "col": 5,
+      "row": 1,
+      "present": true,
+      "file": "assets/generated/item_icons/named/icons/ALIEN_HARVESTER.png"
+    },
+    "frame": {
+      "frameIdx": 5,
+      "sourceFrameIdx": 5,
+      "top": 0,
+      "present": true,
+      "file": "assets/generated/item_icons/named/frames/ALIEN_HARVESTER_frame.png"
+    },
+    "overlay": {
+      "frameIdx": 5,
+      "sourceFrameIdx": 5,
+      "top": 243,
+      "present": true,
+      "file": "assets/generated/item_icons/named/overlays/ALIEN_HARVESTER_overlay.png"
+    }
+  },
+  {
+    "repo": "ALIEN_MANIPULATOR",
+    "race": "aliens",
+    "icon": {
+      "col": 4,
+      "row": 1,
+      "present": true,
+      "file": "assets/generated/item_icons/named/icons/ALIEN_MANIPULATOR.png"
+    },
+    "frame": {
+      "frameIdx": 4,
+      "sourceFrameIdx": 4,
+      "top": 0,
+      "present": true,
+      "file": "assets/generated/item_icons/named/frames/ALIEN_MANIPULATOR_frame.png"
+    },
+    "overlay": {
+      "frameIdx": 4,
+      "sourceFrameIdx": 4,
+      "top": 243,
+      "present": true,
+      "file": "assets/generated/item_icons/named/overlays/ALIEN_MANIPULATOR_overlay.png"
+    }
+  },
+  {
+    "repo": "ALIEN_ARBITER",
+    "race": "aliens",
+    "icon": {
+      "col": 2,
+      "row": 1,
+      "present": true,
+      "file": "assets/generated/item_icons/named/icons/ALIEN_ARBITER.png"
+    },
+    "frame": {
+      "frameIdx": 2,
+      "sourceFrameIdx": 2,
+      "top": 0,
+      "present": true,
+      "file": "assets/generated/item_icons/named/frames/ALIEN_ARBITER_frame.png"
+    },
+    "overlay": {
+      "frameIdx": 2,
+      "sourceFrameIdx": 2,
+      "top": 243,
+      "present": true,
+      "file": "assets/generated/item_icons/named/overlays/ALIEN_ARBITER_overlay.png"
+    }
+  },
+  {
+    "repo": "ALIEN_DEFILER",
+    "race": "aliens",
+    "icon": {
+      "col": 7,
+      "row": 4,
+      "present": true,
+      "file": "assets/generated/item_icons/named/icons/ALIEN_DEFILER.png"
+    },
+    "frame": {
+      "frameIdx": 9,
+      "sourceFrameIdx": 9,
+      "top": 0,
+      "present": true,
+      "file": "assets/generated/item_icons/named/frames/ALIEN_DEFILER_frame.png"
+    },
+    "overlay": {
+      "frameIdx": 9,
+      "sourceFrameIdx": 9,
+      "top": 243,
+      "present": true,
+      "file": "assets/generated/item_icons/named/overlays/ALIEN_DEFILER_overlay.png"
+    }
+  },
+  {
+    "repo": "ALIEN_POWER",
+    "race": "aliens",
+    "icon": {
+      "col": 7,
+      "row": 1,
+      "present": true,
+      "file": "assets/generated/item_icons/named/icons/ALIEN_POWER.png"
+    },
+    "frame": {
+      "frameIdx": 7,
+      "sourceFrameIdx": 7,
+      "top": 0,
+      "present": true,
+      "file": "assets/generated/item_icons/named/frames/ALIEN_POWER_frame.png"
+    },
+    "overlay": {
+      "frameIdx": 7,
+      "sourceFrameIdx": 7,
+      "top": 243,
+      "present": true,
+      "file": "assets/generated/item_icons/named/overlays/ALIEN_POWER_overlay.png"
+    }
+  },
+  {
+    "repo": "ALIEN_CORRUPTION",
+    "race": "aliens",
+    "icon": {
+      "col": 8,
+      "row": 1,
+      "present": true,
+      "file": "assets/generated/item_icons/named/icons/ALIEN_CORRUPTION.png"
+    },
+    "frame": {
+      "frameIdx": 8,
+      "sourceFrameIdx": 8,
+      "top": 0,
+      "present": true,
+      "file": "assets/generated/item_icons/named/frames/ALIEN_CORRUPTION_frame.png"
+    },
+    "overlay": {
+      "frameIdx": 8,
+      "sourceFrameIdx": 8,
+      "top": 243,
+      "present": true,
+      "file": "assets/generated/item_icons/named/overlays/ALIEN_CORRUPTION_overlay.png"
+    }
+  },
+  {
+    "repo": "ALIEN_DOGMA",
+    "race": "aliens",
+    "icon": {
+      "col": 6,
+      "row": 1,
+      "present": true,
+      "file": "assets/generated/item_icons/named/icons/ALIEN_DOGMA.png"
+    },
+    "frame": {
+      "frameIdx": 6,
+      "sourceFrameIdx": 6,
+      "top": 0,
+      "present": true,
+      "file": "assets/generated/item_icons/named/frames/ALIEN_DOGMA_frame.png"
+    },
+    "overlay": {
+      "frameIdx": 6,
+      "sourceFrameIdx": 6,
+      "top": 243,
+      "present": true,
+      "file": "assets/generated/item_icons/named/overlays/ALIEN_DOGMA_overlay.png"
+    }
+  },
+  {
+    "repo": "ALIEN_ENIGMA",
+    "race": "aliens",
+    "icon": {
+      "col": 1,
+      "row": 4,
+      "present": true,
+      "file": "assets/generated/item_icons/named/icons/ALIEN_ENIGMA.png"
+    },
+    "frame": {
+      "frameIdx": 10,
+      "sourceFrameIdx": 10,
+      "top": 0,
+      "present": true,
+      "file": "assets/generated/item_icons/named/frames/ALIEN_ENIGMA_frame.png"
+    },
+    "overlay": {
+      "frameIdx": 10,
+      "sourceFrameIdx": 10,
+      "top": 243,
+      "present": true,
+      "file": "assets/generated/item_icons/named/overlays/ALIEN_ENIGMA_overlay.png"
+    }
+  }
+]

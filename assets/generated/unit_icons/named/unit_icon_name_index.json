@@ -1,0 +1,412 @@
+[
+  {
+    "id": "alienship",
+    "displayName": "Alien Ship",
+    "raceFolder": "aliens",
+    "iconClass": "unit",
+    "row": 30,
+    "col": 5,
+    "sourceFile": "assets/generated/unit_icons/units_70/r30_c5.png",
+    "namedFile": "assets/generated/unit_icons/named/units/alienship.png"
+  },
+  {
+    "id": "arbiter",
+    "displayName": "Arbiter",
+    "raceFolder": "aliens",
+    "iconClass": "officer",
+    "row": 6,
+    "col": 2,
+    "sourceFile": "assets/generated/unit_icons/officers_70/r6_c2.png",
+    "namedFile": "assets/generated/unit_icons/named/officers/arbiter.png"
+  },
+  {
+    "id": "overseer",
+    "displayName": "Charging field",
+    "raceFolder": "aliens",
+    "iconClass": "unit",
+    "row": 3,
+    "col": 1,
+    "sourceFile": "assets/generated/unit_icons/units_70/r3_c1.png",
+    "namedFile": "assets/generated/unit_icons/named/units/overseer.png"
+  },
+  {
+    "id": "dave",
+    "displayName": "Defiler",
+    "raceFolder": "aliens",
+    "iconClass": "officer",
+    "row": 6,
+    "col": 5,
+    "sourceFile": "assets/generated/unit_icons/officers_70/r6_c5.png",
+    "namedFile": "assets/generated/unit_icons/named/officers/dave.png"
+  },
+  {
+    "id": "dominator",
+    "displayName": "Dominator",
+    "raceFolder": "aliens",
+    "iconClass": "officer",
+    "row": 6,
+    "col": 1,
+    "sourceFile": "assets/generated/unit_icons/officers_70/r6_c1.png",
+    "namedFile": "assets/generated/unit_icons/named/officers/dominator.png"
+  },
+  {
+    "id": "alienegg",
+    "displayName": "Egg",
+    "raceFolder": "aliens",
+    "iconClass": "unit",
+    "row": 3,
+    "col": 7,
+    "sourceFile": "assets/generated/unit_icons/units_70/r3_c7.png",
+    "namedFile": "assets/generated/unit_icons/named/units/alienegg.png"
+  },
+  {
+    "id": "harvester",
+    "displayName": "Harvester",
+    "raceFolder": "aliens",
+    "iconClass": "officer",
+    "row": 6,
+    "col": 3,
+    "sourceFile": "assets/generated/unit_icons/officers_70/r6_c3.png",
+    "namedFile": "assets/generated/unit_icons/named/officers/harvester.png"
+  },
+  {
+    "id": "hatchling",
+    "displayName": "Hatchling",
+    "raceFolder": "aliens",
+    "iconClass": "unit",
+    "row": 3,
+    "col": 5,
+    "sourceFile": "assets/generated/unit_icons/units_70/r3_c5.png",
+    "namedFile": "assets/generated/unit_icons/named/units/hatchling.png"
+  },
+  {
+    "id": "manipulator",
+    "displayName": "Manipulator",
+    "raceFolder": "aliens",
+    "iconClass": "officer",
+    "row": 6,
+    "col": 4,
+    "sourceFile": "assets/generated/unit_icons/officers_70/r6_c4.png",
+    "namedFile": "assets/generated/unit_icons/named/officers/manipulator.png"
+  },
+  {
+    "id": "psidetonator",
+    "displayName": "Psi Detonator",
+    "raceFolder": "aliens",
+    "iconClass": "unit",
+    "row": 6,
+    "col": 7,
+    "sourceFile": "assets/generated/unit_icons/units_70/r6_c7.png",
+    "namedFile": "assets/generated/unit_icons/named/units/psidetonator.png"
+  },
+  {
+    "id": "shifter",
+    "displayName": "Shifter",
+    "raceFolder": "aliens",
+    "iconClass": "unit",
+    "row": 3,
+    "col": 4,
+    "sourceFile": "assets/generated/unit_icons/units_70/r3_c4.png",
+    "namedFile": "assets/generated/unit_icons/named/units/shifter.png"
+  },
+  {
+    "id": "trisat",
+    "displayName": "Trisat",
+    "raceFolder": "aliens",
+    "iconClass": "unit",
+    "row": 3,
+    "col": 3,
+    "sourceFile": "assets/generated/unit_icons/units_70/r3_c3.png",
+    "namedFile": "assets/generated/unit_icons/named/units/trisat.png"
+  },
+  {
+    "id": "tritech",
+    "displayName": "Tritech",
+    "raceFolder": "aliens",
+    "iconClass": "unit",
+    "row": 3,
+    "col": 2,
+    "sourceFile": "assets/generated/unit_icons/units_70/r3_c2.png",
+    "namedFile": "assets/generated/unit_icons/named/units/tritech.png"
+  },
+  {
+    "id": "arbiter_lod",
+    "displayName": "arbiter_lod",
+    "raceFolder": "aliens",
+    "iconClass": "officer",
+    "row": 3,
+    "col": 2,
+    "sourceFile": "assets/generated/unit_icons/officers_70/r3_c2.png",
+    "namedFile": "assets/generated/unit_icons/named/officers/arbiter_lod.png"
+  },
+  {
+    "id": "assassin",
+    "displayName": "Assassin",
+    "raceFolder": "humans",
+    "iconClass": "officer",
+    "row": 4,
+    "col": 2,
+    "sourceFile": "assets/generated/unit_icons/officers_70/r4_c2.png",
+    "namedFile": "assets/generated/unit_icons/named/officers/assassin.png"
+  },
+  {
+    "id": "assaultbot",
+    "displayName": "Assault Bot",
+    "raceFolder": "humans",
+    "iconClass": "unit",
+    "row": 1,
+    "col": 4,
+    "sourceFile": "assets/generated/unit_icons/units_70/r1_c4.png",
+    "namedFile": "assets/generated/unit_icons/named/units/assaultbot.png"
+  },
+  {
+    "id": "constructor",
+    "displayName": "Constructor",
+    "raceFolder": "humans",
+    "iconClass": "officer",
+    "row": 4,
+    "col": 4,
+    "sourceFile": "assets/generated/unit_icons/officers_70/r4_c4.png",
+    "namedFile": "assets/generated/unit_icons/named/officers/constructor.png"
+  },
+  {
+    "id": "defender",
+    "displayName": "Defender",
+    "raceFolder": "humans",
+    "iconClass": "unit",
+    "row": 5,
+    "col": 6,
+    "sourceFile": "assets/generated/unit_icons/units_70/r5_c6.png",
+    "namedFile": "assets/generated/unit_icons/named/units/defender.png"
+  },
+  {
+    "id": "technician2",
+    "displayName": "Engineer",
+    "raceFolder": "humans",
+    "iconClass": "officer",
+    "row": 3,
+    "col": 3,
+    "sourceFile": "assets/generated/unit_icons/officers_70/r3_c3.png",
+    "namedFile": "assets/generated/unit_icons/named/officers/technician2.png"
+  },
+  {
+    "id": "hellfire",
+    "displayName": "Hellfire",
+    "raceFolder": "humans",
+    "iconClass": "unit",
+    "row": 1,
+    "col": 2,
+    "sourceFile": "assets/generated/unit_icons/units_70/r1_c2.png",
+    "namedFile": "assets/generated/unit_icons/named/units/hellfire.png"
+  },
+  {
+    "id": "judge",
+    "displayName": "Judge",
+    "raceFolder": "humans",
+    "iconClass": "officer",
+    "row": 4,
+    "col": 3,
+    "sourceFile": "assets/generated/unit_icons/officers_70/r4_c3.png",
+    "namedFile": "assets/generated/unit_icons/named/officers/judge.png"
+  },
+  {
+    "id": "humanship",
+    "displayName": "Personnel carrier",
+    "raceFolder": "humans",
+    "iconClass": "unit",
+    "row": 28,
+    "col": 7,
+    "sourceFile": "assets/generated/unit_icons/units_70/r28_c7.png",
+    "namedFile": "assets/generated/unit_icons/named/units/humanship.png"
+  },
+  {
+    "id": "ripper",
+    "displayName": "Ripper",
+    "raceFolder": "humans",
+    "iconClass": "unit",
+    "row": 1,
+    "col": 3,
+    "sourceFile": "assets/generated/unit_icons/units_70/r1_c3.png",
+    "namedFile": "assets/generated/unit_icons/named/units/ripper.png"
+  },
+  {
+    "id": "surgeon",
+    "displayName": "Surgeon",
+    "raceFolder": "humans",
+    "iconClass": "officer",
+    "row": 4,
+    "col": 1,
+    "sourceFile": "assets/generated/unit_icons/officers_70/r4_c1.png",
+    "namedFile": "assets/generated/unit_icons/named/officers/surgeon.png"
+  },
+  {
+    "id": "technician",
+    "displayName": "Technician",
+    "raceFolder": "humans",
+    "iconClass": "unit",
+    "row": 1,
+    "col": 6,
+    "sourceFile": "assets/generated/unit_icons/units_70/r1_c6.png",
+    "namedFile": "assets/generated/unit_icons/named/units/technician.png"
+  },
+  {
+    "id": "lancelot",
+    "displayName": "Teleport Officer",
+    "raceFolder": "humans",
+    "iconClass": "unit",
+    "row": 30,
+    "col": 2,
+    "sourceFile": "assets/generated/unit_icons/units_70/r30_c2.png",
+    "namedFile": "assets/generated/unit_icons/named/units/lancelot.png"
+  },
+  {
+    "id": "trooper",
+    "displayName": "Throw Grenade",
+    "raceFolder": "humans",
+    "iconClass": "unit",
+    "row": 1,
+    "col": 1,
+    "sourceFile": "assets/generated/unit_icons/units_70/r1_c1.png",
+    "namedFile": "assets/generated/unit_icons/named/units/trooper.png"
+  },
+  {
+    "id": "ancientshade",
+    "displayName": "AncientShade",
+    "raceFolder": "mutants",
+    "iconClass": "unit",
+    "row": 2,
+    "col": 7,
+    "sourceFile": "assets/generated/unit_icons/units_70/r2_c7.png",
+    "namedFile": "assets/generated/unit_icons/named/units/ancientshade.png"
+  },
+  {
+    "id": "brute",
+    "displayName": "Brute",
+    "raceFolder": "mutants",
+    "iconClass": "unit",
+    "row": 2,
+    "col": 2,
+    "sourceFile": "assets/generated/unit_icons/units_70/r2_c2.png",
+    "namedFile": "assets/generated/unit_icons/named/units/brute.png"
+  },
+  {
+    "id": "eji",
+    "displayName": "Eji",
+    "raceFolder": "mutants",
+    "iconClass": "officer",
+    "row": 3,
+    "col": 1,
+    "sourceFile": "assets/generated/unit_icons/officers_70/r3_c1.png",
+    "namedFile": "assets/generated/unit_icons/named/officers/eji.png"
+  },
+  {
+    "id": "elitekairider",
+    "displayName": "Elite Kai Rider",
+    "raceFolder": "mutants",
+    "iconClass": "unit",
+    "row": 6,
+    "col": 6,
+    "sourceFile": "assets/generated/unit_icons/units_70/r6_c6.png",
+    "namedFile": "assets/generated/unit_icons/named/units/elitekairider.png"
+  },
+  {
+    "id": "guardian",
+    "displayName": "Guardian",
+    "raceFolder": "mutants",
+    "iconClass": "officer",
+    "row": 5,
+    "col": 1,
+    "sourceFile": "assets/generated/unit_icons/officers_70/r5_c1.png",
+    "namedFile": "assets/generated/unit_icons/named/officers/guardian.png"
+  },
+  {
+    "id": "howlinghorror",
+    "displayName": "HowlingHorror",
+    "raceFolder": "mutants",
+    "iconClass": "unit",
+    "row": 2,
+    "col": 4,
+    "sourceFile": "assets/generated/unit_icons/units_70/r2_c4.png",
+    "namedFile": "assets/generated/unit_icons/named/units/howlinghorror.png"
+  },
+  {
+    "id": "kai_rider",
+    "displayName": "Kai_Rider",
+    "raceFolder": "mutants",
+    "iconClass": "unit",
+    "row": 20,
+    "col": 5,
+    "sourceFile": "assets/generated/unit_icons/units_70/r20_c5.png",
+    "namedFile": "assets/generated/unit_icons/named/units/kai_rider.png"
+  },
+  {
+    "id": "eji2",
+    "displayName": "Psychic",
+    "raceFolder": "mutants",
+    "iconClass": "officer",
+    "row": 5,
+    "col": 5,
+    "sourceFile": "assets/generated/unit_icons/officers_70/r5_c5.png",
+    "namedFile": "assets/generated/unit_icons/named/officers/eji2.png"
+  },
+  {
+    "id": "shaman",
+    "displayName": "Shaman",
+    "raceFolder": "mutants",
+    "iconClass": "officer",
+    "row": 5,
+    "col": 2,
+    "sourceFile": "assets/generated/unit_icons/officers_70/r5_c2.png",
+    "namedFile": "assets/generated/unit_icons/named/officers/shaman.png"
+  },
+  {
+    "id": "sorcerer",
+    "displayName": "Sorcerer",
+    "raceFolder": "mutants",
+    "iconClass": "officer",
+    "row": 5,
+    "col": 3,
+    "sourceFile": "assets/generated/unit_icons/officers_70/r5_c3.png",
+    "namedFile": "assets/generated/unit_icons/named/officers/sorcerer.png"
+  },
+  {
+    "id": "worm",
+    "displayName": "Soul Worm",
+    "raceFolder": "mutants",
+    "iconClass": "unit",
+    "row": 2,
+    "col": 3,
+    "sourceFile": "assets/generated/unit_icons/units_70/r2_c3.png",
+    "namedFile": "assets/generated/unit_icons/named/units/worm.png"
+  },
+  {
+    "id": "stoneghost",
+    "displayName": "StoneGhost",
+    "raceFolder": "mutants",
+    "iconClass": "officer",
+    "row": 5,
+    "col": 4,
+    "sourceFile": "assets/generated/unit_icons/officers_70/r5_c4.png",
+    "namedFile": "assets/generated/unit_icons/named/officers/stoneghost.png"
+  },
+  {
+    "id": "warrior",
+    "displayName": "Warrior",
+    "raceFolder": "mutants",
+    "iconClass": "unit",
+    "row": 2,
+    "col": 5,
+    "sourceFile": "assets/generated/unit_icons/units_70/r2_c5.png",
+    "namedFile": "assets/generated/unit_icons/named/units/warrior.png"
+  },
+  {
+    "id": "worker",
+    "displayName": "Worker",
+    "raceFolder": "mutants",
+    "iconClass": "unit",
+    "row": 2,
+    "col": 1,
+    "sourceFile": "assets/generated/unit_icons/units_70/r2_c1.png",
+    "namedFile": "assets/generated/unit_icons/named/units/worker.png"
+  }
+]

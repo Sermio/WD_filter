@@ -155,7 +155,13 @@ List<Map<String, String>> units = [
   {'key': 'Trisat', 'value': 'Trisat'},
   {'key': 'Tritech', 'value': 'Tritech'},
   {'key': 'Shifter', 'value': 'Shifter'},
-  {'key': 'Overseer', 'value': 'Overseer'}
+  {'key': 'Overseer', 'value': 'Overseer'},
+  {'key': 'Engineer', 'value': 'Engineer'},
+  {'key': 'Defender', 'value': 'Defender'},
+  {'key': 'Psychic', 'value': 'Psychic'},
+  {'key': 'EliteKaiRider', 'value': 'Elite Kai Rider'},
+  {'key': 'PsiDetonator', 'value': 'Psi Detonator'},
+  {'key': 'Defiler', 'value': 'Defiler'},
 ];
 
 // List<String> maps = [
@@ -674,6 +680,27 @@ List<Map<String, String>> slots = [
     'value': 'Metachemistry',
     'description':
         'This item is related to Metachemistry, one of the scientific disciplines of the Humans.'
+  },
+  {
+    'key': 'HUMAN_ENGINEER',
+    'value': 'Engineer',
+    'description': 'This item improves the statistics of your Engineer.'
+  },
+  {
+    'key': 'HUMAN_NEUROSCIENCE',
+    'value': 'Neuroscience',
+    'description':
+        'This item enhances psionic and mental abilities (Neuroscience slot).'
+  },
+  {
+    'key': 'MUTANT_PSYCHIC',
+    'value': 'Psychic',
+    'description': 'This item improves the statistics of your Psychic.'
+  },
+  {
+    'key': 'ALIEN_DEFILER',
+    'value': 'Defiler',
+    'description': 'This item improves the statistics of your Defiler.'
   },
   {
     'key': 'MUTANT_HIGHPRIEST',
