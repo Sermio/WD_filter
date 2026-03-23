@@ -53,6 +53,7 @@
     "conversationIconRow": null,
     "stats": {
       "hp": "320",
+      "range": "2200",
       "psi": "300",
       "damage": "80",
       "armor": "2",
@@ -66,9 +67,7 @@
       "fear_shock_cooldown": "45",
       "fear_shock_area": "300",
       "fear_shock_duration": "6",
-      "fear_shock_range": "1800",
-      "speed": "450",
-      "range": "2200"
+      "fear_shock_range": "1800"
     },
     "auraNames": [
       "RestorationCoreAura"
@@ -106,7 +105,6 @@
       "armor": "4",
       "damage": "9",
       "power": "300",
-      "speed": "450",
       "range": "1800",
       "field_fire_rate": "2.5",
       "power_fire_rate": "1.5",
@@ -144,7 +142,6 @@
       "armor": "8",
       "range": "1200",
       "damage": "30",
-      "speed": "450",
       "healing_taken_debuff_amount": "2",
       "healing_taken_debuff_duration": "15",
       "shield_hull": "100",
@@ -171,9 +168,9 @@
     "stats": {
       "hp": "450",
       "armor": "7",
+      "range": "1400",
       "damage": "15",
       "speed": "450",
-      "range": "1400",
       "psi": "360",
       "shield_hull": "100",
       "shield_regen": "120",
@@ -234,10 +231,9 @@
     "stats": {
       "hp": "780",
       "armor": "22",
+      "range": "125",
       "damage": "35",
       "psi": "400",
-      "speed": "450",
-      "range": "125",
       "shield_hull": "100",
       "shield_regen": "120",
       "shield_fullabsorbchance": "10",
@@ -298,10 +294,9 @@
     "stats": {
       "hp": "420",
       "armor": "2",
+      "range": "1600",
       "damage": "12",
       "psi": "400",
-      "speed": "450",
-      "range": "1600",
       "shield_hull": "100",
       "shield_regen": "120",
       "shield_fullabsorbchance": "10",
@@ -339,10 +334,9 @@
     "stats": {
       "hp": "700",
       "armor": "12",
+      "range": "1600",
       "damage": "75",
       "psi": "380",
-      "speed": "450",
-      "range": "1600",
       "shield_hull": "250",
       "shield_regen": "150",
       "shield_fullabsorbchance": "20",
@@ -366,7 +360,7 @@
     "raceFolder": "aliens",
     "displayName": "Psi Detonator",
     "race": null,
-    "movementType": "hover",
+    "movementType": null,
     "tags": "unit",
     "unitIconClass": "unit",
     "mainIconCol": 7,
@@ -379,7 +373,6 @@
       "armor": "25",
       "damage": "50",
       "range": "1600",
-      "speed": "450",
       "shield_hull": "100",
       "shield_regen": "120",
       "shield_fullabsorbchance": "10",
@@ -407,9 +400,8 @@
       "hp": "580",
       "psi": "300",
       "armor": "8",
-      "damage": "10",
-      "speed": "450",
       "range": "1400",
+      "damage": "10",
       "shield_hull": "250",
       "shield_regen": "120",
       "shield_fullabsorbchance": "20",
@@ -468,7 +460,6 @@
       "armor": "2",
       "range": "100",
       "damage": "14",
-      "speed": "450",
       "shield_hull": "180",
       "shield_regen": "120",
       "shield_fullabsorbchance": "25",
@@ -502,7 +493,6 @@
       "armor": "1",
       "range": "1700",
       "damage": "15",
-      "speed": "450",
       "shield_hull": "100",
       "shield_regen": "120",
       "shield_fullabsorbchance": "10",
@@ -560,7 +550,6 @@
       "hp": "320",
       "psi": "120",
       "armor": "2",
-      "speed": "450",
       "range": "2100",
       "damage": "120",
       "poison_shot_psi": "90",
@@ -597,7 +586,6 @@
       "damage": "10",
       "attack_proximity": "0",
       "attack_precision": "100",
-      "speed": "450",
       "barrage_cost": "120",
       "barrage_duration": "4",
       "rocket_precision_damage_perc": "10",
@@ -640,8 +628,7 @@
       "range": "1200",
       "damage": "15",
       "armor": "25",
-      "rocket_radius": "500",
-      "speed": "450"
+      "rocket_radius": "500"
     },
     "auraNames": []
   },
@@ -664,9 +651,7 @@
       "damage": "8",
       "attack_rate": "1",
       "attack_proximity": "10",
-      "attack_precision": "1",
-      "turret_damage": "30",
-      "speed": "450"
+      "attack_precision": "1"
     },
     "auraNames": [
       "RestorationCoreAura"
@@ -731,8 +716,7 @@
       "shield_fullabsorbchance": "10",
       "shield_percentabsorbtion": "25",
       "sweep_power_cost": "220",
-      "sweep_damage": "210",
-      "speed": "450"
+      "sweep_damage": "210"
     },
     "auraNames": []
   },
@@ -755,7 +739,6 @@
       "range": "1600",
       "damage": "20",
       "xp_boost_amp": "50  -- amplify xp received by 50%",
-      "speed": "450",
       "xp_share_mod": "50 -- spread half the damage done as experience",
       "discharge_chance": "10",
       "discharge_hops": "3",
@@ -787,7 +770,6 @@
       "psi": "350",
       "range": "1200",
       "damage": "30",
-      "speed": "450",
       "inject_hp": "250",
       "inject_power_cost": "110",
       "inject_duration": "6",
@@ -864,7 +846,6 @@
       "range": "80",
       "damage": "12",
       "elusion": "0",
-      "speed": "450",
       "overclock_cooldown": "16",
       "overclock_perc": "150",
       "overclock_duration": "4",
@@ -890,7 +871,6 @@
       "hp": "350",
       "range": "1600",
       "damage": "8",
-      "speed": "450",
       "attack_rate": "1",
       "attack_proximity": "10",
       "attack_precision": "1",
@@ -928,8 +908,7 @@
       "range": "1100",
       "damage": "25",
       "aggro_range": "800",
-      "mine_amount_per_turn": "10",
-      "speed": "450"
+      "mine_amount_per_turn": "10"
     },
     "auraNames": [
       "RestorationCoreAura"
@@ -1111,8 +1090,7 @@
       "range": "1400",
       "damage": "6",
       "motivation": "0",
-      "crit_chance_increase": "5",
-      "speed": "450"
+      "crit_chance_increase": "5"
     },
     "auraNames": [
       "RestorationCoreAura"
@@ -1281,7 +1259,6 @@
       "psi": "280",
       "damage": "15",
       "penetration": "100",
-      "speed": "450",
       "range": "1800",
       "fatelink_duration": "10",
       "fatelink_power": "220",
@@ -1309,10 +1286,9 @@
       "armor": "14",
       "psi": "0",
       "psi_gen": "0",
+      "range": "150",
       "damage": "8",
       "growl_duration": "4",
-      "speed": "450",
-      "range": "150",
       "growl_chance": "5",
       "ignite_on_strike_chance": "0",
       "ignite_duration": "8"
@@ -1359,7 +1335,6 @@
       "hp": "320",
       "armor": "15",
       "damage": "40",
-      "speed": "450",
       "range": "2200",
       "frenzy_crit_chance": "5"
     },
@@ -1383,9 +1358,8 @@
       "hp": "720",
       "armor": "4",
       "psi": "200",
-      "damage": "50",
-      "speed": "450",
       "range": "200",
+      "damage": "50",
       "whirlwind_chance": "10",
       "illusion_power_cost": "160",
       "fortify_power_cost": "90",
@@ -1412,9 +1386,8 @@
     "conversationIconRow": 4,
     "stats": {
       "hp": "850",
-      "psi": "500",
-      "speed": "450",
       "range": "1800",
+      "psi": "500",
       "damage": "35",
       "armor": "2",
       "holy_aura_tick": "1",
@@ -1445,10 +1418,9 @@
     "stats": {
       "hp": "1120",
       "armor": "18",
+      "range": "100",
       "damage": "40",
       "psi": "300",
-      "speed": "450",
-      "range": "100",
       "hollow_voice_chance": "20",
       "hollow_voice_damage": "60",
       "hollow_voice_cooldown": "5",
@@ -1508,8 +1480,7 @@
       "armor": "0",
       "psi": "520",
       "psi_gen": "380",
-      "restore_amount": "200",
-      "speed": "450"
+      "restore_amount": "200"
     },
     "auraNames": [
       "RestorationCoreAura"
@@ -1529,11 +1500,10 @@
     "conversationIconRow": null,
     "stats": {
       "hp": "420",
+      "range": "1600",
       "psi": "420",
       "armor": "0",
       "damage": "10",
-      "speed": "450",
-      "range": "1600",
       "drain_life_chance": "25",
       "drain_life_purge": "0",
       "drain_life_boost": "40",
@@ -1560,11 +1530,10 @@
     "conversationIconRow": null,
     "stats": {
       "hp": "540",
+      "range": "1600",
       "psi": "400",
       "damage": "80",
       "armor": "0",
-      "speed": "450",
-      "range": "1600",
       "chill_psi_cost": "150",
       "chill_duration": "8",
       "chill_perc": "30",
@@ -1617,9 +1586,8 @@
       "hp": "420",
       "psi": "320",
       "armor": "2",
-      "damage": "4",
-      "speed": "450",
       "range": "1600",
+      "damage": "4",
       "corruption_psi_cost": "120",
       "corruption_damage": "10  -- per tick (currently 2 sec)",
       "corruption_duration": "20",
@@ -1653,7 +1621,6 @@
       "hp": "220",
       "armor": "0",
       "damage": "12",
-      "speed": "450",
       "range": "1600"
     },
     "auraNames": [

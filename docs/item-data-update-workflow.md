@@ -20,7 +20,10 @@ La app usa estos datos locales:
 - `assets/tsvFiles/loot_complete.txt`
 - `assets/tsvFiles/drop.tsv`
 - `assets/data/item_origin_index.json`
+- `assets/data/units.json`
 - `lib/data/item_list_generated.dart`
+- `lib/data/data.dart`
+- `lib/data/item.dart`
 
 Además, se guarda una copia más fiel de las fuentes originales en:
 
@@ -36,6 +39,11 @@ Dentro del clon local de `Worldshift`, el flujo de items depende de estos archiv
 - `data/db/items/loot.tsv`
 - `data/db/items/loot index.tsv`
 - `data/db/items/drop.tsv`
+- `data/db/items/humansspecs.dt`
+- `data/db/items/mutantsspecs.dt`
+- `data/db/items/aliensspecs.dt`
+- `data/db/units/**/*.dt`
+- `data/texts/en/items.tsv`
 - `data/texts/en/missions.tsv`
 
 Si además cambian iconos o frames de items, también intervienen:
@@ -72,12 +80,18 @@ dart run tool/refresh_worldshift_item_data.dart "C:\Users\sergi\Desktop\Proyecto
 4. Ejecuta:
    - `dart run tool/generate_item_origin_index.dart`
    - `dart run tool/generate_item_list.dart`
+   - `dart run tool/rebuild_attribute_list.dart`
+   - `dart run tool/generate_worldshift_assets.dart`
+   - `dart run tool/rebuild_data_dart.dart`
 
 Con eso quedan actualizados:
 
 - el catálogo local de items
 - el índice de orígenes por mesa/mapa/modo
 - el listado de nombres usado por la búsqueda
+- `assets/data/units.json`
+- las listas derivadas de `lib/data/data.dart` (`attributesList`, `attributeList`, `attributeFilter`, `units`, `races`, `maps`, `lootTable`, `slots`)
+- `lib/data/item.dart` para mantener `unitsFlat` sincronizado
 
 ## Procedimiento normal de actualización
 
@@ -90,6 +104,11 @@ Usa este flujo:
    - `data/db/items/loot.tsv`
    - `data/db/items/loot index.tsv`
    - `data/db/items/drop.tsv`
+   - `data/db/items/humansspecs.dt`
+   - `data/db/items/mutantsspecs.dt`
+   - `data/db/items/aliensspecs.dt`
+   - `data/db/units/**/*.dt`
+   - `data/texts/en/items.tsv`
    - `data/texts/en/missions.tsv`
 2. Desde la raíz del proyecto Flutter, ejecuta:
 
@@ -104,6 +123,8 @@ flutter pub get
    - que los items nuevos aparecen en la lista
    - que los items con origen muestran mapa/contexto
    - que los items sin origen siguen apareciendo, pero sin etiqueta de origen
+   - que el filtro de atributos muestra stats nuevos con nombre legible
+   - que los filtros de unidad, slot y mapa siguen teniendo todas las opciones esperadas
 
 ### Caso 2: además cambian iconos, slots o frames de items
 
@@ -129,9 +150,9 @@ Esto regenera:
 - `assets/generated/item_icons/named/overlays/`
 - `assets/generated/item_icons/named/item_icon_name_index.json`
 
-## Caso opcional: cambian unidades o nombres de unidades afectadas
+## Caso opcional: cambian iconos o atlas de unidades
 
-Esto no siempre hace falta, pero si el mod añade unidades nuevas o cambia ids/nombres que afectan a filtros, chips o matching de atributos, ejecuta también:
+Esto no siempre hace falta. Los datos de unidades ya se regeneran con el script maestro. Solo necesitas estos pasos extra si además cambian atlas DDS o iconos:
 
 ```bash
 dart run tool/generate_worldshift_assets.dart
@@ -154,6 +175,8 @@ Para una comprobación rápida, revisa estos archivos:
 
 - `assets/data/item_origin_index.json`
 - `lib/data/item_list_generated.dart`
+- `lib/data/data.dart`
+- `lib/data/item.dart`
 - `assets/generated/item_icons/named/item_icon_name_index.json`
 - `assets/data/units.json` si también hubo cambios de unidades
 
@@ -173,6 +196,7 @@ Después de actualizar:
 3. Comprueba un item con origen conocido.
 4. Comprueba un item sin origen directo.
 5. Abre el filtro por slot y unidad para ver que siguen funcionando.
+6. Prueba algún stat nuevo en el filtro de atributos.
 
 ## Comandos de referencia
 
@@ -191,7 +215,7 @@ dart run tool/generate_named_item_icons.dart
 flutter pub get
 ```
 
-### Actualización completa si también cambian unidades
+### Actualización completa si también cambian iconos de unidades
 
 ```bash
 dart run tool/refresh_worldshift_item_data.dart

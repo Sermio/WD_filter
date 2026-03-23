@@ -74,6 +74,10 @@ void main(List<String> args) {
     '${textsEnDir.path}${Platform.pathSeparator}missions.tsv',
     '$_sourceGameTextsDir${Platform.pathSeparator}missions.tsv',
   );
+  _copyFile(
+    '${textsEnDir.path}${Platform.pathSeparator}items.tsv',
+    '$_sourceGameTextsDir${Platform.pathSeparator}items.tsv',
+  );
 
   _copyFile(
     '${itemsDir.path}${Platform.pathSeparator}items.tsv',
@@ -106,6 +110,8 @@ void main(List<String> args) {
   _runDartScript('tool/generate_item_origin_index.dart');
   _runDartScript('tool/generate_item_list.dart');
   _runDartScript('tool/rebuild_attribute_list.dart', [worldshiftRoot.path]);
+  _runDartScript('tool/generate_worldshift_assets.dart', [unitsDir.path]);
+  _runDartScript('tool/rebuild_data_dart.dart');
 
   stdout.writeln(
     'Sincronización de items Worldshift completada.\n'

@@ -11,8 +11,76 @@ const _preservedNonGameplayKeys = <String>{
   'emissive',
 };
 const _labelOverrides = <String, String>{
+  'abosorb_blow_chance': 'Absorb Blow Chance',
+  'attackdrone_cooldown': 'Attack Drone Cooldown',
+  'attackdrone_power': 'Attack Drone Power Cost',
+  'autoheal_boost': 'Auto-Heal Boost',
+  'battle_shout_area': 'Battle Shout Area',
+  'battle_shout_cooldown': 'Battle Shout Cooldown',
+  'battle_shout_damage_perc': 'Battle Shout Damage Increase',
+  'battle_shout_duration': 'Battle Shout Duration',
+  'bio_cycle_chance': 'Bio-Cycle Chance',
+  'bio_split_chance': 'Bio-Split Chance',
+  'chainlightning_add_damage': 'Chain Lightning Bonus Damage',
+  'chainlightning_chance': 'Chain Lightning Chance',
+  'chainlightning_duration': 'Chain Lightning Duration',
+  'chainlightning_psi_cost': 'Chain Lightning Power Cost',
+  'chainlightning_tick': 'Chain Lightning Tick Rate',
+  'charging_field_tick': 'Charging Field Tick Rate',
+  'chill_perc': 'Chill Slow',
+  'clammy_acid_armor_perc': 'Clammy Acid Armor Reduction',
+  'corruption_psi_cost': 'Corruption Power Cost',
+  'damage_taken_mod': 'Damage Taken',
+  'detonate_wait': 'Detonate Delay',
+  'detonatoraura_perc': 'Detonator Aura Effectiveness',
+  'detonatoraura_radius': 'Detonator Aura Radius',
+  'detonatoraura_tick': 'Detonator Aura Tick Rate',
+  'dimension_chain_dmgbonus': 'Dimension Chain Damage Bonus',
+  'effectiveness_armor': 'Armor Effectiveness',
+  'effectiveness_credits': 'Credits Effectiveness',
+  'elusion': 'Evasion',
+  'expose_target_armor_perc': 'Expose Armor Reduction',
+  'fatelink_duration': 'Fate Link Duration',
+  'fatelink_power': 'Fate Link Power Cost',
+  'feed_add_damage': 'Feed Bonus Damage',
+  'feed_add_heal': 'Feed Bonus Healing',
+  'feed_tick': 'Feed Tick Rate',
+  'frenzy_armor': 'Frenzy Armor Bonus',
+  'frenzy_crit_chance': 'Frenzy Critical Chance',
+  'frenzy_damage': 'Frenzy Damage Bonus',
+  'healing_taken_debuff_ammount': 'Healing Received Debuff (Legacy Typo)',
+  'healing_taken_debuff_amount': 'Healing Received Debuff',
+  'healing_taken_debuff_duration': 'Healing Received Debuff Duration',
+  'holy_aura_tick': 'Holy Aura Tick Rate',
+  'howl_hp_perc': 'Howl HP Bonus',
+  'howl_ignore_perc': 'Howl Damage Ignore',
+  'howl_power': 'Howl Power Cost',
+  'ignite_on_strike_chance': 'Ignite on Strike Chance',
+  'manipulate_cost': 'Manipulate Power Cost',
+  'manipulate_hp_perc': 'Manipulate HP Bonus',
+  'manipulate_power_perc': 'Manipulate Power Bonus',
+  'mine_amount_per_turn': 'Mines per Turn',
+  'morph_power': 'Morph Power Cost',
+  'overclock_perc': 'Overclock Bonus',
+  'paralyzing_field_speed_reduction_perc': 'Paralyzing Field Slow',
+  'plasma_shield_fullabsorbchance': 'Plasma Shield Full Absorb Chance',
+  'plasma_shield_hull': 'Plasma Shield Durability',
+  'plasma_shield_percentabsorbtion': 'Plasma Shield Mitigation',
+  'plasma_shield_regen': 'Plasma Shield Regeneration',
+  'poison_shot_perc': 'Poison Shot Slow',
+  'poison_shot_psi': 'Poison Shot Power Cost',
   'power': 'Machine Power',
+  'power_fuse_power': 'Power Fuse Power Cost',
   'power_gen': 'Machine Power Generation',
+  'rainoffire_pri_damage': 'Rain of Fire Primary Damage',
+  'repairdrones_time_to_live': 'Repair Drones Lifetime',
+  'shower_damage_area': 'Shower Splash Damage',
+  'sight': 'Sight Range',
+  'sizzle_aura_tick': 'Sizzle Aura Tick Rate',
+  'sizzle_damage_reduction_perc': 'Sizzle Damage Reduction',
+  'speed_mod': 'Speed Modifier',
+  'unholy_aura_interval': 'Unholy Aura Tick Rate',
+  'unholy_power_restore_perc': 'Unholy Power Restore',
 };
 
 void main(List<String> args) {
@@ -71,32 +139,44 @@ void main(List<String> args) {
     labelByKey,
   );
 
+  final attributesPattern = RegExp(
+    r'List<String>\s+attributesList\s*=\s*\[[\s\S]*?\];',
+    multiLine: true,
+  );
+  final attributeListPattern = RegExp(
+    r'List<Map<String,\s*String>>\s+attributeList\s*=\s*\[[\s\S]*?\];',
+    multiLine: true,
+  );
+  final attributeFilterPattern = RegExp(
+    r'Map<String,\s*String>\s+attributeFilter\s*=\s*\{[\s\S]*?\};',
+    multiLine: true,
+  );
+
+  if (!attributesPattern.hasMatch(dataSource) ||
+      !attributeListPattern.hasMatch(dataSource) ||
+      !attributeFilterPattern.hasMatch(dataSource)) {
+    stderr.writeln(
+      'No se pudieron localizar todas las secciones de atributos en ${dataFile.path}.',
+    );
+    exitCode = 3;
+    return;
+  }
+
   var updatedSource = dataSource.replaceFirst(
-    RegExp(
-      r'List<String>\s+attributesList\s*=\s*\[[\s\S]*?\];',
-      multiLine: true,
-    ),
+    attributesPattern,
     _buildAttributeKeyListSource(finalKeys),
   );
   updatedSource = updatedSource.replaceFirst(
-    RegExp(
-      r'List<Map<String,\s*String>>\s+attributeList\s*=\s*\[[\s\S]*?\];',
-      multiLine: true,
-    ),
+    attributeListPattern,
     _buildAttributeEntryListSource(finalAttributeEntries),
   );
   updatedSource = updatedSource.replaceFirst(
-    RegExp(
-      r'Map<String,\s*String>\s+attributeFilter\s*=\s*\{[\s\S]*?\};',
-      multiLine: true,
-    ),
+    attributeFilterPattern,
     _buildAttributeFilterSource(finalAttributeEntries),
   );
 
   if (updatedSource == dataSource) {
-    stderr
-        .writeln('No se pudo localizar `attributesList` en ${dataFile.path}.');
-    exitCode = 3;
+    stdout.writeln('Sin cambios en atributos de data.dart.');
     return;
   }
 

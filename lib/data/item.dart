@@ -49,9 +49,7 @@ class Item {
           Map<String, Map<String, String>>.from(json['attributes'] ?? {}),
     );
   }
-}
-
-final List<String> unitsFlat = [
+}final List<String> unitsFlat = [
   'Commander',
   'Assassin',
   'Constructor',
@@ -61,6 +59,8 @@ final List<String> unitsFlat = [
   'Ripper',
   'AssaultBot',
   'Hellfire',
+  'Engineer',
+  'Defender',
   'HighPriest',
   'Guardian',
   'Shaman',
@@ -70,6 +70,8 @@ final List<String> unitsFlat = [
   'Brute',
   'AncientShade',
   'HowlingHorror',
+  'Psychic',
+  'EliteKaiRider',
   'Master',
   'Arbiter',
   'Dominator',
@@ -79,10 +81,6 @@ final List<String> unitsFlat = [
   'Tritech',
   'Shifter',
   'Overseer',
-  'Engineer',
-  'Defender',
-  'Psychic',
-  'EliteKaiRider',
-  'PsiDetonator',
   'Defiler',
+  'PsiDetonator',
 ];
