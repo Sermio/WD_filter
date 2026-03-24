@@ -1,27 +1,30 @@
-/// Rutas candidatas para el icono de unidad (mismo criterio que ítems / lista de unidades).
+/// Rutas candidatas para el icono de unidad (mismo criterio que filtros de ítems / lista).
 List<String> unitIconAssetCandidates(String unitId) {
-  const extraFileIds = <String, List<String>>{
-    'engineer': ['technician2'],
-    'psychic': ['eji2'],
-    'commander': ['lancelot'],
+  const aliasByUnitKey = <String, List<String>>{
+    'Engineer': ['technician2'],
+    'Psychic': ['eji2'],
+    'Commander': ['commander', 'lancelot'],
+    'HighPriest': ['highpriest'],
+    'Defiler': ['dave', 'defiler'],
   };
 
+  final key = unitId.trim();
+  final normalized =
+      key.replaceAll(RegExp(r'[^A-Za-z0-9]+'), '').toLowerCase();
+  final aliases = <String>[
+    ...?aliasByUnitKey[key],
+    normalized,
+  ];
   final seen = <String>{};
   final out = <String>[];
 
-  void add(String id) {
-    final clean = id.replaceAll(RegExp(r'[^A-Za-z0-9_]+'), '').toLowerCase();
-    if (clean.isEmpty || !seen.add(clean)) {
-      return;
+  for (final id in aliases) {
+    if (!seen.add(id) || id.isEmpty) {
+      continue;
     }
-    out.add('assets/generated/unit_icons/named/units/$clean.png');
-    out.add('assets/generated/unit_icons/named/officers/$clean.png');
+    out.add('assets/generated/unit_icons/named/units/$id.png');
+    out.add('assets/generated/unit_icons/named/officers/$id.png');
   }
 
-  final lower = unitId.trim().toLowerCase();
-  for (final alt in extraFileIds[lower] ?? const <String>[]) {
-    add(alt);
-  }
-  add(unitId);
   return out;
 }

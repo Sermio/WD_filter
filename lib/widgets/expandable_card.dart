@@ -10,6 +10,9 @@ class ExpandableCard extends StatefulWidget {
   final String rarity;
   final String obtainedFrom;
   final Map<String, dynamic> itemData;
+  /// When set (e.g. Builder equip picker), shows a primary action without changing expand/collapse.
+  final VoidCallback? onSelect;
+  final String selectLabel;
 
   const ExpandableCard({
     Key? key,
@@ -18,6 +21,8 @@ class ExpandableCard extends StatefulWidget {
     required this.rarity,
     required this.obtainedFrom,
     required this.itemData,
+    this.onSelect,
+    this.selectLabel = 'Equip',
   }) : super(key: key);
 
   @override
@@ -134,6 +139,13 @@ class _ExpandableCardState extends State<ExpandableCard> {
                             ),
                           ),
                           const SizedBox(width: 10),
+                          if (widget.onSelect != null) ...[
+                            _SelectActionChip(
+                              label: widget.selectLabel,
+                              onPressed: widget.onSelect!,
+                            ),
+                            const SizedBox(width: 6),
+                          ],
                           _IconButtonChip(
                             icon: _isExpanded
                                 ? Icons.keyboard_arrow_up
@@ -596,6 +608,39 @@ class _IconButtonChip extends StatelessWidget {
           width: 34,
           height: 34,
           child: Icon(icon, size: 18, color: const Color(0xFF5F6677)),
+        ),
+      ),
+    );
+  }
+}
+
+class _SelectActionChip extends StatelessWidget {
+  const _SelectActionChip({
+    required this.label,
+    required this.onPressed,
+  });
+
+  final String label;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: const Color(0xFF667eea),
+      borderRadius: BorderRadius.circular(10),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(10),
+        onTap: onPressed,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          child: Text(
+            label,
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w800,
+              fontSize: 12.5,
+            ),
+          ),
         ),
       ),
     );
