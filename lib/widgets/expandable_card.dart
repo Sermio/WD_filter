@@ -365,11 +365,17 @@ class _ExpandableCardState extends State<ExpandableCard> {
 class ItemCompleteFrame extends StatelessWidget {
   final String slot;
   final String rarity;
+  /// Outer size in logical pixels (default matches item cards).
+  final double size;
+  /// Dark interior gradient for HUD-style panels (e.g. Builder).
+  final bool darkInterior;
 
   const ItemCompleteFrame({
     super.key,
     required this.slot,
     required this.rarity,
+    this.size = 62,
+    this.darkInterior = false,
   });
 
   @override
@@ -381,10 +387,15 @@ class ItemCompleteFrame extends StatelessWidget {
     final String overlayPath =
         'assets/generated/item_icons/named/overlays/${repo}_overlay.png';
     final Color highlightColor = getRarityHighlightColor(rarity);
+    final double s = size;
+    final double pad = s * 7 / 62;
+    final double inner = s * 48 / 62;
+    final double radius = s * 10 / 62;
+    final int cache = (s * 2).round();
 
     return Container(
-      width: 62,
-      height: 62,
+      width: s,
+      height: s,
       color: Colors.transparent,
       child: Stack(
         alignment: Alignment.center,
@@ -392,23 +403,37 @@ class ItemCompleteFrame extends StatelessWidget {
           Positioned.fill(
             child: DecoratedBox(
               decoration: BoxDecoration(
-                color: const Color(0xFFF7F7F9),
-                borderRadius: BorderRadius.circular(10),
+                color: darkInterior ? null : const Color(0xFFF7F7F9),
+                gradient: darkInterior
+                    ? const RadialGradient(
+                        center: Alignment(0, -0.15),
+                        radius: 1.05,
+                        colors: [
+                          Color(0xFF3A4A5C),
+                          Color(0xFF141820),
+                        ],
+                        stops: [0.0, 1.0],
+                      )
+                    : null,
+                borderRadius: BorderRadius.circular(radius),
               ),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(7),
+            padding: EdgeInsets.all(pad),
             child: Image.asset(
               iconPath,
-              width: 48,
-              height: 48,
-              cacheWidth: 96,
-              cacheHeight: 96,
+              width: inner,
+              height: inner,
+              cacheWidth: cache,
+              cacheHeight: cache,
               fit: BoxFit.contain,
               errorBuilder: (context, error, stackTrace) {
-                return const Icon(Icons.inventory_2_outlined,
-                    size: 28, color: Color(0xFF8F96A3));
+                return Icon(
+                  Icons.inventory_2_outlined,
+                  size: inner * 0.58,
+                  color: const Color(0xFF8F96A3),
+                );
               },
             ),
           ),
@@ -416,10 +441,10 @@ class ItemCompleteFrame extends StatelessWidget {
             child: IgnorePointer(
               child: Image.asset(
                 overlayPath,
-                width: 62,
-                height: 62,
-                cacheWidth: 124,
-                cacheHeight: 124,
+                width: s,
+                height: s,
+                cacheWidth: cache,
+                cacheHeight: cache,
                 fit: BoxFit.contain,
                 color: highlightColor,
                 colorBlendMode: BlendMode.srcIn,
@@ -433,10 +458,10 @@ class ItemCompleteFrame extends StatelessWidget {
             child: IgnorePointer(
               child: Image.asset(
                 framePath,
-                width: 62,
-                height: 62,
-                cacheWidth: 124,
-                cacheHeight: 124,
+                width: s,
+                height: s,
+                cacheWidth: cache,
+                cacheHeight: cache,
                 fit: BoxFit.contain,
                 errorBuilder: (context, error, stackTrace) {
                   return const SizedBox.shrink();

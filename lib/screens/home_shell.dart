@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:worldshift_assistant/screens/abilities_list_screen.dart';
+import 'package:worldshift_assistant/screens/builder_screen.dart';
 import 'package:worldshift_assistant/screens/card_list.dart';
-import 'package:worldshift_assistant/screens/loot_explorer_screen.dart';
 import 'package:worldshift_assistant/screens/units_list_screen.dart';
 import 'package:worldshift_assistant/screens/upload_info.dart';
 
@@ -24,7 +24,7 @@ class _HomeShellState extends State<HomeShell> {
           CardListScreen(),
           UnitsListScreen(),
           AbilitiesListScreen(),
-          LootExplorerScreen(),
+          BuilderScreen(),
           UploadScreen(),
         ],
       ),
@@ -48,9 +48,9 @@ class _HomeShellState extends State<HomeShell> {
             label: 'Abilities',
           ),
           NavigationDestination(
-            icon: Icon(Icons.map_outlined),
-            selectedIcon: Icon(Icons.map),
-            label: 'Loot',
+            icon: Icon(Icons.build_outlined),
+            selectedIcon: Icon(Icons.build),
+            label: 'Builder',
           ),
           NavigationDestination(
             icon: Icon(Icons.cloud_upload_outlined),
