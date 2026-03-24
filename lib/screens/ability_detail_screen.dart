@@ -27,8 +27,18 @@ class AbilityDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final typeColor =
-        ability.isActive ? const Color(0xFF7C3AED) : const Color(0xFF0D9488);
+    final typeColor = ability.isStatusEffect
+        ? (ability.isDebuff == true
+            ? const Color(0xFFB91C1C)
+            : const Color(0xFF0F766E))
+        : (ability.isActive
+            ? const Color(0xFF7C3AED)
+            : const Color(0xFF0D9488));
+    final fallbackKind = ability.isStatusEffect
+        ? null
+        : (ability.isActive
+            ? AbilityIconFallbackKind.active
+            : AbilityIconFallbackKind.passive);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF6F7FB),
@@ -91,11 +101,10 @@ class AbilityDetailScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 AbilityIconPreview(
+                  candidatePaths: ability.iconAssetPathCandidates,
                   assetPath: ability.iconAssetPath,
                   size: 72,
-                  fallbackKind: ability.isActive
-                      ? AbilityIconFallbackKind.active
-                      : AbilityIconFallbackKind.passive,
+                  fallbackKind: fallbackKind,
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -121,7 +130,7 @@ class AbilityDetailScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(999),
                         ),
                         child: Text(
-                          ability.isActive ? 'Active' : 'Passive',
+                          ability.typeLabel,
                           style: TextStyle(
                             color: typeColor,
                             fontWeight: FontWeight.w800,

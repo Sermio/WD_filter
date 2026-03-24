@@ -247,32 +247,45 @@ class RaceFilterToggleButtons extends StatelessWidget {
   }
 }
 
-/// Tipo de habilidad: todas / pasivas / activas (un solo valor).
+/// Tipo de habilidad (multi-select): pasivas / activas / buffs / debuffs.
 class AbilityKindToggleButtons extends StatelessWidget {
   const AbilityKindToggleButtons({
     super.key,
-    required this.kind,
+    required this.selectedKinds,
     required this.onChanged,
   });
 
-  /// '' = todas, 'passive', 'active'
-  final String kind;
-  final ValueChanged<String> onChanged;
+  /// Selección actual (puede estar vacía para "sin filtro por tipo").
+  final List<String> selectedKinds;
+  final ValueChanged<List<String>> onChanged;
 
   @override
   Widget build(BuildContext context) {
-    const labels = ['All', 'Passive', 'Active'];
+    const labels = [
+      ('Passive', 'passive'),
+      ('Active', 'active'),
+      ('Buffs', 'buff'),
+      ('Debuffs', 'debuff'),
+    ];
     final isSelected = [
-      kind.isEmpty,
-      kind == 'passive',
-      kind == 'active',
+      selectedKinds.contains('passive'),
+      selectedKinds.contains('active'),
+      selectedKinds.contains('buff'),
+      selectedKinds.contains('debuff'),
     ];
 
     return Center(
       child: ToggleButtons(
         isSelected: isSelected,
         onPressed: (index) {
-          onChanged(['', 'passive', 'active'][index]);
+          final key = labels[index].$2;
+          final next = List<String>.from(selectedKinds);
+          if (next.contains(key)) {
+            next.remove(key);
+          } else {
+            next.add(key);
+          }
+          onChanged(next);
         },
         borderRadius: const BorderRadius.all(Radius.circular(8)),
         fillColor: Colors.grey.shade200,
@@ -280,10 +293,10 @@ class AbilityKindToggleButtons extends StatelessWidget {
         constraints: const BoxConstraints(minHeight: 36, minWidth: 68),
         children: labels
             .map(
-              (l) => Padding(
+              (entry) => Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 6),
                 child: Text(
-                  l,
+                  entry.$1,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 12.5,

@@ -31,6 +31,8 @@ class CatalogAbility {
   const CatalogAbility({
     required this.name,
     required this.isActive,
+    this.isStatusEffect = false,
+    this.isDebuff,
     this.description,
     this.iconAtlas,
     this.iconCol,
@@ -41,6 +43,8 @@ class CatalogAbility {
 
   final String name;
   final bool isActive;
+  final bool isStatusEffect;
+  final bool? isDebuff;
   final String? description;
   final String? iconAtlas;
   final int? iconCol;
@@ -61,5 +65,65 @@ class CatalogAbility {
     return 'assets/generated/ui_icons/$iconAtlas/r${iconRow}_c$iconCol.png';
   }
 
-  String get typeLabel => isActive ? 'Active' : 'Passive';
+  List<String> get iconAssetPathCandidates {
+    final out = <String>[];
+
+    void addPath(String? atlas, int? row, int? col) {
+      if (atlas == null || row == null || col == null) {
+        return;
+      }
+      if (row < 0 || col < 0) {
+        return;
+      }
+      final path = 'assets/generated/ui_icons/$atlas/r${row}_c$col.png';
+      if (!out.contains(path)) {
+        out.add(path);
+      }
+    }
+
+    if (iconAssetPathOverride != null && iconAssetPathOverride!.isNotEmpty) {
+      addPath(iconAtlas, iconRow, iconCol);
+      if (!out.contains(iconAssetPathOverride!)) {
+        out.insert(0, iconAssetPathOverride!);
+      }
+      return out;
+    }
+
+    if (!hasIcon || iconAtlas == null || iconRow == null || iconCol == null) {
+      return out;
+    }
+
+    final atlas = iconAtlas!;
+    final row = iconRow!;
+    final col = iconCol!;
+
+    if (atlas == 'buff_icons' || isStatusEffect) {
+      if (row > 0 && col > 0) {
+        addPath(atlas, row - 1, col - 1);
+      }
+      addPath(atlas, row, col);
+      addPath(atlas, col, row);
+      if (row > 0 && col > 0) {
+        addPath(atlas, col - 1, row - 1);
+      }
+      return out;
+    }
+
+    addPath(atlas, row, col);
+    return out;
+  }
+
+  String get typeKey {
+    if (isStatusEffect) {
+      return 'status';
+    }
+    return isActive ? 'active' : 'passive';
+  }
+
+  String get typeLabel {
+    if (isStatusEffect) {
+      return isDebuff == true ? 'Debuff' : 'Buff';
+    }
+    return isActive ? 'Active' : 'Passive';
+  }
 }

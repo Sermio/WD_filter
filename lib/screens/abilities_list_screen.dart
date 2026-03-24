@@ -21,7 +21,7 @@ class _AbilitiesListScreenState extends State<AbilitiesListScreen> {
   Future<({UnitsCatalog units, AbilitiesCatalog abilities})>? _future;
   bool _isFilterVisible = false;
   final _search = TextEditingController();
-  String _kindFilter = '';
+  List<String> _selectedKinds = [];
   List<String> _selectedRaceLabels = [];
 
   @override
@@ -45,7 +45,7 @@ class _AbilitiesListScreenState extends State<AbilitiesListScreen> {
   void _clearFilters() {
     _search.clear();
     setState(() {
-      _kindFilter = '';
+      _selectedKinds = [];
       _selectedRaceLabels = [];
     });
   }
@@ -97,7 +97,7 @@ class _AbilitiesListScreenState extends State<AbilitiesListScreen> {
           final folders =
               RaceFilterToggleButtons.raceFoldersFromLabels(_selectedRaceLabels);
           final filtered = data.abilities.filter(
-            kind: _kindFilter.isEmpty ? null : _kindFilter,
+            kinds: _selectedKinds,
             raceFolders: folders.isEmpty ? null : folders,
             search: _search.text,
           );
@@ -119,8 +119,8 @@ class _AbilitiesListScreenState extends State<AbilitiesListScreen> {
                       ),
                       const SizedBox(height: 8),
                       AbilityKindToggleButtons(
-                        kind: _kindFilter,
-                        onChanged: (v) => setState(() => _kindFilter = v),
+                        selectedKinds: _selectedKinds,
+                        onChanged: (v) => setState(() => _selectedKinds = v),
                       ),
                       const SizedBox(height: 8),
                       RaceFilterToggleButtons(
@@ -192,10 +192,36 @@ class _AbilityCard extends StatelessWidget {
   final CatalogAbility ability;
   final VoidCallback onTap;
 
+  Color _typeColor() {
+    if (ability.isStatusEffect) {
+      return ability.isDebuff == true
+          ? const Color(0xFFB91C1C)
+          : const Color(0xFF0F766E);
+    }
+    return ability.isActive ? const Color(0xFF7C3AED) : const Color(0xFF0D9488);
+  }
+
+  IconData _typeIcon() {
+    if (ability.isStatusEffect) {
+      return ability.isDebuff == true
+          ? Icons.health_and_safety_outlined
+          : Icons.auto_awesome_outlined;
+    }
+    return ability.isActive ? Icons.flash_on_rounded : Icons.shield_outlined;
+  }
+
+  AbilityIconFallbackKind? _fallbackKind() {
+    if (ability.isStatusEffect) {
+      return null;
+    }
+    return ability.isActive
+        ? AbilityIconFallbackKind.active
+        : AbilityIconFallbackKind.passive;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final typeColor =
-        ability.isActive ? const Color(0xFF7C3AED) : const Color(0xFF0D9488);
+    final typeColor = _typeColor();
     final desc = ability.description?.trim();
 
     return Container(
@@ -224,10 +250,9 @@ class _AbilityCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   AbilityIconPreview(
+                    candidatePaths: ability.iconAssetPathCandidates,
                     assetPath: ability.iconAssetPath,
-                    fallbackKind: ability.isActive
-                        ? AbilityIconFallbackKind.active
-                        : AbilityIconFallbackKind.passive,
+                    fallbackKind: _fallbackKind(),
                   ),
                   const SizedBox(width: 14),
                   Expanded(
@@ -250,9 +275,7 @@ class _AbilityCard extends StatelessWidget {
                             _MiniChip(
                               label: ability.typeLabel,
                               color: typeColor,
-                              icon: ability.isActive
-                                  ? Icons.flash_on_rounded
-                                  : Icons.shield_outlined,
+                              icon: _typeIcon(),
                             ),
                             _MiniChip(
                               label:

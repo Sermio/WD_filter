@@ -170,10 +170,41 @@ class DtUnitParser {
     final seenPassive = <String>{};
     final seenActive = <String>{};
 
+    void addPassive(GameUnitAbility ability) {
+      if (seenPassive.add(ability.name)) {
+        passive.add(ability);
+      }
+    }
+
+    void addActive(GameUnitAbility ability) {
+      if (seenActive.add(ability.name)) {
+        active.add(ability);
+      }
+    }
+
     for (final block in _extractBlocks(source)) {
       // El bloque raíz de la unidad incluye name/descr de placeholder y suele
       // contener `when : abi.` en sub-bloques; no debe interpretarse como una pasiva.
       if (_isUnitDefinitionRootBlock(block.header)) {
+        // Pero sí debemos revisar su contenedor `abilities { ... }` para pasivas
+        // inline tipo `Sharpshooter { ... }` (ej. assassin.dt).
+        for (final child in _extractBlocks(block.body)) {
+          if (!_isAbilitiesContainer(child.header)) {
+            continue;
+          }
+          for (final abiBlock in _extractBlocks(child.body)) {
+            final ability = _buildAbility(
+              abiBlock.body,
+              iconAtlas: 'passive_abilities',
+            );
+            if (ability == null ||
+                !_shouldKeepAbility(ability.name) ||
+                !ability.isListableAbility) {
+              continue;
+            }
+            addPassive(ability);
+          }
+        }
         continue;
       }
 
@@ -188,9 +219,7 @@ class DtUnitParser {
               !ability.isListableAbility) {
             continue;
           }
-          if (seenPassive.add(ability.name)) {
-            passive.add(ability);
-          }
+          addPassive(ability);
         }
         continue;
       }
@@ -206,13 +235,9 @@ class DtUnitParser {
       }
 
       if (_isActiveAbilityBlock(block)) {
-        if (seenActive.add(ability.name)) {
-          active.add(ability);
-        }
+        addActive(ability);
       } else if (_isPassiveAbilityBlock(block)) {
-        if (seenPassive.add(ability.name)) {
-          passive.add(ability);
-        }
+        addPassive(ability);
       }
     }
 
@@ -220,7 +245,11 @@ class DtUnitParser {
   }
 
   static bool _isAbilitiesContainer(String header) {
-    return header.trim().endsWith('Abilities');
+    final h = header.trim().toLowerCase();
+    return h == 'abilities' ||
+        h == 'abilities:' ||
+        h == 'abilities :' ||
+        RegExp(r'^abilities\s*:\s*$').hasMatch(h);
   }
 
   /// Cabeceras del bloque principal de definición de unidad en `.dt` (no son habilidades).

@@ -141,7 +141,16 @@
     "conversationIconRow": null,
     "stats": {},
     "auraNames": [],
-    "passiveAbilities": [],
+    "passiveAbilities": [
+      {
+        "name": "Scouting",
+        "description": "The Sentinel is scouting the area",
+        "iconAtlas": null,
+        "iconCol": null,
+        "iconRow": null,
+        "iconAssetPath": null
+      }
+    ],
     "activeAbilities": [],
     "statusEffects": []
   },
@@ -304,7 +313,32 @@
       "sizzle_duration": "8"
     },
     "auraNames": [],
-    "passiveAbilities": [],
+    "passiveAbilities": [
+      {
+        "name": "Acid Burst",
+        "description": "The Eggs is producing acid bursts at nearby enemies their armor efficiency by [stat:clammy_acid_armor_perc]%. This effect stacks up to 5 times.",
+        "iconAtlas": "passive_abilities",
+        "iconCol": 5,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c5.png"
+      },
+      {
+        "name": "Sizzle",
+        "description": "The Egg is sizzling everynow and then and is reducing the damage done to all nearby enemies with [sizzle_damage_reduction_perc]%.",
+        "iconAtlas": "passive_abilities",
+        "iconCol": 5,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c5.png"
+      },
+      {
+        "name": "Hatchlings",
+        "description": "If the Egg is destroyed, the Hatchlings inside will enrage and will automatically attack nearby targets.",
+        "iconAtlas": "passive_abilities",
+        "iconCol": 7,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c7.png"
+      }
+    ],
     "activeAbilities": [],
     "statusEffects": [
       {
@@ -450,6 +484,14 @@
     ],
     "passiveAbilities": [
       {
+        "name": "Imminence",
+        "description": "Chance to confuse the target on hit",
+        "iconAtlas": "passive_abilities",
+        "iconCol": 6,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c6.png"
+      },
+      {
         "name": "Consume Hatchling",
         "description": "The Harvester will consume a nearby Hatchling to restore its health",
         "iconAtlas": "passive_abilities",
@@ -520,7 +562,16 @@
     "auraNames": [
       "RestorationCoreAura"
     ],
-    "passiveAbilities": [],
+    "passiveAbilities": [
+      {
+        "name": "Threaten",
+        "description": "Hatchling has [stat:threaten_chance]% chance on each attack to threaten its target, forsing it to focus attacks on the Hatchling itself for [stat:threaten_duration] seconds.",
+        "iconAtlas": "passive_abilities",
+        "iconCol": 6,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c6.png"
+      }
+    ],
     "activeAbilities": [],
     "statusEffects": [
       {
@@ -716,7 +767,16 @@
       "detonatoraura_tick": "10"
     },
     "auraNames": [],
-    "passiveAbilities": [],
+    "passiveAbilities": [
+      {
+        "name": "Electrified",
+        "description": "Enemies will prefer to attack someone else if possible",
+        "iconAtlas": "passive_abilities",
+        "iconCol": 2,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c2.png"
+      }
+    ],
     "activeAbilities": [],
     "statusEffects": [
       {
@@ -768,6 +828,14 @@
       "RestorationCoreAura"
     ],
     "passiveAbilities": [
+      {
+        "name": "Clone Shield",
+        "description": "Clone Shield that is activated automatically when the Shifter is attacked. Clone Shield has [stat:shield_hull] durability, [stat:shield_regen] charge rate, [stat:shield_fullabsorbchance]% chance for full deflection and [stat:shield_percentabsorbtion]% damage absorbtion. Also, everytime the Clone Shield fully deflects an incoming attack, it clones and protects one random nearby Officer, Trisat or Tritech.",
+        "iconAtlas": "passive_abilities",
+        "iconCol": 2,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c2.png"
+      },
       {
         "name": "Enfeeble",
         "description": "Shifter has [stat:enfeeble_chance]% chance on each attack to enfeeble all enemy units around his target for [stat:enfeeble_duration] reducing their damage by [stat:enfeeble_damage_reduction_perc]%. The effect stacks up to 5 times.",
@@ -871,7 +939,24 @@
     "auraNames": [
       "RestorationCoreAura"
     ],
-    "passiveAbilities": [],
+    "passiveAbilities": [
+      {
+        "name": "Frenzy",
+        "description": "Trisat gets frenzy after every [stat:frenzy_threshold] damage he inflicts, increasing his armor with [stat:frenzy_armor] and damage done by [stat:frenzy_damage]%. The buff stacks up to 3 times and fades away if the Trisat doesn't chew anything for [stat:frenzy_duration] seconds.",
+        "iconAtlas": "passive_abilities",
+        "iconCol": 1,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c1.png"
+      },
+      {
+        "name": "Paralyzing Field",
+        "description": "Trisat slows down the movement of all living enemies close to him by [stat:paralyzing_field_speed_reduction_perc]%.",
+        "iconAtlas": "passive_abilities",
+        "iconCol": 5,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c5.png"
+      }
+    ],
     "activeAbilities": [],
     "statusEffects": [
       {
@@ -999,6 +1084,14 @@
       "RestorationCoreAura"
     ],
     "passiveAbilities": [
+      {
+        "name": "Sharp Shooter",
+        "description": "Assassins are devastating at their maximum range, but their efficiency drops quickly with the distance. Try to postion them accordingly during the fight and avoid being forced to fight at close range.",
+        "iconAtlas": "passive_abilities",
+        "iconCol": 1,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c1.png"
+      },
       {
         "name": "Expose",
         "description": "Assassin has [stat:expose_target_chance] on every attack to pierce enemy armor, reducing its effectiveness with [stat:expose_target_armor_perc]% for [stat:expose_target_armor_duration] seconds. This effect stacks up to 5 times.",
@@ -1436,16 +1529,7 @@
       "sweep_damage": "210"
     },
     "auraNames": [],
-    "passiveAbilities": [
-      {
-        "name": "Sonic Shield",
-        "description": "Powerful shield that is activated automatically when the Hellfire is attacked. Sonic Shield has [stat:shield_hull] durability, [stat:shield_regen] charge rate, [stat:shield_fullabsorbchance]% chance for full deflection and [stat:shield_percentabsorbtion]% damage absorbtion.",
-        "iconAtlas": "passive_abilities",
-        "iconCol": 2,
-        "iconRow": 0,
-        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c2.png"
-      }
-    ],
+    "passiveAbilities": [],
     "activeAbilities": [
       {
         "name": "Fire Sweep",
@@ -1863,16 +1947,7 @@
     "auraNames": [
       "RestorationCoreAura"
     ],
-    "passiveAbilities": [
-      {
-        "name": "First Aid",
-        "description": "The Surgeon will automatically bandage wounded units every [stat:bandage_cooldown]seconds, healing them for [stat:bandage_amount] with a [stat:bandage_crit]% chance for twice the amount, also removing one harmful effect. Right-click on a friendly target to make the Surgeon following him and putting special attention on his hit points.",
-        "iconAtlas": "passive_abilities",
-        "iconCol": 3,
-        "iconRow": 0,
-        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c3.png"
-      }
-    ],
+    "passiveAbilities": [],
     "activeAbilities": [
       {
         "name": "Relief",
@@ -2232,7 +2307,24 @@
       "ignite_duration": "8"
     },
     "auraNames": [],
-    "passiveAbilities": [],
+    "passiveAbilities": [
+      {
+        "name": "Growl",
+        "description": "Brute has [stat:growl_chance]% chance on each attack to draw hi targets' attention, causing him to focus fire on the Brute for [stat:growl_duration] seconds.",
+        "iconAtlas": "passive_abilities",
+        "iconCol": 6,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c6.png"
+      },
+      {
+        "name": "Ignite",
+        "description": "Chance to Ignite on hit",
+        "iconAtlas": "passive_abilities",
+        "iconCol": 1,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c1.png"
+      }
+    ],
     "activeAbilities": [],
     "statusEffects": [
       {
@@ -2278,7 +2370,32 @@
     "auraNames": [
       "RestorationCoreAura"
     ],
-    "passiveAbilities": [],
+    "passiveAbilities": [
+      {
+        "name": "Charming",
+        "description": "Enemies will prefer to attack someone else if possible",
+        "iconAtlas": "passive_abilities",
+        "iconCol": 2,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c2.png"
+      },
+      {
+        "name": "Restore",
+        "description": "Restores friendly units' hit points",
+        "iconAtlas": "passive_abilities",
+        "iconCol": 3,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c3.png"
+      },
+      {
+        "name": "Full Restoration",
+        "description": "Completely heals nearby units. Requires full concentration.",
+        "iconAtlas": "passive_abilities",
+        "iconCol": 3,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c3.png"
+      }
+    ],
     "activeAbilities": [],
     "statusEffects": []
   },
@@ -2304,7 +2421,16 @@
     "auraNames": [
       "RestorationCoreAura"
     ],
-    "passiveAbilities": [],
+    "passiveAbilities": [
+      {
+        "name": "Frenzy",
+        "description": "The Elite Kai Rider goes into a Frenzy after he has seen enough blood.",
+        "iconAtlas": "passive_abilities",
+        "iconCol": 1,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c1.png"
+      }
+    ],
     "activeAbilities": [],
     "statusEffects": [
       {
@@ -2629,7 +2755,32 @@
     "auraNames": [
       "RestorationCoreAura"
     ],
-    "passiveAbilities": [],
+    "passiveAbilities": [
+      {
+        "name": "Charming",
+        "description": "Enemies will prefer to attack someone else if possible",
+        "iconAtlas": "passive_abilities",
+        "iconCol": 2,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c2.png"
+      },
+      {
+        "name": "Restore",
+        "description": "Restores friendly units' hit points",
+        "iconAtlas": "passive_abilities",
+        "iconCol": 3,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c3.png"
+      },
+      {
+        "name": "Full Restoration",
+        "description": "Completely heals nearby units. Requires full concentration.",
+        "iconAtlas": "passive_abilities",
+        "iconCol": 3,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c3.png"
+      }
+    ],
     "activeAbilities": [
       {
         "name": "Corrupted Mind",
@@ -2671,7 +2822,16 @@
     "auraNames": [
       "RestorationCoreAura"
     ],
-    "passiveAbilities": [],
+    "passiveAbilities": [
+      {
+        "name": "Drain Life",
+        "description": "Shaman has [stat:drain_life_chance]% chance to inflict [stat:damage] damage to it's current target and to heal all living friendly untis in a small area around himself for [drain_life_heal] hit points.",
+        "iconAtlas": "passive_abilities",
+        "iconCol": 3,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c3.png"
+      }
+    ],
     "activeAbilities": [
       {
         "name": "Renew",
@@ -2933,7 +3093,16 @@
     "auraNames": [
       "RestorationCoreAura"
     ],
-    "passiveAbilities": [],
+    "passiveAbilities": [
+      {
+        "name": "Sharp Shooter",
+        "description": "The Warrior is very efficient while shooting at his maximum range. However, he quickly looses effciency if forced into close range combat.",
+        "iconAtlas": "passive_abilities",
+        "iconCol": 1,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c1.png"
+      }
+    ],
     "activeAbilities": [],
     "statusEffects": []
   },
@@ -2958,7 +3127,24 @@
     "auraNames": [
       "RestorationCoreAura"
     ],
-    "passiveAbilities": [],
+    "passiveAbilities": [
+      {
+        "name": "Repair Building",
+        "description": "...",
+        "iconAtlas": "passive_abilities",
+        "iconCol": 8,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c8.png"
+      },
+      {
+        "name": "Build Shrine",
+        "description": "...",
+        "iconAtlas": "passive_abilities",
+        "iconCol": 8,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c8.png"
+      }
+    ],
     "activeAbilities": [],
     "statusEffects": []
   },

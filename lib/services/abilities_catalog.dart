@@ -5,10 +5,14 @@ class _AggBucket {
   _AggBucket({
     required this.name,
     required this.isActive,
+    this.isStatusEffect = false,
+    this.isDebuff,
   });
 
   final String name;
   final bool isActive;
+  final bool isStatusEffect;
+  final bool? isDebuff;
   final Set<String> seenUnitIds = {};
   final List<AbilityUnitRef> usedByUnits = [];
   String? description;
@@ -55,6 +59,26 @@ class _AggBucket {
     }
   }
 
+  void mergeFromStatusEffect(GameUnitStatusEffect effect) {
+    final d = effect.description?.trim();
+    if (d != null && d.isNotEmpty) {
+      if (description == null || d.length > description!.length) {
+        description = d;
+      }
+    }
+    if (!_hasAnyIcon) {
+      if (effect.iconAssetPathOverride != null &&
+          effect.iconAssetPathOverride!.isNotEmpty) {
+        iconAssetPathOverride = effect.iconAssetPathOverride;
+      }
+      if (effect.hasIcon) {
+        iconAtlas = effect.iconAtlas;
+        iconCol = effect.iconCol;
+        iconRow = effect.iconRow;
+      }
+    }
+  }
+
   CatalogAbility toCatalogAbility() {
     usedByUnits.sort(
       (a, b) => a.displayName.toLowerCase().compareTo(
@@ -64,6 +88,8 @@ class _AggBucket {
     return CatalogAbility(
       name: name,
       isActive: isActive,
+      isStatusEffect: isStatusEffect,
+      isDebuff: isDebuff,
       description: description,
       iconAtlas: iconAtlas,
       iconCol: iconCol,
@@ -103,12 +129,36 @@ class AbilitiesCatalog {
         b.addUnit(unit);
         b.mergeFromAbility(a);
       }
+      for (final effect in unit.statusEffects) {
+        final name = effect.name.trim();
+        if (name.isEmpty) continue;
+        final debuffKey = effect.isDebuff == true ? 'debuff' : 'buff';
+        final key = 's::$debuffKey::${name.toLowerCase()}';
+        final b = buckets.putIfAbsent(
+          key,
+          () => _AggBucket(
+            name: name,
+            isActive: false,
+            isStatusEffect: true,
+            isDebuff: effect.isDebuff,
+          ),
+        );
+        b.addUnit(unit);
+        b.mergeFromStatusEffect(effect);
+      }
     }
 
     final list = buckets.values.map((b) => b.toCatalogAbility()).toList();
     list.sort((x, y) {
-      if (x.isActive != y.isActive) {
-        return x.isActive ? 1 : -1;
+      int rank(CatalogAbility a) {
+        if (a.isStatusEffect) return 2;
+        if (a.isActive) return 1;
+        return 0;
+      }
+
+      final kindCompare = rank(x).compareTo(rank(y));
+      if (kindCompare != 0) {
+        return kindCompare;
       }
       return x.name.toLowerCase().compareTo(y.name.toLowerCase());
     });
@@ -116,15 +166,32 @@ class AbilitiesCatalog {
   }
 
   List<CatalogAbility> filter({
-    String? kind, // 'passive' | 'active' | null
+    List<String>? kinds, // any of: 'passive' | 'active' | 'buff' | 'debuff'
     List<String>? raceFolders,
     String? search,
   }) {
     var result = entries;
-    if (kind == 'passive') {
-      result = result.where((e) => !e.isActive).toList();
-    } else if (kind == 'active') {
-      result = result.where((e) => e.isActive).toList();
+    if (kinds != null && kinds.isNotEmpty) {
+      final selected = kinds.toSet();
+      result = result.where((e) {
+        if (selected.contains('passive') && e.typeKey == 'passive') {
+          return true;
+        }
+        if (selected.contains('active') && e.typeKey == 'active') {
+          return true;
+        }
+        if (selected.contains('buff') &&
+            e.typeKey == 'status' &&
+            e.isDebuff != true) {
+          return true;
+        }
+        if (selected.contains('debuff') &&
+            e.typeKey == 'status' &&
+            e.isDebuff == true) {
+          return true;
+        }
+        return false;
+      }).toList();
     }
     if (raceFolders != null && raceFolders.isNotEmpty) {
       final folders = raceFolders;
