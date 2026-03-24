@@ -1,12 +1,19 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:worldshift_assistant/data/data.dart';
 import 'package:worldshift_assistant/data/item.dart';
 import 'package:worldshift_assistant/data/worldshift_assets.dart';
+import 'package:worldshift_assistant/models/item_filters_model.dart';
+import 'package:worldshift_assistant/utils/catalog_item_filter.dart';
 import 'package:worldshift_assistant/utils/unit_icon_candidates.dart';
 import 'package:worldshift_assistant/utils/utils.dart';
-import 'package:worldshift_assistant/widgets/catalog_filter_widgets.dart';
 import 'package:worldshift_assistant/widgets/expandable_card.dart';
+import 'package:worldshift_assistant/widgets/item_catalog_filters_panel.dart';
 import 'package:worldshift_assistant/widgets/resolved_mini_asset_image.dart';
 
 /// Distinct from [null] so closing the sheet without choosing does not unequip.
@@ -27,17 +34,146 @@ class _BuilderScreenState extends State<BuilderScreen> {
     'Aliens': 'ALIEN_',
   };
 
+  /// Legacy flat map (slot → item id). Migrated to [_prefsEquipKeyV2] on load/save.
+  static const _prefsEquipKeyV1 = 'builder_equipped_slots_v1';
+  /// One equipment set per race (Humans / Tribes / Aliens). Skill tree can use the same split later.
+  static const _prefsEquipKeyV2 = 'builder_equipped_by_race_v2';
+  static const _prefsRaceKey = 'builder_selected_race_v1';
+
   late final Future<List<Item>> _itemsFuture;
   String _selectedRace = 'Humans';
-  final Map<String, Item> _equippedBySlot = {};
+  final Map<String, Map<String, Item>> _equippedByRace = {
+    for (final r in _races) r: <String, Item>{},
+  };
+
+  Map<String, Item> get _equipForSelectedRace => _equippedByRace[_selectedRace]!;
+
+  static String? _raceForSlotKey(String slotKey) {
+    for (final e in _racePrefix.entries) {
+      if (slotKey.startsWith(e.value)) {
+        return e.key;
+      }
+    }
+    return null;
+  }
 
   @override
   void initState() {
     super.initState();
-    _itemsFuture = combineLootData(
+    _itemsFuture = _loadItemsAndRestorePrefs();
+  }
+
+  Future<List<Item>> _loadItemsAndRestorePrefs() async {
+    final items = await combineLootData(
       WorldshiftAssets.lootTableFile,
       WorldshiftAssets.itemsDefinitionFile,
     );
+    await _restoreFromPrefs(items);
+    return items;
+  }
+
+  Future<void> _restoreFromPrefs(List<Item> items) async {
+    final prefs = await SharedPreferences.getInstance();
+    final byId = {for (final i in items) i.id: i};
+
+    final nextByRace = {
+      for (final r in _races) r: <String, Item>{},
+    };
+
+    void putIfValid(String race, String slotKey, int id) {
+      final item = byId[id];
+      if (item == null || item.slot != slotKey) {
+        return;
+      }
+      if (_raceForSlotKey(slotKey) != race) {
+        return;
+      }
+      nextByRace[race]![slotKey] = item;
+    }
+
+    try {
+      final rawV2 = prefs.getString(_prefsEquipKeyV2);
+      if (rawV2 != null && rawV2.isNotEmpty) {
+        final decoded = jsonDecode(rawV2);
+        if (decoded is Map) {
+          for (final race in _races) {
+            final inner = decoded[race];
+            if (inner is! Map) {
+              continue;
+            }
+            for (final e in inner.entries) {
+              final slotKey = '${e.key}';
+              final idVal = e.value;
+              final id = idVal is int
+                  ? idVal
+                  : idVal is num
+                      ? idVal.toInt()
+                      : int.tryParse('$idVal');
+              if (id == null) {
+                continue;
+              }
+              putIfValid(race, slotKey, id);
+            }
+          }
+        }
+      } else {
+        final rawV1 = prefs.getString(_prefsEquipKeyV1);
+        if (rawV1 != null && rawV1.isNotEmpty) {
+          final decoded = jsonDecode(rawV1);
+          if (decoded is Map) {
+            for (final e in decoded.entries) {
+              final slotKey = '${e.key}';
+              final race = _raceForSlotKey(slotKey);
+              if (race == null) {
+                continue;
+              }
+              final idVal = e.value;
+              final id = idVal is int
+                  ? idVal
+                  : idVal is num
+                      ? idVal.toInt()
+                      : int.tryParse('$idVal');
+              if (id == null) {
+                continue;
+              }
+              putIfValid(race, slotKey, id);
+            }
+          }
+        }
+      }
+    } catch (_) {
+      // ignore corrupt prefs
+    }
+
+    final savedRace = prefs.getString(_prefsRaceKey);
+    final race = savedRace != null && _races.contains(savedRace)
+        ? savedRace
+        : _selectedRace;
+
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      for (final r in _races) {
+        _equippedByRace[r]!
+          ..clear()
+          ..addAll(nextByRace[r]!);
+      }
+      _selectedRace = race;
+    });
+  }
+
+  Future<void> _persistBuilderState() async {
+    final prefs = await SharedPreferences.getInstance();
+    final payload = {
+      for (final r in _races)
+        r: {
+          for (final e in _equippedByRace[r]!.entries) e.key: e.value.id,
+        },
+    };
+    await prefs.setString(_prefsEquipKeyV2, jsonEncode(payload));
+    await prefs.remove(_prefsEquipKeyV1);
+    await prefs.setString(_prefsRaceKey, _selectedRace);
   }
 
   List<Map<String, String>> _slotsForRace(String race) {
@@ -58,8 +194,9 @@ class _BuilderScreenState extends State<BuilderScreen> {
       builder: (context) => _BuilderEquipItemPicker(
         slotKey: slotKey,
         slotLabel: slotLabel,
+        lockedRace: _selectedRace,
         allItems: allItems,
-        canUnequip: _equippedBySlot[slotKey] != null,
+        canUnequip: _equipForSelectedRace[slotKey] != null,
         unequipToken: _builderPickerUnequip,
       ),
     );
@@ -71,18 +208,47 @@ class _BuilderScreenState extends State<BuilderScreen> {
       return;
     }
     if (identical(result, _builderPickerUnequip)) {
-      setState(() => _equippedBySlot.remove(slotKey));
+      setState(() => _equipForSelectedRace.remove(slotKey));
+      unawaited(_persistBuilderState());
       return;
     }
     if (result is Item) {
-      setState(() => _equippedBySlot[slotKey] = result);
+      setState(() => _equipForSelectedRace[slotKey] = result);
+      unawaited(_persistBuilderState());
     }
+  }
+
+  Future<void> _confirmResetCurrentRaceLoadout() async {
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Reset loadout'),
+        content: Text(
+          'Remove all equipped items for $_selectedRace? Other races are not affected.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: const Text('Reset'),
+          ),
+        ],
+      ),
+    );
+    if (ok != true || !mounted) {
+      return;
+    }
+    setState(_equipForSelectedRace.clear);
+    unawaited(_persistBuilderState());
   }
 
   _BuildSummary _buildSummary() {
     final unitMap = <String, _UnitAggBuilder>{};
 
-    for (final equip in _equippedBySlot.entries) {
+    for (final equip in _equipForSelectedRace.entries) {
       final slotKey = equip.key;
       final item = equip.value;
       for (final unitEntry in item.attributes.entries) {
@@ -130,7 +296,7 @@ class _BuilderScreenState extends State<BuilderScreen> {
       );
 
     return _BuildSummary(
-      itemCount: _equippedBySlot.length,
+      itemCount: _equipForSelectedRace.length,
       perUnit: perUnit,
     );
   }
@@ -218,16 +384,22 @@ class _BuilderScreenState extends State<BuilderScreen> {
               final panelLeft = _EquipmentPanel(
                 selectedRace: _selectedRace,
                 races: _races,
-                onRaceChanged: (race) => setState(() => _selectedRace = race),
+                onRaceChanged: (race) {
+                  setState(() => _selectedRace = race);
+                  unawaited(_persistBuilderState());
+                },
                 slotsForRace: slotsForRace,
-                equippedBySlot: _equippedBySlot,
+                equippedBySlot: _equipForSelectedRace,
                 onPickItem: (slotKey, slotLabel) => _openItemPicker(
                   slotKey: slotKey,
                   slotLabel: slotLabel,
                   allItems: allItems,
                 ),
+                onResetLoadout: () =>
+                    unawaited(_confirmResetCurrentRaceLoadout()),
               );
               final panelRight = _SummaryPanel(
+                selectedRace: _selectedRace,
                 summary: summary,
                 formatValue: _formatValue,
                 scrollUnitsInternally: constraints.maxWidth >= 1050,
@@ -266,6 +438,7 @@ class _BuilderEquipItemPicker extends StatefulWidget {
   const _BuilderEquipItemPicker({
     required this.slotKey,
     required this.slotLabel,
+    required this.lockedRace,
     required this.allItems,
     required this.canUnequip,
     required this.unequipToken,
@@ -273,6 +446,7 @@ class _BuilderEquipItemPicker extends StatefulWidget {
 
   final String slotKey;
   final String slotLabel;
+  final String lockedRace;
   final List<Item> allItems;
   final bool canUnequip;
   final Object unequipToken;
@@ -282,36 +456,49 @@ class _BuilderEquipItemPicker extends StatefulWidget {
 }
 
 class _BuilderEquipItemPickerState extends State<_BuilderEquipItemPicker> {
-  late final TextEditingController _searchController;
+  late final TextEditingController _nameController;
+  late final TextEditingController _attributeController;
+  late final TextEditingController _unitController;
+  bool _filtersVisible = false;
+
+  static String _formatUnitLabel(String unitKey) {
+    final rawLabel = getUnitValue(unitKey).replaceAll('_', ' ').trim();
+    return rawLabel.replaceAllMapped(
+      RegExp(r'(?<=[a-z])(?=[A-Z])'),
+      (_) => ' ',
+    );
+  }
 
   @override
   void initState() {
     super.initState();
-    _searchController = TextEditingController();
+    final fp = context.read<FilterProvider>();
+    _nameController = TextEditingController(text: fp.nameFilter);
+    _attributeController = TextEditingController(text: fp.attributeFilter);
+    _unitController = TextEditingController(
+      text: fp.unitFilter.isEmpty ? '' : _formatUnitLabel(fp.unitFilter),
+    );
   }
 
   @override
   void dispose() {
-    _searchController.dispose();
+    _nameController.dispose();
+    _attributeController.dispose();
+    _unitController.dispose();
     super.dispose();
   }
 
-  List<Item> _filteredSorted() {
-    final q = _searchController.text.trim().toLowerCase();
-    final result = widget.allItems.where((i) {
-      if (i.slot != widget.slotKey) {
-        return false;
-      }
-      if (q.isEmpty) {
-        return true;
-      }
-      if (i.name.toLowerCase().contains(q)) {
-        return true;
-      }
-      return i.attributes.keys.any(
-        (u) => getUnitValue(u).toLowerCase().contains(q),
-      );
-    }).toList();
+  List<Item> _filteredSorted(FilterProvider fp) {
+    final result = widget.allItems
+        .where(
+          (item) => catalogItemMatchesFilters(
+            item: item,
+            filterProvider: fp,
+            lockedSlotKey: widget.slotKey,
+            lockedRaceKey: widget.lockedRace,
+          ),
+        )
+        .toList();
     result.sort((a, b) {
       final rarityCmp = b.rarity.compareTo(a.rarity);
       if (rarityCmp != 0) {
@@ -324,7 +511,6 @@ class _BuilderEquipItemPickerState extends State<_BuilderEquipItemPicker> {
 
   @override
   Widget build(BuildContext context) {
-    final items = _filteredSorted();
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
 
     return GestureDetector(
@@ -339,122 +525,339 @@ class _BuilderEquipItemPickerState extends State<_BuilderEquipItemPicker> {
         ),
         child: SizedBox(
           height: MediaQuery.of(context).size.height * 0.78,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
+          child: Consumer<FilterProvider>(
+            builder: (context, fp, _) {
+              final items = _filteredSorted(fp);
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: Text(
-                      'Equip in ${widget.slotLabel}',
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w800,
-                        color: Color(0xFF1F2937),
-                      ),
-                    ),
-                  ),
-                  if (widget.canUnequip)
-                    TextButton.icon(
-                      onPressed: () =>
-                          Navigator.of(context).pop(widget.unequipToken),
-                      icon: const Icon(Icons.remove_circle_outline),
-                      label: const Text('Unequip'),
-                    ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              CatalogSearchBar(
-                controller: _searchController,
-                hintText: 'Search item by name…',
-                onChanged: (_) => setState(() {}),
-              ),
-              const SizedBox(height: 10),
-              Center(
-                child: Text(
-                  '${items.length} items',
-                  style: TextStyle(
-                    color: Colors.grey.shade600,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 8),
-              Expanded(
-                child: items.isEmpty
-                    ? Center(
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 24),
-                          padding: const EdgeInsets.all(24),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: Colors.grey.shade200),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.05),
-                                blurRadius: 18,
-                                offset: const Offset(0, 8),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Icon(
-                                Icons.search_off_rounded,
-                                size: 42,
-                                color: Color(0xFF8A90A0),
-                              ),
-                              const SizedBox(height: 14),
-                              const Text(
-                                'No items for this slot',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w800,
-                                  color: Color(0xFF313846),
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                'Try another search or pick a different slot.',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Colors.grey.shade600,
-                                  fontSize: 13,
-                                  height: 1.35,
-                                ),
-                              ),
-                            ],
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          'Equip in ${widget.slotLabel}',
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w800,
+                            color: Color(0xFF1F2937),
                           ),
                         ),
-                      )
-                    : ListView.separated(
-                        padding: const EdgeInsets.only(top: 10, bottom: 20),
-                        itemCount: items.length,
-                        separatorBuilder: (_, __) => const SizedBox(height: 4),
-                        itemBuilder: (context, index) {
-                          final item = items[index];
-                          final itemData = item.toMap();
-                          final rarity =
-                              item.rarity.isEmpty ? 'unknown' : item.rarity;
-                          return ExpandableCard(
-                            name: item.name,
-                            map: item.map,
-                            rarity: rarity,
-                            obtainedFrom: item.obtainedFrom,
-                            itemData: itemData,
-                            onSelect: () => Navigator.of(context).pop(item),
-                          );
-                        },
                       ),
-              ),
-            ],
+                      IconButton(
+                        tooltip: 'Filters',
+                        onPressed: () => setState(
+                          () => _filtersVisible = !_filtersVisible,
+                        ),
+                        icon: Icon(
+                          _filtersVisible ? Icons.close : Icons.tune,
+                          color: const Color(0xFF475569),
+                        ),
+                      ),
+                      if (widget.canUnequip)
+                        TextButton.icon(
+                          onPressed: () =>
+                              Navigator.of(context).pop(widget.unequipToken),
+                          icon: const Icon(Icons.remove_circle_outline),
+                          label: const Text('Unequip'),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  if (_filtersVisible) ...[
+                    const SizedBox(height: 8),
+                    ItemCatalogFiltersPanel(
+                      nameController: _nameController,
+                      attributeController: _attributeController,
+                      unitController: _unitController,
+                      hideSlotDropdown: true,
+                      lockedRace: widget.lockedRace,
+                      maxHeight: 260,
+                      onFiltersChanged: () => setState(() {}),
+                      footer: Center(
+                        child: Text(
+                          '${items.length} items',
+                          style: TextStyle(
+                            color: Colors.grey.shade600,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                  if (_filtersVisible) const Divider(height: 1),
+                  if (!_filtersVisible) const SizedBox(height: 10),
+                  if (!_filtersVisible)
+                    Center(
+                      child: Text(
+                        '${items.length} items',
+                        style: TextStyle(
+                          color: Colors.grey.shade600,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  if (!_filtersVisible) const SizedBox(height: 8),
+                  if (_filtersVisible) const SizedBox(height: 6),
+                  Expanded(
+                    child: items.isEmpty
+                        ? Center(
+                            child: Container(
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 24),
+                              padding: const EdgeInsets.all(24),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                                border:
+                                    Border.all(color: Colors.grey.shade200),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black
+                                        .withValues(alpha: 0.05),
+                                    blurRadius: 18,
+                                    offset: const Offset(0, 8),
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(
+                                    Icons.search_off_rounded,
+                                    size: 42,
+                                    color: Color(0xFF8A90A0),
+                                  ),
+                                  const SizedBox(height: 14),
+                                  const Text(
+                                    'No items for this slot',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w800,
+                                      color: Color(0xFF313846),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    'Try filters, search, or clear criteria.',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Colors.grey.shade600,
+                                      fontSize: 13,
+                                      height: 1.35,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                        : ListView.separated(
+                            padding:
+                                const EdgeInsets.only(top: 10, bottom: 20),
+                            itemCount: items.length,
+                            separatorBuilder: (_, __) =>
+                                const SizedBox(height: 4),
+                            itemBuilder: (context, index) {
+                              final item = items[index];
+                              final itemData = item.toMap();
+                              final rarity = item.rarity.isEmpty
+                                  ? 'unknown'
+                                  : item.rarity;
+                              return ExpandableCard(
+                                name: item.name,
+                                map: item.map,
+                                rarity: rarity,
+                                obtainedFrom: item.obtainedFrom,
+                                itemData: itemData,
+                                onSelect: () =>
+                                    Navigator.of(context).pop(item),
+                              );
+                            },
+                          ),
+                  ),
+                ],
+              );
+            },
           ),
         ),
       ),
     );
+  }
+}
+
+class _BuilderRaceHudTheme {
+  const _BuilderRaceHudTheme({
+    required this.isDarkPanel,
+    required this.panelBg,
+    required this.panelBorder,
+    required this.titleColor,
+    required this.hintColor,
+    required this.chipSelected,
+    required this.chipBackground,
+    required this.chipLabelSelected,
+    required this.chipLabelUnselected,
+    required this.chipSide,
+    required this.footerDivider,
+    required this.resetStyle,
+    required this.hudInterior,
+    required this.slotLabelPrimary,
+    required this.slotLabelSecondary,
+    required this.inkSplash,
+    required this.inkHighlight,
+    required this.frameShadow,
+  });
+
+  final bool isDarkPanel;
+  final Color panelBg;
+  final Color panelBorder;
+  final Color titleColor;
+  final Color hintColor;
+  final Color chipSelected;
+  final Color chipBackground;
+  final Color chipLabelSelected;
+  final Color chipLabelUnselected;
+  final Color chipSide;
+  final Color footerDivider;
+  final ButtonStyle resetStyle;
+  final BuilderHudInterior hudInterior;
+  final Color slotLabelPrimary;
+  final Color slotLabelSecondary;
+  final Color inkSplash;
+  final Color inkHighlight;
+  final Color frameShadow;
+
+  static _BuilderRaceHudTheme forRace(String race) {
+    switch (race) {
+      case 'Humans':
+        return _BuilderRaceHudTheme(
+          isDarkPanel: true,
+          panelBg: const Color(0xFF0C0F14),
+          panelBorder: const Color(0xFF2A313C),
+          titleColor: const Color(0xFFE8EDF5),
+          hintColor: const Color(0xFF8B95A8),
+          chipSelected: const Color(0xFF3D4F6A),
+          chipBackground: const Color(0xFF1A1F28),
+          chipLabelSelected: Colors.white,
+          chipLabelUnselected: const Color(0xFFB8C0D0),
+          chipSide: const Color(0xFF343C4A),
+          footerDivider: const Color(0xFF2A313C),
+          resetStyle: OutlinedButton.styleFrom(
+            foregroundColor: const Color(0xFFEEF2F7),
+            disabledForegroundColor: const Color(0xFF5C6570),
+            side: const BorderSide(color: Color(0xFF4A5568)),
+            backgroundColor: const Color(0xFF1A1F28),
+          ),
+          hudInterior: BuilderHudInterior.human,
+          slotLabelPrimary: const Color(0xFFF2F5FA),
+          slotLabelSecondary: const Color(0xFF7D8696),
+          inkSplash: Colors.white24,
+          inkHighlight: Colors.white10,
+          frameShadow: const Color(0x73000000),
+        );
+      case 'Tribes':
+        return _BuilderRaceHudTheme(
+          isDarkPanel: true,
+          panelBg: const Color(0xFF100E0C),
+          panelBorder: const Color(0xFF3D3428),
+          titleColor: const Color(0xFFF2E8DC),
+          hintColor: const Color(0xFF9A8B78),
+          chipSelected: const Color(0xFF5C4A32),
+          chipBackground: const Color(0xFF1C1612),
+          chipLabelSelected: const Color(0xFFFFFBF5),
+          chipLabelUnselected: const Color(0xFFBDA892),
+          chipSide: const Color(0xFF4A3F32),
+          footerDivider: const Color(0xFF3D3428),
+          resetStyle: OutlinedButton.styleFrom(
+            foregroundColor: const Color(0xFFE8DED0),
+            disabledForegroundColor: const Color(0xFF5C534A),
+            side: const BorderSide(color: Color(0xFF5A4E42)),
+            backgroundColor: const Color(0xFF161310),
+          ),
+          hudInterior: BuilderHudInterior.mutant,
+          slotLabelPrimary: const Color(0xFFF5EDE0),
+          slotLabelSecondary: const Color(0xFF8F7D6B),
+          inkSplash: const Color(0x33D4A574),
+          inkHighlight: const Color(0x18D4A574),
+          frameShadow: const Color(0x80000000),
+        );
+      case 'Aliens':
+        return _BuilderRaceHudTheme(
+          isDarkPanel: true,
+          panelBg: const Color(0xFF050806),
+          panelBorder: const Color(0xFF143220),
+          titleColor: const Color(0xFFE5F2EA),
+          hintColor: const Color(0xFF6B8878),
+          chipSelected: const Color(0xFF1E4D32),
+          chipBackground: const Color(0xFF0A120E),
+          chipLabelSelected: const Color(0xFFB8FFD4),
+          chipLabelUnselected: const Color(0xFF7DA892),
+          chipSide: const Color(0xFF1A3024),
+          footerDivider: const Color(0xFF143220),
+          resetStyle: OutlinedButton.styleFrom(
+            foregroundColor: const Color(0xFFC8EDD8),
+            disabledForegroundColor: const Color(0xFF3D5248),
+            side: const BorderSide(color: Color(0xFF255238)),
+            backgroundColor: const Color(0xFF0A100C),
+          ),
+          hudInterior: BuilderHudInterior.alien,
+          slotLabelPrimary: const Color(0xFFE8F7EE),
+          slotLabelSecondary: const Color(0xFF5E806E),
+          inkSplash: const Color(0x4040FF88),
+          inkHighlight: const Color(0x2040FF88),
+          frameShadow: const Color(0xAA003020),
+        );
+      default:
+        return _BuilderRaceHudTheme(
+          isDarkPanel: false,
+          panelBg: Colors.white,
+          panelBorder: const Color(0xFFE2E8F0),
+          titleColor: const Color(0xFF1F2937),
+          hintColor: const Color(0xFF64748B),
+          chipSelected: const Color(0xFFE0E7FF),
+          chipBackground: const Color(0xFFF1F5F9),
+          chipLabelSelected: const Color(0xFF3730A3),
+          chipLabelUnselected: const Color(0xFF475569),
+          chipSide: const Color(0xFFE2E8F0),
+          footerDivider: const Color(0xFFE2E8F0),
+          resetStyle: OutlinedButton.styleFrom(
+            foregroundColor: const Color(0xFF475569),
+            side: BorderSide(color: Colors.grey.shade400),
+          ),
+          hudInterior: BuilderHudInterior.human,
+          slotLabelPrimary: const Color(0xFFF2F5FA),
+          slotLabelSecondary: const Color(0xFF7D8696),
+          inkSplash: Colors.black12,
+          inkHighlight: Colors.black12,
+          frameShadow: const Color(0x73000000),
+        );
+    }
+  }
+}
+
+({List<String> center, List<String> left, List<String> right})? _zigzagKeysForRace(
+    String race) {
+  switch (race) {
+    case 'Humans':
+      return (
+        center: _EquipmentPanel._humanCenterKeys,
+        left: _EquipmentPanel._humanSideKeys,
+        right: _EquipmentPanel._humanRightKeys,
+      );
+    case 'Tribes':
+      return (
+        center: _EquipmentPanel._mutantCenterKeys,
+        left: _EquipmentPanel._mutantLeftKeys,
+        right: _EquipmentPanel._mutantRightKeys,
+      );
+    case 'Aliens':
+      return (
+        center: _EquipmentPanel._alienCenterKeys,
+        left: _EquipmentPanel._alienLeftKeys,
+        right: _EquipmentPanel._alienRightKeys,
+      );
+    default:
+      return null;
   }
 }
 
@@ -466,6 +869,7 @@ class _EquipmentPanel extends StatelessWidget {
     required this.slotsForRace,
     required this.equippedBySlot,
     required this.onPickItem,
+    required this.onResetLoadout,
   });
 
   static const List<String> _humanCenterKeys = [
@@ -485,12 +889,48 @@ class _EquipmentPanel extends StatelessWidget {
     'HUMAN_JUDGE',
   ];
 
+  /// Orden zigzag como UI de referencia (columna central 4, lados 3 desfasados).
+  static const List<String> _mutantCenterKeys = [
+    'MUTANT_NATURE',
+    'MUTANT_SPIRIT',
+    'MUTANT_PSYCHIC',
+    'MUTANT_HIGHPRIEST',
+  ];
+  static const List<String> _mutantLeftKeys = [
+    'MUTANT_BLOOD',
+    'MUTANT_STONEGHOST',
+    'MUTANT_SHAMAN',
+  ];
+  static const List<String> _mutantRightKeys = [
+    'MUTANT_MIND',
+    'MUTANT_ADEPT',
+    'MUTANT_GUARDIAN',
+  ];
+
+  static const List<String> _alienCenterKeys = [
+    'ALIEN_CORRUPTION',
+    'ALIEN_ENIGMA',
+    'ALIEN_DEFILER',
+    'ALIEN_MASTER',
+  ];
+  static const List<String> _alienLeftKeys = [
+    'ALIEN_POWER',
+    'ALIEN_HARVESTER',
+    'ALIEN_DOMINATOR',
+  ];
+  static const List<String> _alienRightKeys = [
+    'ALIEN_DOGMA',
+    'ALIEN_MANIPULATOR',
+    'ALIEN_ARBITER',
+  ];
+
   final String selectedRace;
   final List<String> races;
   final ValueChanged<String> onRaceChanged;
   final List<Map<String, String>> slotsForRace;
   final Map<String, Item> equippedBySlot;
   final void Function(String slotKey, String slotLabel) onPickItem;
+  final VoidCallback onResetLoadout;
 
   Map<String, Map<String, String>> _slotsByKey() {
     return {
@@ -500,19 +940,15 @@ class _EquipmentPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final humanHud = selectedRace == 'Humans';
-    final titleColor =
-        humanHud ? const Color(0xFFE8EDF5) : const Color(0xFF1F2937);
-    final hintColor =
-        humanHud ? const Color(0xFF8B95A8) : const Color(0xFF64748B);
+    final hud = _BuilderRaceHudTheme.forRace(selectedRace);
 
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: humanHud ? const Color(0xFF0C0F14) : Colors.white,
+        color: hud.panelBg,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
-          color: humanHud ? const Color(0xFF2A313C) : const Color(0xFFE2E8F0),
+          color: hud.panelBorder,
         ),
         boxShadow: const [
           BoxShadow(
@@ -522,154 +958,211 @@ class _EquipmentPanel extends StatelessWidget {
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            'Equipment Builder',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w800,
-              color: titleColor,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: races.map((race) {
-              final sel = race == selectedRace;
-              return ChoiceChip(
-                selected: sel,
-                label: Text(race),
-                selectedColor:
-                    humanHud ? const Color(0xFF3D4F6A) : const Color(0xFFE0E7FF),
-                backgroundColor: humanHud
-                    ? const Color(0xFF1A1F28)
-                    : const Color(0xFFF1F5F9),
-                labelStyle: TextStyle(
-                  color: sel
-                      ? (humanHud ? Colors.white : const Color(0xFF3730A3))
-                      : (humanHud
-                          ? const Color(0xFFB8C0D0)
-                          : const Color(0xFF475569)),
-                  fontWeight: FontWeight.w700,
-                ),
-                side: BorderSide(
-                  color: humanHud
-                      ? const Color(0xFF343C4A)
-                      : const Color(0xFFE2E8F0),
-                ),
-                onSelected: (_) => onRaceChanged(race),
-              );
-            }).toList(),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            'Tap a slot to equip an item.',
-            style: TextStyle(
-              color: hintColor,
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 12),
-          if (humanHud)
-            _HumanEquipmentZigzag(
-              slotsByKey: _slotsByKey(),
-              equippedBySlot: equippedBySlot,
-              onPickItem: onPickItem,
-              centerKeys: _humanCenterKeys,
-              leftKeys: _humanSideKeys,
-              rightKeys: _humanRightKeys,
-            )
-          else
-            GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: slotsForRace.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-                childAspectRatio: 1.65,
-              ),
-              itemBuilder: (context, index) {
-                final slot = slotsForRace[index];
-                final slotKey = slot['key'] ?? '';
-                final slotLabel = slot['value'] ?? slotKey;
-                final equipped = equippedBySlot[slotKey];
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final panelHasBoundedHeight = constraints.maxHeight.isFinite;
 
-                return InkWell(
-                  borderRadius: BorderRadius.circular(12),
-                  onTap: () => onPickItem(slotKey, slotLabel),
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF8FAFC),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: equipped == null
-                            ? const Color(0xFFE2E8F0)
-                            : const Color(0xFF8B5CF6),
-                        width: equipped == null ? 1 : 1.5,
-                      ),
+          final header = Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Equipment Builder',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w800,
+                  color: hud.titleColor,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: races.map((race) {
+                  final sel = race == selectedRace;
+                  final chipHud = _BuilderRaceHudTheme.forRace(race);
+                  return ChoiceChip(
+                    selected: sel,
+                    label: Text(race),
+                    selectedColor: chipHud.chipSelected,
+                    backgroundColor: chipHud.chipBackground,
+                    labelStyle: TextStyle(
+                      color: sel
+                          ? chipHud.chipLabelSelected
+                          : chipHud.chipLabelUnselected,
+                      fontWeight: FontWeight.w700,
                     ),
-                    child: Row(
-                      children: [
-                        _ResolvedAssetImage(
-                          candidates: [
-                            'assets/generated/item_icons/named/icons/$slotKey.png',
-                          ],
-                          size: 42,
-                          borderRadius: 10,
-                          fallbackIcon: Icons.inventory_2_outlined,
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                slotLabel,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w800,
-                                  color: Color(0xFF1F2937),
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                equipped?.name ?? 'Empty slot',
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: equipped == null
-                                      ? const Color(0xFF94A3B8)
-                                      : const Color(0xFF334155),
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
+                    side: BorderSide(
+                      color: chipHud.chipSide,
+                    ),
+                    onSelected: (_) => onRaceChanged(race),
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Tap a slot to equip an item.',
+                style: TextStyle(
+                  color: hud.hintColor,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 12),
+            ],
+          );
+
+          final zig = _zigzagKeysForRace(selectedRace);
+          final slotBody = zig != null
+              ? _BuilderEquipmentZigzag(
+                  hud: hud,
+                  slotsByKey: _slotsByKey(),
+                  equippedBySlot: equippedBySlot,
+                  onPickItem: onPickItem,
+                  centerKeys: zig.center,
+                  leftKeys: zig.left,
+                  rightKeys: zig.right,
+                )
+              : GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: slotsForRace.length,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                    childAspectRatio: 1.65,
+                  ),
+                  itemBuilder: (context, index) {
+                    final slot = slotsForRace[index];
+                    final slotKey = slot['key'] ?? '';
+                    final slotLabel = slot['value'] ?? slotKey;
+                    final equipped = equippedBySlot[slotKey];
+
+                    return InkWell(
+                      borderRadius: BorderRadius.circular(12),
+                      onTap: () => onPickItem(slotKey, slotLabel),
+                      child: Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF8FAFC),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: equipped == null
+                                ? const Color(0xFFE2E8F0)
+                                : const Color(0xFF8B5CF6),
+                            width: equipped == null ? 1 : 1.5,
                           ),
                         ),
-                      ],
-                    ),
-                  ),
+                        child: Row(
+                          children: [
+                            _ResolvedAssetImage(
+                              candidates: [
+                                'assets/generated/item_icons/named/icons/$slotKey.png',
+                              ],
+                              size: 42,
+                              borderRadius: 10,
+                              fallbackIcon: Icons.inventory_2_outlined,
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    slotLabel,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w800,
+                                      color: Color(0xFF1F2937),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    equipped?.name ?? 'Empty slot',
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: equipped == null
+                                          ? const Color(0xFF94A3B8)
+                                          : const Color(0xFF334155),
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
                 );
-              },
-            ),
-        ],
+
+          final footer = Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SizedBox(height: panelHasBoundedHeight ? 8 : 10),
+              if (panelHasBoundedHeight)
+                Divider(
+                  height: 1,
+                  thickness: 1,
+                  color: hud.footerDivider,
+                ),
+              if (panelHasBoundedHeight) const SizedBox(height: 8),
+              Align(
+                alignment: Alignment.centerRight,
+                child: OutlinedButton.icon(
+                  style: hud.resetStyle,
+                  onPressed:
+                      equippedBySlot.isEmpty ? null : onResetLoadout,
+                  icon: const Icon(Icons.restart_alt_rounded, size: 20),
+                  label: const Text(
+                    'Reset loadout',
+                    style: TextStyle(fontWeight: FontWeight.w700),
+                  ),
+                ),
+              ),
+            ],
+          );
+
+          if (panelHasBoundedHeight) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                header,
+                Expanded(
+                  child: SingleChildScrollView(
+                    clipBehavior: Clip.hardEdge,
+                    child: slotBody,
+                  ),
+                ),
+                footer,
+              ],
+            );
+          }
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              header,
+              slotBody,
+              footer,
+            ],
+          );
+        },
       ),
     );
   }
 }
 
-class _HumanEquipmentZigzag extends StatelessWidget {
-  const _HumanEquipmentZigzag({
+class _BuilderEquipmentZigzag extends StatelessWidget {
+  const _BuilderEquipmentZigzag({
+    required this.hud,
     required this.slotsByKey,
     required this.equippedBySlot,
     required this.onPickItem,
@@ -678,6 +1171,7 @@ class _HumanEquipmentZigzag extends StatelessWidget {
     required this.rightKeys,
   });
 
+  final _BuilderRaceHudTheme hud;
   final Map<String, Map<String, String>> slotsByKey;
   final Map<String, Item> equippedBySlot;
   final void Function(String slotKey, String slotLabel) onPickItem;
@@ -705,7 +1199,8 @@ class _HumanEquipmentZigzag extends StatelessWidget {
           final equipped = equippedBySlot[slotKey];
           final rarity = equipped?.rarity ?? '1';
 
-          return _BuilderHumanSlotCell(
+          return _BuilderHudSlotCell(
+            hud: hud,
             slotKey: slotKey,
             slotLabel: slotLabel,
             equippedName: equipped?.name,
@@ -770,8 +1265,9 @@ class _HumanEquipmentZigzag extends StatelessWidget {
   }
 }
 
-class _BuilderHumanSlotCell extends StatelessWidget {
-  const _BuilderHumanSlotCell({
+class _BuilderHudSlotCell extends StatelessWidget {
+  const _BuilderHudSlotCell({
+    required this.hud,
     required this.slotKey,
     required this.slotLabel,
     required this.equippedName,
@@ -780,6 +1276,7 @@ class _BuilderHumanSlotCell extends StatelessWidget {
     required this.onTap,
   });
 
+  final _BuilderRaceHudTheme hud;
   final String slotKey;
   final String slotLabel;
   final String? equippedName;
@@ -794,8 +1291,8 @@ class _BuilderHumanSlotCell extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
-        splashColor: Colors.white24,
-        highlightColor: Colors.white10,
+        splashColor: hud.inkSplash,
+        highlightColor: hud.inkHighlight,
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 4),
           child: Column(
@@ -806,7 +1303,7 @@ class _BuilderHumanSlotCell extends StatelessWidget {
                   borderRadius: BorderRadius.circular(14),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.45),
+                      color: hud.frameShadow,
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),
@@ -817,6 +1314,7 @@ class _BuilderHumanSlotCell extends StatelessWidget {
                   rarity: rarity,
                   size: frameSize,
                   darkInterior: true,
+                  builderHudInterior: hud.hudInterior,
                 ),
               ),
               const SizedBox(height: 8),
@@ -825,8 +1323,8 @@ class _BuilderHumanSlotCell extends StatelessWidget {
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  color: Color(0xFFF2F5FA),
+                style: TextStyle(
+                  color: hud.slotLabelPrimary,
                   fontSize: 12.5,
                   fontWeight: FontWeight.w600,
                   height: 1.15,
@@ -839,8 +1337,8 @@ class _BuilderHumanSlotCell extends StatelessWidget {
                   textAlign: TextAlign.center,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: Color(0xFF7D8696),
+                  style: TextStyle(
+                    color: hud.slotLabelSecondary,
                     fontSize: 10.5,
                     fontWeight: FontWeight.w500,
                   ),
@@ -856,11 +1354,13 @@ class _BuilderHumanSlotCell extends StatelessWidget {
 
 class _SummaryPanel extends StatelessWidget {
   const _SummaryPanel({
+    required this.selectedRace,
     required this.summary,
     required this.formatValue,
     required this.scrollUnitsInternally,
   });
 
+  final String selectedRace;
   final _BuildSummary summary;
   final String Function(double) formatValue;
   final bool scrollUnitsInternally;
@@ -880,10 +1380,19 @@ class _SummaryPanel extends StatelessWidget {
             color: Color(0xFF1F2937),
           ),
         ),
+        const SizedBox(height: 6),
+        Text(
+          'Loadout: $selectedRace',
+          style: TextStyle(
+            color: Colors.grey.shade600,
+            fontSize: 13,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
         const SizedBox(height: 8),
         Text(
           summary.itemCount == 0
-              ? 'No items equipped'
+              ? 'No items equipped for this race'
               : '${summary.itemCount} equipped items · '
                     '${summary.perUnit.length} units affected',
           style: const TextStyle(
@@ -922,7 +1431,7 @@ class _SummaryPanel extends StatelessWidget {
           ),
           SizedBox(height: 6),
           Text(
-            'Coming next: skill tree integration using existing icons.',
+            'Coming next: per-race skill tree using existing icons.',
             style: TextStyle(
               color: Color(0xFF64748B),
               fontSize: 12.5,

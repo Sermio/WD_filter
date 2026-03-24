@@ -4,6 +4,48 @@ import 'package:worldshift_assistant/utils/utils.dart';
 import 'package:worldshift_assistant/widgets/item_description_widget.dart';
 import 'package:worldshift_assistant/widgets/resolved_mini_asset_image.dart';
 
+/// Tinte del hueco del icono en el Builder cuando [ItemCompleteFrame.darkInterior] es true.
+enum BuilderHudInterior {
+  human,
+  mutant,
+  alien,
+}
+
+RadialGradient _darkHudGradient(BuilderHudInterior kind) {
+  switch (kind) {
+    case BuilderHudInterior.human:
+      return const RadialGradient(
+        center: Alignment(0, -0.15),
+        radius: 1.05,
+        colors: [
+          Color(0xFF3A4A5C),
+          Color(0xFF141820),
+        ],
+        stops: [0.0, 1.0],
+      );
+    case BuilderHudInterior.mutant:
+      return const RadialGradient(
+        center: Alignment(0.05, -0.12),
+        radius: 1.08,
+        colors: [
+          Color(0xFF5A4A38),
+          Color(0xFF120E0A),
+        ],
+        stops: [0.0, 1.0],
+      );
+    case BuilderHudInterior.alien:
+      return const RadialGradient(
+        center: Alignment(0, -0.2),
+        radius: 1.05,
+        colors: [
+          Color(0xFF143828),
+          Color(0xFF020503),
+        ],
+        stops: [0.0, 1.0],
+      );
+  }
+}
+
 class ExpandableCard extends StatefulWidget {
   final String name;
   final String map;
@@ -381,6 +423,8 @@ class ItemCompleteFrame extends StatelessWidget {
   final double size;
   /// Dark interior gradient for HUD-style panels (e.g. Builder).
   final bool darkInterior;
+  /// Solo con [darkInterior]: ajusta el degradado (Humans / Tribes / Aliens).
+  final BuilderHudInterior builderHudInterior;
 
   const ItemCompleteFrame({
     super.key,
@@ -388,6 +432,7 @@ class ItemCompleteFrame extends StatelessWidget {
     required this.rarity,
     this.size = 62,
     this.darkInterior = false,
+    this.builderHudInterior = BuilderHudInterior.human,
   });
 
   @override
@@ -416,17 +461,7 @@ class ItemCompleteFrame extends StatelessWidget {
             child: DecoratedBox(
               decoration: BoxDecoration(
                 color: darkInterior ? null : const Color(0xFFF7F7F9),
-                gradient: darkInterior
-                    ? const RadialGradient(
-                        center: Alignment(0, -0.15),
-                        radius: 1.05,
-                        colors: [
-                          Color(0xFF3A4A5C),
-                          Color(0xFF141820),
-                        ],
-                        stops: [0.0, 1.0],
-                      )
-                    : null,
+                gradient: darkInterior ? _darkHudGradient(builderHudInterior) : null,
                 borderRadius: BorderRadius.circular(radius),
               ),
             ),
