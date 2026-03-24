@@ -174,16 +174,20 @@ class CatalogFilterPanel extends StatelessWidget {
   }
 }
 
-/// Mismo comportamiento que [MultiSelectChip] en ítems: Humans / Tribes / Aliens.
+/// Filtro por raza: Humans / Tribes / Aliens; opcionalmente **Bosses** (`environment`).
 class RaceFilterToggleButtons extends StatelessWidget {
   const RaceFilterToggleButtons({
     super.key,
     required this.selectedRaces,
     required this.onChanged,
+    this.includeBosses = false,
   });
 
   final List<String> selectedRaces;
   final ValueChanged<List<String>> onChanged;
+
+  /// Si true, añade la carpeta `environment` del mod (bosses / escenario).
+  final bool includeBosses;
 
   static const labels = ['Humans', 'Tribes', 'Aliens'];
 
@@ -191,7 +195,11 @@ class RaceFilterToggleButtons extends StatelessWidget {
     'Humans': 'humans',
     'Tribes': 'mutants',
     'Aliens': 'aliens',
+    'Bosses': 'environment',
   };
+
+  List<String> get _labels =>
+      includeBosses ? [...labels, 'Bosses'] : List<String>.from(labels);
 
   /// Carpetas `raceFolder` del catálogo a partir de las etiquetas seleccionadas.
   static List<String> raceFoldersFromLabels(List<String> labels) {
@@ -203,20 +211,22 @@ class RaceFilterToggleButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final selectedColors = [
+    final effective = _labels;
+    final selectedColors = <Color>[
       Colors.blue,
       Colors.orange.shade800,
       Colors.greenAccent.shade700,
+      if (includeBosses) const Color(0xFF9C2740),
     ];
     final isSelected =
-        labels.map((l) => selectedRaces.contains(l)).toList();
+        effective.map((l) => selectedRaces.contains(l)).toList();
 
     return Center(
       child: ToggleButtons(
         isSelected: isSelected,
         onPressed: (int index) {
           final next = List<String>.from(selectedRaces);
-          final label = labels[index];
+          final label = effective[index];
           if (next.contains(label)) {
             next.remove(label);
           } else {
@@ -227,12 +237,12 @@ class RaceFilterToggleButtons extends StatelessWidget {
         borderRadius: const BorderRadius.all(Radius.circular(8)),
         fillColor: Colors.grey.shade200,
         color: Colors.black,
-        constraints: const BoxConstraints(minHeight: 36, minWidth: 76),
-        children: List.generate(labels.length, (index) {
+        constraints: const BoxConstraints(minHeight: 36, minWidth: 72),
+        children: List.generate(effective.length, (index) {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: Text(
-              labels[index],
+              effective[index],
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: isSelected[index]

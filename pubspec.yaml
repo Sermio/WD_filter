@@ -82,9 +82,9 @@ flutter:
     - assets/generated/ui_icons/buff_icons/
     - assets/generated/ui_icons/spec_tree_icons/
     - assets/generated/unit_icons/
-    - assets/generated/unit_icons/named/
-    - assets/generated/unit_icons/named/units/
-    - assets/generated/unit_icons/named/officers/
+    - assets/generated/unit_icons/units_70/
+    - assets/generated/unit_icons/officers_70/
+    - assets/generated/unit_icons/conversation_49/
     - assets/generated/item_icons/
     - assets/generated/item_icons/named/
     - assets/generated/item_icons/named/icons/

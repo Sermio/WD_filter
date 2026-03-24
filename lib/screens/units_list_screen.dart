@@ -18,7 +18,7 @@ class _UnitsListScreenState extends State<UnitsListScreen> {
   Future<UnitsCatalog>? _catalogFuture;
   bool _isFilterVisible = false;
   final _search = TextEditingController();
-  /// Mismas etiquetas que en ítems: Humans, Tribes, Aliens (vacío = todas las razas).
+  /// Humans, Tribes, Aliens, Bosses (vacío = todo el catálogo).
   List<String> _selectedRaceLabels = [];
 
   @override
@@ -77,6 +77,8 @@ class _UnitsListScreenState extends State<UnitsListScreen> {
                 child: Text(
                   'Could not load units catalog.\n'
                   'Run: dart run tool/generate_worldshift_assets.dart\n'
+                  'and: dart run tool/extract_units_70_atlas.dart\n'
+                  'and: dart run tool/generate_unit_icon_lookup.dart\n'
                   '${snap.error}',
                   textAlign: TextAlign.center,
                 ),
@@ -110,6 +112,7 @@ class _UnitsListScreenState extends State<UnitsListScreen> {
                         selectedRaces: _selectedRaceLabels,
                         onChanged: (v) =>
                             setState(() => _selectedRaceLabels = v),
+                        includeBosses: true,
                       ),
                       const SizedBox(height: 10),
                       CatalogClearFiltersButton(onPressed: _clearFilters),

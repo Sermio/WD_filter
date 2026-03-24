@@ -5,14 +5,28 @@ class AbilityUnitRef {
     required this.displayName,
     required this.raceFolder,
     this.race,
+    this.mainIconRow,
+    this.mainIconCol,
+    this.conversationIconRow,
+    this.conversationIconCol,
+    this.unitIconClass,
   });
 
   final String unitId;
   final String displayName;
   final String raceFolder;
   final String? race;
+  final int? mainIconRow;
+  final int? mainIconCol;
+  final int? conversationIconRow;
+  final int? conversationIconCol;
+  /// Igual que [GameUnit.unitIconClass] (`unit` | `officer` | `commander`).
+  final String? unitIconClass;
 
   String get raceLabel {
+    if (raceFolder == 'environment') {
+      return 'Bosses';
+    }
     switch (race) {
       case 'humans':
         return 'Humans';

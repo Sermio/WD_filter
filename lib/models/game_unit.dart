@@ -1,3 +1,5 @@
+import 'package:worldshift_assistant/utils/unit_icon_asset_paths.dart';
+
 class GameUnitAbility {
   final String name;
   final String? description;
@@ -270,6 +272,9 @@ class GameUnit {
   });
 
   String get raceLabel {
+    if (raceFolder == 'environment') {
+      return 'Bosses';
+    }
     switch (race) {
       case 'humans':
         return 'Humans';
@@ -285,15 +290,14 @@ class GameUnit {
   bool get hasMainAtlasIcon => mainIconCol != null && mainIconRow != null;
 
   List<String> get detailIconAssetCandidates {
-    final candidates = <String>[];
-
-    candidates.add('assets/generated/unit_icons/named/units/$id.png');
-
-    if (unitIconClass == 'officer' || unitIconClass == 'commander') {
-      candidates.add('assets/generated/unit_icons/named/officers/$id.png');
-    }
-
-    return candidates;
+    return buildUnitIconAssetCandidates(
+      id: id,
+      unitIconClass: unitIconClass,
+      mainIconRow: mainIconRow,
+      mainIconCol: mainIconCol,
+      conversationIconRow: conversationIconRow,
+      conversationIconCol: conversationIconCol,
+    );
   }
 
   String get detailIconSourceLabel {

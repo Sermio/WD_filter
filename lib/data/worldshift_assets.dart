@@ -8,6 +8,12 @@ class WorldshiftAssets {
       'assets/tsvFiles/items_extra_data_complete.txt';
   static const String dropFile = 'assets/tsvFiles/drop.tsv';
   static const String unitsCatalogFile = 'assets/data/units.json';
+  /// Unidades añadidas a mano y fusionadas con [unitsCatalogFile] por `id`.
+  ///
+  /// Incluye héroes de campaña sin `.dt` propio o con overrides en `mapdata.lua` (Ganthu → High
+  /// Priest; Denkar/Kuna → comandante; Arna → Engineer/technician2; Tharksh → clase tipo Master
+  /// alien con icono officers), más stats/retratos alineados a partida cuando difieren del `.dt`.
+  static const String unitsManualFile = 'assets/data/units_manual.json';
   static const String itemOriginIndexFile =
       'assets/data/item_origin_index.json';
 }

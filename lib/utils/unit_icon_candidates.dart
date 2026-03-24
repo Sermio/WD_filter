@@ -1,5 +1,32 @@
-/// Rutas candidatas para el icono de unidad (mismo criterio que filtros de ítems / lista).
-List<String> unitIconAssetCandidates(String unitId) {
+import 'package:worldshift_assistant/data/unit_icon_lookup_generated.dart';
+import 'package:worldshift_assistant/utils/unit_icon_asset_paths.dart';
+
+/// Rutas candidatas para icono de unidad (filtros, builder, habilidades, expandable_card).
+///
+/// Sin coordenadas: usa [kUnitIconAssetPathsByLookupKey] (claves de id .dt, builder, normalizadas).
+/// Con coordenadas: [buildUnitIconAssetCandidates] (commander → conversation; resto → atlas 70×70).
+List<String> unitIconAssetCandidates(
+  String unitId, {
+  int? mainIconRow,
+  int? mainIconCol,
+  int? conversationIconRow,
+  int? conversationIconCol,
+  String unitIconClass = 'unit',
+}) {
+  if (mainIconRow != null ||
+      mainIconCol != null ||
+      conversationIconRow != null ||
+      conversationIconCol != null) {
+    return buildUnitIconAssetCandidates(
+      id: unitId.trim(),
+      unitIconClass: unitIconClass,
+      mainIconRow: mainIconRow,
+      mainIconCol: mainIconCol,
+      conversationIconRow: conversationIconRow,
+      conversationIconCol: conversationIconCol,
+    );
+  }
+
   const aliasByUnitKey = <String, List<String>>{
     'Engineer': ['technician2'],
     'Psychic': ['eji2'],
@@ -11,20 +38,24 @@ List<String> unitIconAssetCandidates(String unitId) {
   final key = unitId.trim();
   final normalized =
       key.replaceAll(RegExp(r'[^A-Za-z0-9]+'), '').toLowerCase();
-  final aliases = <String>[
+  final aliasKeys = <String>{
     ...?aliasByUnitKey[key],
-    normalized,
-  ];
-  final seen = <String>{};
-  final out = <String>[];
+    key,
+    if (normalized.isNotEmpty) normalized,
+  };
 
-  for (final id in aliases) {
-    if (!seen.add(id) || id.isEmpty) {
+  final out = <String>[];
+  final seen = <String>{};
+  for (final k in aliasKeys) {
+    final paths = kUnitIconAssetPathsByLookupKey[k];
+    if (paths == null) {
       continue;
     }
-    out.add('assets/generated/unit_icons/named/units/$id.png');
-    out.add('assets/generated/unit_icons/named/officers/$id.png');
+    for (final p in paths) {
+      if (seen.add(p)) {
+        out.add(p);
+      }
+    }
   }
-
   return out;
 }

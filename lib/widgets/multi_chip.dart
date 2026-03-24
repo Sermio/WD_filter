@@ -3,14 +3,14 @@ import 'package:worldshift_assistant/widgets/catalog_filter_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-/// Misma selección múltiple de raza que en unidades/habilidades (Humans / Tribes / Aliens).
+/// Misma selección múltiple de raza que en ítems: Humans / Tribes / Aliens (sin bosses).
 class MultiSelectChip extends StatelessWidget {
   const MultiSelectChip({
     super.key,
     required this.labels,
   });
 
-  /// Debe coincidir con [RaceFilterToggleButtons.labels] (p. ej. `races` en data.dart).
+  /// Reservado por compatibilidad; el toggle usa [RaceFilterToggleButtons.labels].
   final List<String> labels;
 
   @override
@@ -20,6 +20,7 @@ class MultiSelectChip extends StatelessWidget {
         return RaceFilterToggleButtons(
           selectedRaces: filterProvider.selectedRaces,
           onChanged: filterProvider.setSelectedRaces,
+          includeBosses: false,
         );
       },
     );

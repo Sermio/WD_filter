@@ -24,7 +24,8 @@ Future<void> main(List<String> args) async {
   }
 
   final units = <GameUnit>[];
-  const folders = ['humans', 'mutants', 'aliens'];
+  // `environment`: bosses y unidades de escenario (Queen, Mech0, Adam, Safari, etc.).
+  const folders = ['humans', 'mutants', 'aliens', 'environment'];
 
   for (final folder in folders) {
     final dir = Directory('${root.path}${Platform.pathSeparator}$folder');

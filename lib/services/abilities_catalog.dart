@@ -31,6 +31,11 @@ class _AggBucket {
         displayName: unit.displayName ?? unit.id,
         raceFolder: unit.raceFolder,
         race: unit.race,
+        mainIconRow: unit.mainIconRow,
+        mainIconCol: unit.mainIconCol,
+        conversationIconRow: unit.conversationIconRow,
+        conversationIconCol: unit.conversationIconCol,
+        unitIconClass: unit.unitIconClass,
       ),
     );
   }

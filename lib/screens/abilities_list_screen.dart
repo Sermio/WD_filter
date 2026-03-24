@@ -128,6 +128,7 @@ class _AbilitiesListScreenState extends State<AbilitiesListScreen> {
                         selectedRaces: _selectedRaceLabels,
                         onChanged: (v) =>
                             setState(() => _selectedRaceLabels = v),
+                        includeBosses: true,
                       ),
                       const SizedBox(height: 10),
                       CatalogClearFiltersButton(onPressed: _clearFilters),
@@ -307,6 +308,21 @@ class _AbilityCard extends StatelessWidget {
                                   ability.usedByUnits.length == 1
                                       ? unitIconAssetCandidates(
                                           ability.usedByUnits.first.unitId,
+                                          mainIconRow: ability
+                                              .usedByUnits.first.mainIconRow,
+                                          mainIconCol: ability
+                                              .usedByUnits.first.mainIconCol,
+                                          conversationIconRow: ability
+                                              .usedByUnits
+                                              .first
+                                              .conversationIconRow,
+                                          conversationIconCol: ability
+                                              .usedByUnits
+                                              .first
+                                              .conversationIconCol,
+                                          unitIconClass: ability.usedByUnits
+                                                  .first.unitIconClass ??
+                                              'unit',
                                         )
                                       : null,
                             ),

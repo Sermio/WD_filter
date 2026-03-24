@@ -1,0 +1,397 @@
+[
+  {
+    "id": "ganthu",
+    "raceFolder": "mutants",
+    "displayName": "Ganthu",
+    "race": "mutants",
+    "movementType": null,
+    "tags": "unit, organic",
+    "unitIconClass": "commander",
+    "mainIconCol": 3,
+    "mainIconRow": 2,
+    "conversationIconCol": 5,
+    "conversationIconRow": 1,
+    "stats": {
+      "hp": "1275",
+      "range": "1800",
+      "psi": "500",
+      "damage": "40",
+      "armor": "2",
+      "crit_chance": "5%",
+      "holy_aura_tick": "1",
+      "holy_aura_heal": "10",
+      "pyrowave_chance": "5",
+      "lightning_power": "80",
+      "lightning_damage": "300",
+      "holyshock_power": "80",
+      "freeze_duration": "5",
+      "freeze_power": "120"
+    },
+    "auraNames": ["RestorationCoreAura"],
+    "passiveAbilities": [
+      {
+        "name": "Pyroblast",
+        "description": "Ganthu has [stat:pyrowave_chance]% chance on every attack to spawn a powerful wave of fire, damaging up to 2 additional targets.",
+        "iconAtlas": "passive_abilities",
+        "iconCol": 0,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c0.png"
+      },
+      {
+        "name": "Holy Aura",
+        "description": "Ganthu power is gathering nature energy around himself, healing all allied units for [stat:holy_aura_heal] hit points eavery [stat:holy_aura_tick] seconds.",
+        "iconAtlas": "passive_abilities",
+        "iconCol": 3,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c3.png"
+      }
+    ],
+    "activeAbilities": [
+      {
+        "name": "Lightning",
+        "description": "Ganthu directs his power to form a deadly lightining, striking an enemy for [stat:lightning_damage] damage.",
+        "iconAtlas": "buttons",
+        "iconCol": 1,
+        "iconRow": 4,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r4_c1.png"
+      },
+      {
+        "name": "Freeze",
+        "description": "Ganthu uses his power to conjure chilling blast at pointed area, causing all enemies to freeze in place for [stat:freeze_duration] seconds.",
+        "iconAtlas": "buttons",
+        "iconCol": 0,
+        "iconRow": 4,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r4_c0.png"
+      },
+      {
+        "name": "Holy Shock",
+        "description": "Ganthu concentrates and uses nature powers to completely restore the hit points of an allied unit.",
+        "iconAtlas": "buttons",
+        "iconCol": 2,
+        "iconRow": 4,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r4_c2.png"
+      },
+      {
+        "name": "Mount Up",
+        "description": "Mount up",
+        "iconAtlas": "buttons",
+        "iconCol": 2,
+        "iconRow": 4,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r4_c2.png"
+      }
+    ],
+    "statusEffects": []
+  },
+  {
+    "id": "denkar",
+    "raceFolder": "humans",
+    "displayName": "Denkar ni'Varra",
+    "race": "humans",
+    "movementType": "crawl",
+    "tags": "unit, organic",
+    "unitIconClass": "commander",
+    "mainIconCol": 1,
+    "mainIconRow": 2,
+    "conversationIconCol": 1,
+    "conversationIconRow": 1,
+    "stats": {
+      "hp": "1800",
+      "armor": "37",
+      "psi": "350",
+      "range": "1400",
+      "damage": "55 - 37",
+      "crit_chance": "15%",
+      "inject_hp": "320",
+      "inject_power_cost": "80",
+      "inject_duration": "6",
+      "barriercure_hp": "0",
+      "barriercure_chance": "0",
+      "confuse_duration": "12",
+      "confuse_armor_perc_buff": "50",
+      "confuse_power": "80"
+    },
+    "auraNames": ["RestorationCoreAura"],
+    "passiveAbilities": [],
+    "activeAbilities": [
+      {
+        "name": "Inject",
+        "description": "Denkar injects himself with powerful drug mixture, that will restore [stat:inject_hp] hit points over [stat:inject_duration] sec.",
+        "iconAtlas": "buttons",
+        "iconCol": 9,
+        "iconRow": 2,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r2_c9.png"
+      },
+      {
+        "name": "Confuse",
+        "description": "A tactical maneuvre that will force all enemies in a small area to focus their attacks on Denkar himself for <color=tooltip.lite>[stat:confuse_duration] sec.</> and will also increase his armor with <color=tooltip.lite>[stat:confuse_armor_perc_buff]%</> for the same time. This effect might last shorter if the affected enemies loose Denkar of their sight.",
+        "iconAtlas": "buttons",
+        "iconCol": 10,
+        "iconRow": 2,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r2_c10.png"
+      }
+    ],
+    "statusEffects": []
+  },
+  {
+    "id": "denkarh",
+    "raceFolder": "humans",
+    "displayName": "DenkarH",
+    "race": "humans",
+    "movementType": "crawl",
+    "tags": "unit, organic",
+    "unitIconClass": "commander",
+    "mainIconCol": 1,
+    "mainIconRow": 2,
+    "conversationIconCol": 1,
+    "conversationIconRow": 1,
+    "stats": {
+      "hp": "1800",
+      "armor": "37",
+      "psi": "350",
+      "range": "1400",
+      "damage": "55 - 37",
+      "crit_chance": "15%",
+      "inject_hp": "320",
+      "inject_power_cost": "80",
+      "inject_duration": "6",
+      "barriercure_hp": "0",
+      "barriercure_chance": "0",
+      "confuse_duration": "12",
+      "confuse_armor_perc_buff": "50",
+      "confuse_power": "80"
+    },
+    "auraNames": ["RestorationCoreAura"],
+    "passiveAbilities": [],
+    "activeAbilities": [
+      {
+        "name": "Inject",
+        "description": "Denkar injects himself with powerful drug mixture, that will restore [stat:inject_hp] hit points over [stat:inject_duration] sec.",
+        "iconAtlas": "buttons",
+        "iconCol": 9,
+        "iconRow": 2,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r2_c9.png"
+      },
+      {
+        "name": "Confuse",
+        "description": "A tactical maneuvre that will force all enemies in a small area to focus their attacks on Denkar himself for <color=tooltip.lite>[stat:confuse_duration] sec.</> and will also increase his armor with <color=tooltip.lite>[stat:confuse_armor_perc_buff]%</> for the same time. This effect might last shorter if the affected enemies loose Denkar of their sight.",
+        "iconAtlas": "buttons",
+        "iconCol": 10,
+        "iconRow": 2,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r2_c10.png"
+      }
+    ],
+    "statusEffects": []
+  },
+  {
+    "id": "eji",
+    "raceFolder": "mutants",
+    "displayName": "Eji",
+    "race": "mutants",
+    "movementType": null,
+    "tags": "unit, organic",
+    "unitIconClass": "officer",
+    "mainIconCol": 1,
+    "mainIconRow": 3,
+    "conversationIconCol": 1,
+    "conversationIconRow": 2,
+    "stats": {
+      "hp": "1050",
+      "armor": "3",
+      "psi": "1000",
+      "psi_gen": "600",
+      "range": "0",
+      "damage": "0",
+      "crit_chance": "5%"
+    },
+    "auraNames": ["RestorationCoreAura"],
+    "passiveAbilities": [
+      {
+        "name": "Charming",
+        "description": "Enemies will prefer to attack someone else if possible",
+        "iconAtlas": "passive_abilities",
+        "iconCol": 2,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c2.png"
+      },
+      {
+        "name": "Restore",
+        "description": "Restores friendly units' hit points",
+        "iconAtlas": "passive_abilities",
+        "iconCol": 3,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c3.png"
+      },
+      {
+        "name": "Full Restoration",
+        "description": "Completely heals nearby units. Requires full concentration.",
+        "iconAtlas": "passive_abilities",
+        "iconCol": 3,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c3.png"
+      }
+    ],
+    "activeAbilities": [],
+    "statusEffects": []
+  },
+  {
+    "id": "tharksh",
+    "raceFolder": "aliens",
+    "displayName": "Tharksh",
+    "race": "aliens",
+    "movementType": null,
+    "tags": "unit, organic",
+    "unitIconClass": "commander",
+    "mainIconCol": 2,
+    "mainIconRow": 3,
+    "conversationIconCol": 3,
+    "conversationIconRow": 2,
+    "stats": {
+      "hp": "1260",
+      "armor": "12",
+      "range": "1600",
+      "damage": "75",
+      "psi": "380",
+      "crit_chance": "5%",
+      "shield_hull": "250",
+      "shield_regen": "150",
+      "shield_fullabsorbchance": "20",
+      "shield_percentabsorbtion": "50",
+      "feed_psi_cost": "160",
+      "feed_duration": "5",
+      "feed_tick": "0.5",
+      "feed_base": "30",
+      "feed_add_damage": "5",
+      "feed_add_heal": "1",
+      "nether_nova_psi_cost": "180",
+      "nether_nova_radius": "500",
+      "nether_nova_damage": "180"
+    },
+    "auraNames": ["RestorationCoreAura"],
+    "passiveAbilities": [
+      {
+        "name": "Plasma Shield",
+        "description": "Powerful shield that is activated automatically when Tharksh is attacked. Plasma Shield has [stat:shield_hull] durability, [stat:shield_regen] charge rate, [stat:shield_fullabsorbchance]% chance for full deflection and [stat:shield_percentabsorbtion]% damage absorbtion.",
+        "iconAtlas": "passive_abilities",
+        "iconCol": 2,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c2.png"
+      }
+    ],
+    "activeAbilities": [
+      {
+        "name": "Nether Nova",
+        "description": "Tharksh creates an nether energy blast, that inflicts [stat:nether_nova_damage] damage to all enemies in a small area",
+        "iconAtlas": "buttons",
+        "iconCol": 9,
+        "iconRow": 3,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r3_c9.png"
+      },
+      {
+        "name": "Feed",
+        "description": "Tharksh channels for a few seconds a powerful nether light that does [stat:feed_base] damage each tick for [stat:feed_duration] seconds. The nether light also drains the same amount of life out of the affected target and is spread by Tharksh to nearby allies, thus healing them. The light splits on the target and jumps to other targets as well. The healing efficiency increases with each additional target affected, but the damage inflicted decreases.",
+        "iconAtlas": "buttons",
+        "iconCol": 12,
+        "iconRow": 3,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r3_c12.png"
+      }
+    ],
+    "statusEffects": [
+      {
+        "name": "Feed",
+        "description": "This unit is taking damage from a Feed action.",
+        "isDebuff": true,
+        "iconAtlas": "buff_icons",
+        "iconCol": 2,
+        "iconRow": 1,
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r1_c2.png"
+      }
+    ]
+  },
+  {
+    "id": "kuna",
+    "raceFolder": "humans",
+    "displayName": "Kuna ni'Dahl",
+    "race": "humans",
+    "movementType": "crawl",
+    "tags": "unit, organic",
+    "unitIconClass": "commander",
+    "mainIconCol": 4,
+    "mainIconRow": 2,
+    "conversationIconCol": 2,
+    "conversationIconRow": 2,
+    "stats": {
+      "hp": "1800",
+      "armor": "37",
+      "psi": "350",
+      "range": "1400",
+      "damage": "55 - 37",
+      "crit_chance": "15%",
+      "inject_hp": "320",
+      "inject_power_cost": "80",
+      "inject_duration": "6",
+      "barriercure_hp": "0",
+      "barriercure_chance": "0",
+      "confuse_duration": "12",
+      "confuse_armor_perc_buff": "50",
+      "confuse_power": "80"
+    },
+    "auraNames": ["RestorationCoreAura"],
+    "passiveAbilities": [],
+    "activeAbilities": [
+      {
+        "name": "Inject",
+        "description": "Kuna injects herself with powerful drug mixture, that will restore [stat:inject_hp] hit points over [stat:inject_duration] sec.",
+        "iconAtlas": "buttons",
+        "iconCol": 9,
+        "iconRow": 2,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r2_c9.png"
+      },
+      {
+        "name": "Confuse",
+        "description": "A tactical maneuvre that will force all enemies in a small area to focus their attacks on Kuna herself for <color=tooltip.lite>[stat:confuse_duration] sec.</> and will also increase her armor with <color=tooltip.lite>[stat:confuse_armor_perc_buff]%</> for the same time. This effect might last shorter if the affected enemies loose Kuna of their sight.",
+        "iconAtlas": "buttons",
+        "iconCol": 10,
+        "iconRow": 2,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r2_c10.png"
+      }
+    ],
+    "statusEffects": []
+  },
+  {
+    "id": "arna",
+    "raceFolder": "humans",
+    "displayName": "Arna ni'Varra",
+    "race": "humans",
+    "movementType": null,
+    "tags": "unit, organic",
+    "unitIconClass": "officer",
+    "mainIconCol": 3,
+    "mainIconRow": 3,
+    "conversationIconCol": 3,
+    "conversationIconRow": 1,
+    "stats": {
+      "armor": "2",
+      "hp": "525",
+      "psi": "280",
+      "range": "1600",
+      "damage": "64 - 8",
+      "crit_chance": "15%",
+      "attack_rate": "1",
+      "attack_proximity": "10",
+      "attack_precision": "1"
+    },
+    "auraNames": ["RestorationCoreAura"],
+    "passiveAbilities": [
+      {
+        "name": "Repair",
+        "description": "Repairs buildings.",
+        "iconAtlas": null,
+        "iconCol": null,
+        "iconRow": null,
+        "iconAssetPath": null
+      }
+    ],
+    "activeAbilities": [],
+    "statusEffects": []
+  }
+]

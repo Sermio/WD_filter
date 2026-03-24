@@ -28,6 +28,11 @@ abstract final class CatalogCardStripe {
           const Color(0xFF2E9B68),
           const Color(0xFF8CF0C8),
         );
+      case 'Bosses':
+        return verticalGradient(
+          const Color(0xFF8B2942),
+          const Color(0xFFF0B8C8),
+        );
       default:
         return verticalGradient(
           const Color(0xFF7B8794),
