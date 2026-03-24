@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:worldshift_assistant/utils/catalog_card_stripe.dart';
 import 'package:worldshift_assistant/utils/unit_icon_candidates.dart';
 import 'package:worldshift_assistant/utils/utils.dart';
 import 'package:worldshift_assistant/widgets/item_description_widget.dart';
@@ -88,16 +89,7 @@ class _ExpandableCardState extends State<ExpandableCard> {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
-      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.white,
-            rarityColor.withValues(alpha: 0.025),
-          ],
-        ),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -116,201 +108,221 @@ class _ExpandableCardState extends State<ExpandableCard> {
           width: 1,
         ),
       ),
-      child: Column(
-        children: [
-          InkWell(
-            borderRadius: BorderRadius.circular(14),
-            onTap: () {
-              setState(() {
-                _isExpanded = !_isExpanded;
-              });
-            },
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(14),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.1),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
+      clipBehavior: Clip.antiAlias,
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            CatalogCardStripe.forRarityColor(rarityColor),
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Colors.white,
+                      rarityColor.withValues(alpha: 0.06),
                     ],
                   ),
-                  child: ItemCompleteFrame(
-                    slot: widget.itemData['slot'],
-                    rarity: widget.rarity,
-                  ),
                 ),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
+                padding: const EdgeInsets.all(14),
+                child: Column(
+                  children: [
+                    InkWell(
+                      borderRadius: BorderRadius.circular(14),
+                      onTap: () {
+                        setState(() {
+                          _isExpanded = !_isExpanded;
+                        });
+                      },
+                      child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(14),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.1),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: ItemCompleteFrame(
+                              slot: widget.itemData['slot'],
+                              rarity: widget.rarity,
+                            ),
+                          ),
+                          const SizedBox(width: 14),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Container(
-                                  width: 34,
-                                  height: 4,
-                                  decoration: BoxDecoration(
-                                    color: rarityColor.withValues(alpha: 0.85),
-                                    borderRadius: BorderRadius.circular(999),
-                                  ),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        widget.name,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          color: readableAccent,
+                                          fontWeight: FontWeight.w800,
+                                          fontSize: 17,
+                                          height: 1.1,
+                                          letterSpacing: 0.2,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    if (widget.onSelect != null) ...[
+                                      _SelectActionChip(
+                                        label: widget.selectLabel,
+                                        onPressed: widget.onSelect!,
+                                      ),
+                                      const SizedBox(width: 6),
+                                    ],
+                                    _IconButtonChip(
+                                      icon: _isExpanded
+                                          ? Icons.keyboard_arrow_up
+                                          : Icons.keyboard_arrow_down,
+                                      onPressed: () {
+                                        setState(() {
+                                          _isExpanded = !_isExpanded;
+                                        });
+                                      },
+                                    ),
+                                  ],
                                 ),
                                 const SizedBox(height: 8),
-                                Text(
-                                  widget.name,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    color: readableAccent,
-                                    fontWeight: FontWeight.w800,
-                                    fontSize: 17,
-                                    height: 1.1,
-                                    letterSpacing: 0.2,
-                                  ),
+                                Wrap(
+                                  spacing: 8,
+                                  runSpacing: 8,
+                                  children: [
+                                    _InfoChip(
+                                      label: rarityToString(widget.rarity),
+                                      color: rarityColor,
+                                      icon: Icons.stars_rounded,
+                                    ),
+                                    _InfoChip(
+                                      label: getSlotValueOrDescription(
+                                        widget.itemData['slot'],
+                                      ),
+                                      color: const Color(0xFF5E6678),
+                                      icon: Icons.category_outlined,
+                                    ),
+                                  ],
                                 ),
+                                if (affectedUnits.isNotEmpty) ...[
+                                  const SizedBox(height: 8),
+                                  Wrap(
+                                    spacing: 8,
+                                    runSpacing: 8,
+                                    children: affectedUnits
+                                        .map(
+                                          (unit) => _UnitInfoChip(
+                                            label: unit.label,
+                                            color: const Color(0xFF5E6678),
+                                            assetCandidates:
+                                                unit.assetCandidates,
+                                          ),
+                                        )
+                                        .toList(),
+                                  ),
+                                ],
+                                if (hasSourceText) ...[
+                                  const SizedBox(height: 10),
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Icon(
+                                        Icons.place_outlined,
+                                        size: 16,
+                                        color: Colors.grey.shade600,
+                                      ),
+                                      const SizedBox(width: 6),
+                                      Expanded(
+                                        child: Text(
+                                          sourceText,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                            color: Color(0xFF525A69),
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w700,
+                                            height: 1.2,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                                if (previewGroups.isNotEmpty) ...[
+                                  const SizedBox(height: 12),
+                                  Container(
+                                    width: double.infinity,
+                                    padding: const EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFF6F7FB),
+                                      borderRadius: BorderRadius.circular(12),
+                                      border: Border.all(
+                                        color: Colors.grey.shade200,
+                                      ),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: previewGroups
+                                          .map(
+                                            (group) => Padding(
+                                              padding: const EdgeInsets.only(
+                                                bottom: 6,
+                                              ),
+                                              child: _PreviewStatGroupRow(
+                                                group: group,
+                                              ),
+                                            ),
+                                          )
+                                          .toList(),
+                                    ),
+                                  ),
+                                ],
                               ],
                             ),
                           ),
-                          const SizedBox(width: 10),
-                          if (widget.onSelect != null) ...[
-                            _SelectActionChip(
-                              label: widget.selectLabel,
-                              onPressed: widget.onSelect!,
-                            ),
-                            const SizedBox(width: 6),
-                          ],
-                          _IconButtonChip(
-                            icon: _isExpanded
-                                ? Icons.keyboard_arrow_up
-                                : Icons.keyboard_arrow_down,
-                            onPressed: () {
-                              setState(() {
-                                _isExpanded = !_isExpanded;
-                              });
-                            },
-                          ),
                         ],
                       ),
-                      const SizedBox(height: 8),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: [
-                          _InfoChip(
-                            label: rarityToString(widget.rarity),
-                            color: rarityColor,
-                            icon: Icons.stars_rounded,
-                          ),
-                          _InfoChip(
-                            label: getSlotValueOrDescription(
-                                widget.itemData['slot']),
-                            color: const Color(0xFF5E6678),
-                            icon: Icons.category_outlined,
-                          ),
-                        ],
-                      ),
-                      if (affectedUnits.isNotEmpty) ...[
-                        const SizedBox(height: 8),
-                        Wrap(
-                          spacing: 8,
-                          runSpacing: 8,
-                          children: affectedUnits
-                              .map(
-                                (unit) => _UnitInfoChip(
-                                  label: unit.label,
-                                  color: const Color(0xFF5E6678),
-                                  assetCandidates: unit.assetCandidates,
-                                ),
-                              )
-                              .toList(),
-                        ),
-                      ],
-                      if (hasSourceText) ...[
-                        const SizedBox(height: 10),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(
-                              Icons.place_outlined,
-                              size: 16,
-                              color: Colors.grey.shade600,
-                            ),
-                            const SizedBox(width: 6),
-                            Expanded(
-                              child: Text(
-                                sourceText,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                  color: Color(0xFF525A69),
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w700,
-                                  height: 1.2,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                      if (previewGroups.isNotEmpty) ...[
-                        const SizedBox(height: 12),
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(10),
+                    ),
+                    if (_isExpanded)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 14),
+                        child: Container(
                           decoration: BoxDecoration(
-                            color: const Color(0xFFF6F7FB),
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: Colors.grey.shade200,
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(color: Colors.grey.shade200),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ItemDescription(
+                              itemName: widget.itemData['name'],
+                              rarity: widget.itemData['rarity'],
+                              slot: widget.itemData['slot'],
+                              obtainedFrom: widget.obtainedFrom,
+                              attributes: widget.itemData['attributes'],
                             ),
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: previewGroups
-                                .map(
-                                  (group) => Padding(
-                                    padding: const EdgeInsets.only(bottom: 6),
-                                    child: _PreviewStatGroupRow(group: group),
-                                  ),
-                                )
-                                .toList(),
-                          ),
                         ),
-                      ],
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          if (_isExpanded)
-            Container(
-              margin: const EdgeInsets.only(top: 14),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: Colors.grey.shade200),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ItemDescription(
-                  itemName: widget.itemData['name'],
-                  rarity: widget.itemData['rarity'],
-                  slot: widget.itemData['slot'],
-                  obtainedFrom: widget.obtainedFrom,
-                  attributes: widget.itemData['attributes'],
+                      ),
+                  ],
                 ),
               ),
             ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -425,6 +437,8 @@ class ItemCompleteFrame extends StatelessWidget {
   final bool darkInterior;
   /// Solo con [darkInterior]: ajusta el degradado (Humans / Tribes / Aliens).
   final BuilderHudInterior builderHudInterior;
+  /// Si es false, solo se ve el marco y el fondo (sin icono del slot).
+  final bool showInteriorIcon;
 
   const ItemCompleteFrame({
     super.key,
@@ -433,6 +447,7 @@ class ItemCompleteFrame extends StatelessWidget {
     this.size = 62,
     this.darkInterior = false,
     this.builderHudInterior = BuilderHudInterior.human,
+    this.showInteriorIcon = true,
   });
 
   @override
@@ -466,24 +481,25 @@ class ItemCompleteFrame extends StatelessWidget {
               ),
             ),
           ),
-          Padding(
-            padding: EdgeInsets.all(pad),
-            child: Image.asset(
-              iconPath,
-              width: inner,
-              height: inner,
-              cacheWidth: cache,
-              cacheHeight: cache,
-              fit: BoxFit.contain,
-              errorBuilder: (context, error, stackTrace) {
-                return Icon(
-                  Icons.inventory_2_outlined,
-                  size: inner * 0.58,
-                  color: const Color(0xFF8F96A3),
-                );
-              },
+          if (showInteriorIcon)
+            Padding(
+              padding: EdgeInsets.all(pad),
+              child: Image.asset(
+                iconPath,
+                width: inner,
+                height: inner,
+                cacheWidth: cache,
+                cacheHeight: cache,
+                fit: BoxFit.contain,
+                errorBuilder: (context, error, stackTrace) {
+                  return Icon(
+                    Icons.inventory_2_outlined,
+                    size: inner * 0.58,
+                    color: const Color(0xFF8F96A3),
+                  );
+                },
+              ),
             ),
-          ),
           Positioned.fill(
             child: IgnorePointer(
               child: Image.asset(

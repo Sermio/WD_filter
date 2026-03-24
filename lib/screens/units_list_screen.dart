@@ -4,6 +4,7 @@ import 'package:worldshift_assistant/data/data.dart';
 import 'package:worldshift_assistant/models/game_unit.dart';
 import 'package:worldshift_assistant/screens/unit_detail_screen.dart';
 import 'package:worldshift_assistant/services/units_catalog.dart';
+import 'package:worldshift_assistant/utils/catalog_card_stripe.dart';
 import 'package:worldshift_assistant/widgets/catalog_filter_widgets.dart';
 
 class UnitsListScreen extends StatefulWidget {
@@ -183,15 +184,24 @@ class _UnitPreviewCard extends StatelessWidget {
           ),
         ],
       ),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(24),
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
+      clipBehavior: Clip.antiAlias,
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            CatalogCardStripe.forRaceLabel(unit.raceLabel),
+            Expanded(
+              child: Material(
+                color: Colors.white,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(24),
+                  onTap: onTap,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
@@ -268,6 +278,11 @@ class _UnitPreviewCard extends StatelessWidget {
               ],
             ],
           ),
+        ),
+      ),
+    ),
+            ),
+          ],
         ),
       ),
     );

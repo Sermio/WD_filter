@@ -9,6 +9,7 @@ import 'package:worldshift_assistant/data/data.dart';
 import 'package:worldshift_assistant/data/item.dart';
 import 'package:worldshift_assistant/data/worldshift_assets.dart';
 import 'package:worldshift_assistant/models/item_filters_model.dart';
+import 'package:worldshift_assistant/utils/catalog_card_stripe.dart';
 import 'package:worldshift_assistant/utils/catalog_item_filter.dart';
 import 'package:worldshift_assistant/utils/unit_icon_candidates.dart';
 import 'package:worldshift_assistant/utils/utils.dart';
@@ -1210,63 +1211,67 @@ class _EquipmentPanel extends StatelessWidget {
                     final slotLabel = slot['value'] ?? slotKey;
                     final equipped = equippedBySlot[slotKey];
 
-                    return InkWell(
+                    return ClipRRect(
                       borderRadius: BorderRadius.circular(12),
-                      onTap: () => onPickItem(slotKey, slotLabel),
                       child: Container(
-                        padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFF8FAFC),
-                          borderRadius: BorderRadius.circular(12),
                           border: Border.all(
                             color: equipped == null
                                 ? const Color(0xFFE2E8F0)
                                 : const Color(0xFF8B5CF6),
                             width: equipped == null ? 1 : 1.5,
                           ),
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                        child: Row(
-                          children: [
-                            _ResolvedAssetImage(
-                              candidates: [
-                                'assets/generated/item_icons/named/icons/$slotKey.png',
+                        clipBehavior: Clip.antiAlias,
+                        child: InkWell(
+                          onTap: () => onPickItem(slotKey, slotLabel),
+                          child: Container(
+                            color: const Color(0xFFF8FAFC),
+                            padding: const EdgeInsets.all(10),
+                            child: Row(
+                              children: [
+                                ItemCompleteFrame(
+                                  slot: slotKey,
+                                  rarity: equipped?.rarity ?? '1',
+                                  size: 42,
+                                  showInteriorIcon: equipped != null,
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        slotLabel,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w800,
+                                          color: Color(0xFF1F2937),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        equipped?.name ?? 'Empty slot',
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: equipped == null
+                                              ? const Color(0xFF94A3B8)
+                                              : const Color(0xFF334155),
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ],
-                              size: 42,
-                              borderRadius: 10,
-                              fallbackIcon: Icons.inventory_2_outlined,
                             ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    slotLabel,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w800,
-                                      color: Color(0xFF1F2937),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    equipped?.name ?? 'Empty slot',
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: equipped == null
-                                          ? const Color(0xFF94A3B8)
-                                          : const Color(0xFF334155),
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
                       ),
                     );
@@ -1490,6 +1495,7 @@ class _BuilderHudSlotCell extends StatelessWidget {
                   size: frameSize,
                   darkInterior: true,
                   builderHudInterior: hud.hudInterior,
+                  showInteriorIcon: equippedName != null,
                 ),
               ),
               const SizedBox(height: 8),
@@ -1624,7 +1630,7 @@ class _SummaryPanel extends StatelessWidget {
               formatValue: formatValue,
               accent: summaryHud.summaryUnitCardAccent,
               gradientEndAlpha: summaryHud.summaryUnitCardGradientEndAlpha,
-              raceChipSide: summaryHud.chipSide,
+              stripeRaceLabel: selectedRace,
               onInfoTap: () => _showUnitSlotSourcesSheet(
                 context,
                 unit: summary.perUnit[i],
@@ -1736,9 +1742,10 @@ void _showUnitSlotSourcesSheet(
                         );
                       return Container(
                         decoration: BoxDecoration(
-                          color: Colors.white,
                           borderRadius: BorderRadius.circular(14),
-                          border: Border.all(color: Colors.grey.shade200),
+                          border: Border.all(
+                            color: rarityColor.withValues(alpha: 0.12),
+                          ),
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withValues(alpha: 0.04),
@@ -1752,12 +1759,19 @@ void _showUnitSlotSourcesSheet(
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              Container(
-                                width: 4,
-                                color: rarityColor.withValues(alpha: 0.85),
-                              ),
+                              CatalogCardStripe.forRarityColor(rarityColor),
                               Expanded(
-                                child: Padding(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: [
+                                        Colors.white,
+                                        rarityColor.withValues(alpha: 0.06),
+                                      ],
+                                    ),
+                                  ),
                                   padding: const EdgeInsets.all(12),
                                   child: Column(
                                     crossAxisAlignment:
@@ -1877,7 +1891,7 @@ class _UnitTotalsCard extends StatelessWidget {
     required this.formatValue,
     required this.accent,
     required this.gradientEndAlpha,
-    required this.raceChipSide,
+    required this.stripeRaceLabel,
     required this.onInfoTap,
   });
 
@@ -1885,7 +1899,7 @@ class _UnitTotalsCard extends StatelessWidget {
   final String Function(double) formatValue;
   final Color accent;
   final double gradientEndAlpha;
-  final Color raceChipSide;
+  final String stripeRaceLabel;
   final VoidCallback onInfoTap;
 
   @override
@@ -1923,22 +1937,7 @@ class _UnitTotalsCard extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Container(
-              width: 5,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    raceChipSide,
-                    Color.alphaBlend(
-                      raceChipSide.withValues(alpha: 0.55),
-                      Colors.white,
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            CatalogCardStripe.forRaceLabel(stripeRaceLabel),
             Expanded(
               child: Container(
                 decoration: BoxDecoration(

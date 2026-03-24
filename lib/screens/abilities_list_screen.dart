@@ -4,6 +4,7 @@ import 'package:worldshift_assistant/screens/ability_detail_screen.dart';
 import 'package:worldshift_assistant/services/abilities_catalog.dart';
 import 'package:worldshift_assistant/services/units_catalog.dart';
 import 'package:worldshift_assistant/data/ability_icon_fallbacks.dart';
+import 'package:worldshift_assistant/utils/catalog_card_stripe.dart';
 import 'package:worldshift_assistant/utils/unit_icon_candidates.dart';
 import 'package:worldshift_assistant/widgets/ability_icon_preview.dart';
 import 'package:worldshift_assistant/widgets/catalog_filter_widgets.dart';
@@ -210,6 +211,15 @@ class _AbilityCard extends StatelessWidget {
     return ability.isActive ? Icons.flash_on_rounded : Icons.shield_outlined;
   }
 
+  Widget _raceStripe() {
+    if (ability.usedByUnits.length == 1) {
+      return CatalogCardStripe.forRaceLabel(
+        ability.usedByUnits.first.raceLabel,
+      );
+    }
+    return CatalogCardStripe.forAbilityGeneric();
+  }
+
   AbilityIconFallbackKind? _fallbackKind() {
     if (ability.isStatusEffect) {
       return null;
@@ -238,15 +248,24 @@ class _AbilityCard extends StatelessWidget {
           ),
         ],
       ),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(24),
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
+      clipBehavior: Clip.antiAlias,
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _raceStripe(),
+            Expanded(
+              child: Material(
+                color: Colors.white,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(24),
+                  onTap: onTap,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   AbilityIconPreview(
@@ -319,6 +338,11 @@ class _AbilityCard extends StatelessWidget {
               ],
             ],
           ),
+        ),
+      ),
+    ),
+            ),
+          ],
         ),
       ),
     );
