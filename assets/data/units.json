@@ -111,10 +111,10 @@
         "name": "Chain Shot",
         "description": "This unit is taking damage from a Chain Shot.",
         "isDebuff": true,
-        "iconAtlas": "passive_abilities",
-        "iconCol": 0,
+        "iconAtlas": "buff_icons",
+        "iconCol": 9,
         "iconRow": 0,
-        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c0.png"
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r0_c9.png"
       },
       {
         "name": "Fear Shock",
@@ -275,10 +275,10 @@
         "name": "Dimension Chain",
         "description": "This unit is caught in a Dimension Chain and cannot move.",
         "isDebuff": null,
-        "iconAtlas": "buttons",
-        "iconCol": 11,
-        "iconRow": 1,
-        "iconAssetPath": "assets/generated/ui_icons/buttons/r1_c11.png"
+        "iconAtlas": "buff_icons",
+        "iconCol": 14,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r0_c14.png"
       }
     ]
   },
@@ -312,9 +312,9 @@
         "description": "This unit is weakened by the influence of alien Eggs nearby.",
         "isDebuff": null,
         "iconAtlas": "buff_icons",
-        "iconCol": 1,
-        "iconRow": 1,
-        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r1_c1.png"
+        "iconCol": 0,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r0_c0.png"
       },
       {
         "name": "Acid Burst",
@@ -322,8 +322,8 @@
         "isDebuff": null,
         "iconAtlas": "buff_icons",
         "iconCol": 1,
-        "iconRow": 2,
-        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r2_c1.png"
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r0_c1.png"
       }
     ]
   },
@@ -404,9 +404,9 @@
         "description": "This unitï¿½s energy is begin replenished by a Charging Field.",
         "isDebuff": null,
         "iconAtlas": "buff_icons",
-        "iconCol": 3,
-        "iconRow": 3,
-        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r3_c3.png"
+        "iconCol": 2,
+        "iconRow": 2,
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r2_c2.png"
       }
     ]
   },
@@ -481,19 +481,19 @@
         "name": "Paralyzing Field",
         "description": "This unit is slowed down by a Paralyzing field.",
         "isDebuff": null,
-        "iconAtlas": "buttons",
-        "iconCol": 2,
-        "iconRow": 5,
-        "iconAssetPath": "assets/generated/ui_icons/buttons/r5_c2.png"
+        "iconAtlas": "buff_icons",
+        "iconCol": 6,
+        "iconRow": 1,
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r1_c6.png"
       },
       {
         "name": "Imminence",
         "description": "This unit is threatened by a Harvester and cannot attack anyone else.",
         "isDebuff": null,
-        "iconAtlas": "passive_abilities",
-        "iconCol": 6,
-        "iconRow": 0,
-        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c6.png"
+        "iconAtlas": "buff_icons",
+        "iconCol": 5,
+        "iconRow": 1,
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r1_c5.png"
       }
     ]
   },
@@ -527,10 +527,10 @@
         "name": "Threaten",
         "description": "This unit is threatened by a Hatchling and cannot attack anyone else.",
         "isDebuff": null,
-        "iconAtlas": "buttons",
-        "iconCol": 5,
-        "iconRow": 0,
-        "iconAssetPath": "assets/generated/ui_icons/buttons/r0_c5.png"
+        "iconAtlas": "buff_icons",
+        "iconCol": 7,
+        "iconRow": 1,
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r1_c7.png"
       }
     ]
   },
@@ -606,10 +606,10 @@
         "name": "Manipulation",
         "description": "Increased maximum Hit Points",
         "isDebuff": null,
-        "iconAtlas": "buttons",
+        "iconAtlas": "buff_icons",
         "iconCol": 3,
-        "iconRow": 3,
-        "iconAssetPath": "assets/generated/ui_icons/buttons/r3_c3.png"
+        "iconRow": 1,
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r1_c3.png"
       }
     ]
   },
@@ -681,10 +681,10 @@
         "name": "Feed",
         "description": "This unit is taking damage from a Feed action.",
         "isDebuff": true,
-        "iconAtlas": "buttons",
-        "iconCol": 12,
-        "iconRow": 3,
-        "iconAssetPath": "assets/generated/ui_icons/buttons/r3_c12.png"
+        "iconAtlas": "buff_icons",
+        "iconCol": 2,
+        "iconRow": 1,
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r1_c2.png"
       }
     ]
   },
@@ -693,7 +693,7 @@
     "raceFolder": "aliens",
     "displayName": "Psi Detonator",
     "race": null,
-    "movementType": null,
+    "movementType": "hover",
     "tags": "unit",
     "unitIconClass": "unit",
     "mainIconCol": 7,
@@ -724,9 +724,9 @@
         "description": "Increased maximum Power.",
         "isDebuff": null,
         "iconAtlas": "buff_icons",
-        "iconCol": 2,
-        "iconRow": 4,
-        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r4_c2.png"
+        "iconCol": 3,
+        "iconRow": 1,
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r1_c3.png"
       }
     ]
   },
@@ -808,10 +808,10 @@
         "name": "Enfeeble",
         "description": "This unit has been weakened by a Shifterï¿½s attack.",
         "isDebuff": null,
-        "iconAtlas": "passive_abilities",
-        "iconCol": 5,
+        "iconAtlas": "buff_icons",
+        "iconCol": 15,
         "iconRow": 0,
-        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c5.png"
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r0_c15.png"
       }
     ]
   },
@@ -879,18 +879,18 @@
         "description": "This unit is frenzied. Its armor and damage points are increased.",
         "isDebuff": null,
         "iconAtlas": "buff_icons",
-        "iconCol": 3,
-        "iconRow": 14,
-        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r14_c3.png"
+        "iconCol": 13,
+        "iconRow": 2,
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r2_c13.png"
       },
       {
         "name": "Paralyzing Field",
         "description": "This unit is slowed down by a Trisatï¿½s Paralazyng Field.",
         "isDebuff": null,
         "iconAtlas": "buff_icons",
-        "iconCol": 3,
-        "iconRow": 15,
-        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r15_c3.png"
+        "iconCol": 14,
+        "iconRow": 2,
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r2_c14.png"
       }
     ]
   },
@@ -1024,18 +1024,18 @@
         "description": "Worldshift devs can suck on this one",
         "isDebuff": true,
         "iconAtlas": "buff_icons",
-        "iconCol": 2,
-        "iconRow": 14,
-        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r14_c2.png"
+        "iconCol": 13,
+        "iconRow": 1,
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r1_c13.png"
       },
       {
         "name": "Expose Target",
         "description": "This units armor is weakened by an Assassins shot.",
         "isDebuff": null,
-        "iconAtlas": "passive_abilities",
-        "iconCol": 5,
-        "iconRow": 0,
-        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c5.png"
+        "iconAtlas": "buff_icons",
+        "iconCol": 0,
+        "iconRow": 1,
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r1_c0.png"
       }
     ]
   },
@@ -1092,10 +1092,10 @@
         "name": "Reduced Damage",
         "description": "This unitï¿½s effectiveness has been weakened by a concussion rocket.",
         "isDebuff": null,
-        "iconAtlas": "passive_abilities",
-        "iconCol": 5,
+        "iconAtlas": "buff_icons",
+        "iconCol": 2,
         "iconRow": 0,
-        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c5.png"
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r0_c2.png"
       }
     ]
   },
@@ -1222,10 +1222,10 @@
         "name": "Charging Proton Rocket",
         "description": "The Defender is charging up his next Proton Rocket volley.",
         "isDebuff": null,
-        "iconAtlas": "buttons",
-        "iconCol": 3,
-        "iconRow": 4,
-        "iconAssetPath": "assets/generated/ui_icons/buttons/r4_c3.png"
+        "iconAtlas": "buff_icons",
+        "iconCol": 4,
+        "iconRow": 3,
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r3_c4.png"
       }
     ]
   },
@@ -1530,19 +1530,19 @@
         "name": "Chain Shot",
         "description": "This unit is taking damage from a Chain Shot.",
         "isDebuff": true,
-        "iconAtlas": "passive_abilities",
-        "iconCol": 4,
+        "iconAtlas": "buff_icons",
+        "iconCol": 9,
         "iconRow": 0,
-        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c4.png"
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r0_c9.png"
       },
       {
         "name": "Voice of Command",
         "description": "The efficiency is unitï¿½s attacks has been improved by a nearby Judge.",
         "isDebuff": null,
-        "iconAtlas": "buttons",
-        "iconCol": 12,
+        "iconAtlas": "buff_icons",
+        "iconCol": 11,
         "iconRow": 2,
-        "iconAssetPath": "assets/generated/ui_icons/buttons/r2_c12.png"
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r2_c11.png"
       }
     ]
   },
@@ -1651,19 +1651,19 @@
         "name": "Inject",
         "description": "The Lord Commander is regenerating his health under the influence of injected medications.",
         "isDebuff": null,
-        "iconAtlas": "buttons",
-        "iconCol": 9,
-        "iconRow": 0,
-        "iconAssetPath": "assets/generated/ui_icons/buttons/r0_c9.png"
+        "iconAtlas": "buff_icons",
+        "iconCol": 12,
+        "iconRow": 1,
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r1_c12.png"
       },
       {
         "name": "Confusion",
         "description": "The Lord Commanderï¿½s armor is increased during a Confusion maneuver.",
         "isDebuff": true,
-        "iconAtlas": "buttons",
-        "iconCol": 10,
-        "iconRow": 2,
-        "iconAssetPath": "assets/generated/ui_icons/buttons/r2_c10.png"
+        "iconAtlas": "buff_icons",
+        "iconCol": 11,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r0_c11.png"
       }
     ]
   },
@@ -1821,10 +1821,10 @@
         "name": "Overclock",
         "description": "Increased movement speed",
         "isDebuff": null,
-        "iconAtlas": "buttons",
-        "iconCol": 0,
+        "iconAtlas": "buff_icons",
+        "iconCol": 10,
         "iconRow": 0,
-        "iconAssetPath": "assets/generated/ui_icons/buttons/r0_c0.png"
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r0_c10.png"
       }
     ]
   },
@@ -2200,10 +2200,10 @@
         "name": "Fate Link",
         "description": "This unit is currently linked by an Ancient Shade, all damage taken will be split between you and him.",
         "isDebuff": null,
-        "iconAtlas": "buttons",
-        "iconCol": 0,
-        "iconRow": 3,
-        "iconAssetPath": "assets/generated/ui_icons/buttons/r3_c0.png"
+        "iconAtlas": "buff_icons",
+        "iconCol": 4,
+        "iconRow": 1,
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r1_c4.png"
       }
     ]
   },
@@ -2239,19 +2239,19 @@
         "name": "Growl",
         "description": "This unit is threatened by a Brute and cannot attack anyone else.",
         "isDebuff": null,
-        "iconAtlas": "buttons",
-        "iconCol": 5,
+        "iconAtlas": "buff_icons",
+        "iconCol": 6,
         "iconRow": 0,
-        "iconAssetPath": "assets/generated/ui_icons/buttons/r0_c5.png"
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r0_c6.png"
       },
       {
         "name": "Ignite",
         "description": "This unit is in a special state that raises its effectiveness.",
         "isDebuff": null,
-        "iconAtlas": "passive_abilities",
-        "iconCol": 1,
+        "iconAtlas": "buff_icons",
+        "iconCol": 7,
         "iconRow": 0,
-        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c1.png"
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r0_c7.png"
       }
     ]
   },
@@ -2312,9 +2312,9 @@
         "description": "This unit is frenzied. Its critical chance is increased.",
         "isDebuff": null,
         "iconAtlas": "buff_icons",
-        "iconCol": 4,
+        "iconCol": 2,
         "iconRow": 3,
-        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r3_c4.png"
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r3_c2.png"
       }
     ]
   },
@@ -2396,10 +2396,10 @@
         "name": "Fortify",
         "description": "This unitï¿½s armor is strengthened by the Fortify aura of a nearby Guardian.",
         "isDebuff": null,
-        "iconAtlas": "buttons",
-        "iconCol": 0,
-        "iconRow": 4,
-        "iconAssetPath": "assets/generated/ui_icons/buttons/r4_c0.png"
+        "iconAtlas": "buff_icons",
+        "iconCol": 4,
+        "iconRow": 1,
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r1_c4.png"
       }
     ]
   },
@@ -2558,18 +2558,18 @@
         "description": "This unit is in a special state that increases its armor.",
         "isDebuff": null,
         "iconAtlas": "buff_icons",
-        "iconCol": 2,
-        "iconRow": 9,
-        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r9_c2.png"
+        "iconCol": 8,
+        "iconRow": 1,
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r1_c8.png"
       },
       {
         "name": "Howl Heal",
         "description": "This unit is in a special state that boosts its health regeneration.",
         "isDebuff": null,
         "iconAtlas": "buff_icons",
-        "iconCol": 2,
-        "iconRow": 11,
-        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r11_c2.png"
+        "iconCol": 10,
+        "iconRow": 1,
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r1_c10.png"
       }
     ]
   },
@@ -2600,9 +2600,9 @@
         "description": "This unit is frenzied. Its critical chance is increased.",
         "isDebuff": null,
         "iconAtlas": "buff_icons",
-        "iconCol": 4,
+        "iconCol": 2,
         "iconRow": 3,
-        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r3_c4.png"
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r3_c2.png"
       }
     ]
   },
@@ -2766,28 +2766,28 @@
         "name": "Chain Lightning",
         "description": "The Sorcerer is casting Chain Lightning which spreads to nearby enemies.",
         "isDebuff": true,
-        "iconAtlas": "buttons",
-        "iconCol": 0,
-        "iconRow": 0,
-        "iconAssetPath": "assets/generated/ui_icons/buttons/r0_c0.png"
+        "iconAtlas": "buff_icons",
+        "iconCol": 2,
+        "iconRow": 1,
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r1_c2.png"
       },
       {
         "name": "Chill",
         "description": "This unit is slowed down by a Sorcererï¿½s attack.",
         "isDebuff": null,
-        "iconAtlas": "buttons",
-        "iconCol": 4,
+        "iconAtlas": "buff_icons",
+        "iconCol": 10,
         "iconRow": 0,
-        "iconAssetPath": "assets/generated/ui_icons/buttons/r0_c4.png"
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r0_c10.png"
       },
       {
         "name": "Incinerate",
         "description": "This unit is taking fire damage from an Incinerate spell.",
         "isDebuff": null,
         "iconAtlas": "buff_icons",
-        "iconCol": 2,
-        "iconRow": 12,
-        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r12_c2.png"
+        "iconCol": 11,
+        "iconRow": 1,
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r1_c11.png"
       }
     ]
   },
@@ -2897,18 +2897,18 @@
         "description": "This unitï¿½s power is being replenished by a nearby Stone Ghost.",
         "isDebuff": null,
         "iconAtlas": "buff_icons",
-        "iconCol": 3,
-        "iconRow": 11,
-        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r11_c3.png"
+        "iconCol": 10,
+        "iconRow": 2,
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r2_c10.png"
       },
       {
         "name": "Corruption",
         "description": "This unit is taking poison damage from a Corruption spell.",
         "isDebuff": null,
-        "iconAtlas": "buttons",
-        "iconCol": 7,
-        "iconRow": 6,
-        "iconAssetPath": "assets/generated/ui_icons/buttons/r6_c7.png"
+        "iconAtlas": "buff_icons",
+        "iconCol": 12,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/buff_icons/r0_c12.png"
       }
     ]
   },

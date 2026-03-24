@@ -78,6 +78,13 @@ void main(List<String> args) {
     final atlasOutDir = Directory(
       '${outputRoot.path}${Platform.pathSeparator}${config.id}',
     );
+    if (atlasOutDir.existsSync()) {
+      for (final ent in atlasOutDir.listSync(recursive: false)) {
+        if (ent is File && ent.path.toLowerCase().endsWith('.png')) {
+          ent.deleteSync();
+        }
+      }
+    }
     atlasOutDir.createSync(recursive: true);
 
     final rows = (image.height / config.cellHeight).ceil();
@@ -103,7 +110,7 @@ void main(List<String> args) {
           height: height,
         );
 
-        final fileName = 'r${row}_c${col}.png';
+        final fileName = 'r${row}_c$col.png';
         final outFile = File(
           '${atlasOutDir.path}${Platform.pathSeparator}$fileName',
         );

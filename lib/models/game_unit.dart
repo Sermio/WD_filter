@@ -53,6 +53,59 @@ class GameUnitAbility {
     return 'assets/generated/ui_icons/$iconAtlas/r${iconRow}_c$iconCol.png';
   }
 
+  /// Rutas candidatas para cubrir diferencias de indexado/orientación en buffs.
+  List<String> get iconAssetPathCandidates {
+    final out = <String>[];
+
+    void addPath(String? atlas, int? row, int? col) {
+      if (atlas == null || row == null || col == null) {
+        return;
+      }
+      if (row < 0 || col < 0) {
+        return;
+      }
+      final path = 'assets/generated/ui_icons/$atlas/r${row}_c$col.png';
+      if (!out.contains(path)) {
+        out.add(path);
+      }
+    }
+
+    if (iconAssetPathOverride != null && iconAssetPathOverride!.isNotEmpty) {
+      addPath(iconAtlas, iconRow, iconCol);
+      if (!out.contains(iconAssetPathOverride!)) {
+        out.insert(0, iconAssetPathOverride!);
+      }
+      return out;
+    }
+
+    if (!hasIcon || iconAtlas == null || iconRow == null || iconCol == null) {
+      return out;
+    }
+
+    final atlas = iconAtlas!;
+    final row = iconRow!;
+    final col = iconCol!;
+
+    if (atlas == 'buff_icons') {
+      // Prioridad para buffs/debuffs: juego usa icon_row/icon_col 1-based.
+      if (row > 0 && col > 0) {
+        addPath(atlas, row - 1, col - 1);
+      }
+      // Interpretacion directa por compatibilidad.
+      addPath(atlas, row, col);
+      // Respaldo para datos invertidos (col,row).
+      addPath(atlas, col, row);
+      if (row > 0 && col > 0) {
+        addPath(atlas, col - 1, row - 1);
+      }
+      return out;
+    }
+
+    // Interpretacion principal (fila,columna) para otros atlas.
+    addPath(atlas, row, col);
+    return out;
+  }
+
   factory GameUnitAbility.fromJson(Map<String, dynamic> json) {
     return GameUnitAbility(
       name: json['name'] as String? ?? '',
@@ -103,6 +156,57 @@ class GameUnitStatusEffect {
       return null;
     }
     return 'assets/generated/ui_icons/$iconAtlas/r${iconRow}_c$iconCol.png';
+  }
+
+  /// Rutas candidatas para cubrir diferencias de indexado/orientación en buffs.
+  List<String> get iconAssetPathCandidates {
+    final out = <String>[];
+
+    void addPath(String? atlas, int? row, int? col) {
+      if (atlas == null || row == null || col == null) {
+        return;
+      }
+      if (row < 0 || col < 0) {
+        return;
+      }
+      final path = 'assets/generated/ui_icons/$atlas/r${row}_c$col.png';
+      if (!out.contains(path)) {
+        out.add(path);
+      }
+    }
+
+    if (iconAssetPathOverride != null && iconAssetPathOverride!.isNotEmpty) {
+      addPath(iconAtlas, iconRow, iconCol);
+      if (!out.contains(iconAssetPathOverride!)) {
+        out.insert(0, iconAssetPathOverride!);
+      }
+      return out;
+    }
+
+    if (!hasIcon || iconAtlas == null || iconRow == null || iconCol == null) {
+      return out;
+    }
+
+    final atlas = iconAtlas!;
+    final row = iconRow!;
+    final col = iconCol!;
+
+    // Interpretacion principal (fila,columna) tal cual llega del parser.
+    addPath(atlas, row, col);
+
+    if (atlas == 'buff_icons') {
+      // Alternativa habitual: datos 1-based en origen.
+      if (row > 0 && col > 0) {
+        addPath(atlas, row - 1, col - 1);
+      }
+      // Respaldo para datos invertidos (col,row).
+      addPath(atlas, col, row);
+      if (row > 0 && col > 0) {
+        addPath(atlas, col - 1, row - 1);
+      }
+    }
+
+    return out;
   }
 
   factory GameUnitStatusEffect.fromJson(Map<String, dynamic> json) {

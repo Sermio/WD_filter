@@ -7,12 +7,14 @@ import 'package:worldshift_assistant/data/ability_icon_fallbacks.dart';
 class AbilityIconPreview extends StatelessWidget {
   const AbilityIconPreview({
     super.key,
-    required this.assetPath,
+    this.assetPath,
+    this.candidatePaths,
     this.size = 40,
     this.fallbackKind,
   });
 
   final String? assetPath;
+  final List<String>? candidatePaths;
   final double size;
 
   /// Si es null, no se añade PNG de respaldo (p. ej. buffs/debuffs).
@@ -20,8 +22,17 @@ class AbilityIconPreview extends StatelessWidget {
 
   List<String> _candidates() {
     final list = <String>[];
+    final extra = candidatePaths;
+    if (extra != null) {
+      for (final raw in extra) {
+        final p = raw.trim();
+        if (p.isNotEmpty && !list.contains(p)) {
+          list.add(p);
+        }
+      }
+    }
     final p = assetPath?.trim();
-    if (p != null && p.isNotEmpty) {
+    if (p != null && p.isNotEmpty && !list.contains(p)) {
       list.add(p);
     }
     switch (fallbackKind) {

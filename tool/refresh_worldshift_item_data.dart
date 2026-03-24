@@ -7,6 +7,7 @@ const _sourceGameItemsDir = r'assets\loot\source_game\items';
 const _sourceGameTextsDir = r'assets\loot\source_game\texts';
 const _sourceGameRefsDir = r'assets\loot\source_game\refs';
 const _legacyTsvDir = r'assets\tsvFiles';
+const _defaultTexconvPath = r'C:\Tools\texconv\texconv.exe';
 
 void main(List<String> args) {
   final worldshiftRoot = Directory(
@@ -32,6 +33,12 @@ void main(List<String> args) {
   );
   final unitsDir = Directory(
     '${worldshiftRoot.path}${Platform.pathSeparator}data${Platform.pathSeparator}db${Platform.pathSeparator}units',
+  );
+  final dbDir = Directory(
+    '${worldshiftRoot.path}${Platform.pathSeparator}data${Platform.pathSeparator}db',
+  );
+  final uiTexturesDir = Directory(
+    '${worldshiftRoot.path}${Platform.pathSeparator}data${Platform.pathSeparator}textures${Platform.pathSeparator}ui',
   );
 
   if (!itemsDir.existsSync() ||
@@ -110,7 +117,20 @@ void main(List<String> args) {
   _runDartScript('tool/generate_item_origin_index.dart');
   _runDartScript('tool/generate_item_list.dart');
   _runDartScript('tool/rebuild_attribute_list.dart', [worldshiftRoot.path]);
+  if (uiTexturesDir.existsSync()) {
+    final texconv = File(_defaultTexconvPath);
+    final extractArgs = texconv.existsSync()
+        ? [uiTexturesDir.path, texconv.path]
+        : [uiTexturesDir.path];
+    _runDartScript('tool/extract_worldshift_ui_icons.dart', extractArgs);
+  } else {
+    stderr.writeln(
+      'Aviso: no existe ${uiTexturesDir.path}; se omite extracción de atlas UI.',
+    );
+  }
   _runDartScript('tool/generate_worldshift_assets.dart', [unitsDir.path]);
+  _runDartScript('tool/generate_status_effect_icon_index.dart', [dbDir.path]);
+  _runDartScript('tool/generate_ui_icon_name_indexes.dart');
   _runDartScript('tool/rebuild_data_dart.dart');
 
   stdout.writeln(

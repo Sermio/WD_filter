@@ -8,6 +8,8 @@
 <h2>Maintenance docs</h2>
 <p>
   Item and loot update workflow: <code>docs/item-data-update-workflow.md</code>
+  <br/>
+  Buff/debuff icon extraction workflow: <code>docs/buff-debuff-icons-workflow.md</code>
 </p>
 
 <h2>Advanced Filtering & Item Exploration</h2>

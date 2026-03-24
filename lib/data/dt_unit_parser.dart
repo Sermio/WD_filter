@@ -436,8 +436,19 @@ class DtUnitParser {
     int? iconCol;
     int? iconRow;
 
-    // Mismo icono que la habilidad (activa o pasiva) que define el efecto anidado.
-    if (parentAbility != null && _isAbilityIconSourceBlock(parentAbility)) {
+    // Prioridad 1: icono explícito del propio efecto en .dt.
+    final icon = _matchIconPair(body);
+    if (icon != null) {
+      final resolved = _resolveStatusEffectIcon(icon.$1, icon.$2);
+      iconAtlas = resolved.$1;
+      iconCol = resolved.$2;
+      iconRow = resolved.$3;
+    }
+
+    // Prioridad 2: heredar de la habilidad contenedora (activa/pasiva) solo si falta.
+    if (iconAtlas == null &&
+        parentAbility != null &&
+        _isAbilityIconSourceBlock(parentAbility)) {
       final preferred = _isActiveAbilityBlock(parentAbility)
           ? 'buttons'
           : 'passive_abilities';
@@ -449,16 +460,6 @@ class DtUnitParser {
         iconAtlas = inherited.$1;
         iconCol = inherited.$2;
         iconRow = inherited.$3;
-      }
-    }
-
-    if (iconAtlas == null) {
-      final icon = _matchIconPair(body);
-      if (icon != null) {
-        final resolved = _resolveStatusEffectIcon(icon.$1, icon.$2);
-        iconAtlas = resolved.$1;
-        iconCol = resolved.$2;
-        iconRow = resolved.$3;
       }
     }
     final isDebuff =
@@ -473,11 +474,18 @@ class DtUnitParser {
     );
   }
 
-  /// Solo para efectos **sin** habilidad activa padre (p. ej. definidos a nivel unidad).
+  /// Convierte `icon = a,b` de efectos de estado a coordenadas del atlas exportado.
+  ///
+  /// Según la UI original (`selection.lua`), los efectos se pintan con
+  /// `Set(icon_row, icon_col)` y dentro de `Set` se usa `(row-1, col-1)`.
+  /// Por tanto, en .dt el primer valor es **fila 1-based** y el segundo
+  /// **columna 1-based**.
   static (String? atlas, int? col, int? row) _resolveStatusEffectIcon(
-    int col,
-    int row,
+    int first,
+    int second,
   ) {
+    final row = first > 0 ? first - 1 : first;
+    final col = second > 0 ? second - 1 : second;
     if (col < 0 || row < 0 || col > 31 || row > 31) {
       return (null, null, null);
     }

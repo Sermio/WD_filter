@@ -462,6 +462,7 @@ class UnitDetailScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AbilityIconPreview(
+                candidatePaths: effect.iconAssetPathCandidates,
                 assetPath: effect.iconAssetPath,
                 size: 30,
               ),

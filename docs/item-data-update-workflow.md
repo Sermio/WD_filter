@@ -81,7 +81,10 @@ dart run tool/refresh_worldshift_item_data.dart "C:\Users\sergi\Desktop\Proyecto
    - `dart run tool/generate_item_origin_index.dart`
    - `dart run tool/generate_item_list.dart`
    - `dart run tool/rebuild_attribute_list.dart`
+   - `dart run tool/extract_worldshift_ui_icons.dart`
    - `dart run tool/generate_worldshift_assets.dart`
+   - `dart run tool/generate_status_effect_icon_index.dart`
+   - `dart run tool/generate_ui_icon_name_indexes.dart`
    - `dart run tool/rebuild_data_dart.dart`
 
 Con eso quedan actualizados:
@@ -89,9 +92,29 @@ Con eso quedan actualizados:
 - el catálogo local de items
 - el índice de orígenes por mesa/mapa/modo
 - el listado de nombres usado por la búsqueda
+- los iconos extraídos de atlas UI (`assets/generated/ui_icons/*`)
+- el índice de efectos de estado y resolución de iconos (`assets/generated/ui_icons/buff_icons/status_effect_icon_index.json`)
 - `assets/data/units.json`
 - las listas derivadas de `lib/data/data.dart` (`attributesList`, `attributeList`, `attributeFilter`, `units`, `races`, `maps`, `lootTable`, `slots`)
 - `lib/data/item.dart` para mantener `unitsFlat` sincronizado
+
+## Extracción correcta de buffs/debuffs
+
+Para buffs/debuffs, la referencia visual del juego sale de:
+
+- `data/textures/ui/buff_icons.dds`
+- lógica de render en `data/db/ui/selection.lua` (`slot.Icon:Set(v.icon_row, v.icon_col)`).
+
+El flujo de este repo para mantenerlos sincronizados es:
+
+1. Extraer atlas UI con `tool/extract_worldshift_ui_icons.dart`.
+2. Regenerar `assets/data/units.json` con `tool/generate_worldshift_assets.dart`.
+3. Generar índice de validación desde fuentes originales (`units/*.dt` + `effects/*.dt`) con:
+   - `tool/generate_status_effect_icon_index.dart`
+4. Regenerar índices de nombres de iconos con:
+   - `tool/generate_ui_icon_name_indexes.dart`
+
+`tool/refresh_worldshift_item_data.dart` ya ejecuta esos pasos automáticamente cuando existe `data/textures/ui`.
 
 ## Procedimiento normal de actualización
 
@@ -220,12 +243,20 @@ flutter pub get
 ```bash
 dart run tool/refresh_worldshift_item_data.dart
 dart run tool/generate_named_item_icons.dart
-dart run tool/generate_worldshift_assets.dart
 dart run tool/generate_named_unit_icons.dart
 dart run tool/generate_named_commander_icons.dart
 dart run tool/generate_named_environment_unit_icons.dart
 dart run tool/rebuild_shared_named_units.dart
 flutter pub get
+```
+
+### Solo reextraer buffs/debuffs manualmente
+
+```bash
+dart run tool/extract_worldshift_ui_icons.dart "C:\Users\sergi\Desktop\Proyectos\Worldshift\data\textures\ui" "C:\Tools\texconv\texconv.exe"
+dart run tool/generate_worldshift_assets.dart "C:\Users\sergi\Desktop\Proyectos\Worldshift\data\db\units"
+dart run tool/generate_status_effect_icon_index.dart "C:\Users\sergi\Desktop\Proyectos\Worldshift\data\db"
+dart run tool/generate_ui_icon_name_indexes.dart
 ```
 
 ## Nota para futuras sesiones
