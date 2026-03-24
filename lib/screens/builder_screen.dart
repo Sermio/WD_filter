@@ -14,10 +14,13 @@ import 'package:worldshift_assistant/utils/unit_icon_candidates.dart';
 import 'package:worldshift_assistant/utils/utils.dart';
 import 'package:worldshift_assistant/widgets/expandable_card.dart';
 import 'package:worldshift_assistant/widgets/item_catalog_filters_panel.dart';
+import 'package:worldshift_assistant/widgets/rarity_indicator.dart';
 import 'package:worldshift_assistant/widgets/resolved_mini_asset_image.dart';
 
 /// Distinct from [null] so closing the sheet without choosing does not unequip.
 final Object _builderPickerUnequip = Object();
+
+enum _BuilderPanelTab { items, skillTree }
 
 class BuilderScreen extends StatefulWidget {
   const BuilderScreen({super.key});
@@ -42,6 +45,7 @@ class _BuilderScreenState extends State<BuilderScreen> {
 
   late final Future<List<Item>> _itemsFuture;
   String _selectedRace = 'Humans';
+  _BuilderPanelTab _panelTab = _BuilderPanelTab.items;
   final Map<String, Map<String, Item>> _equippedByRace = {
     for (final r in _races) r: <String, Item>{},
   };
@@ -272,6 +276,7 @@ class _BuilderScreenState extends State<BuilderScreen> {
             _SlotStatContribution(
               slotKey: slotKey,
               itemName: item.name,
+              itemRarity: item.rarity,
               attrs: Map<String, double>.from(slotNums),
             ),
           );
@@ -388,6 +393,8 @@ class _BuilderScreenState extends State<BuilderScreen> {
                   setState(() => _selectedRace = race);
                   unawaited(_persistBuilderState());
                 },
+                panelTab: _panelTab,
+                onPanelTabChanged: (tab) => setState(() => _panelTab = tab),
                 slotsForRace: slotsForRace,
                 equippedBySlot: _equipForSelectedRace,
                 onPickItem: (slotKey, slotLabel) => _openItemPicker(
@@ -706,6 +713,8 @@ class _BuilderRaceHudTheme {
     required this.inkSplash,
     required this.inkHighlight,
     required this.frameShadow,
+    required this.summaryUnitCardAccent,
+    required this.summaryUnitCardGradientEndAlpha,
   });
 
   final bool isDarkPanel;
@@ -726,6 +735,10 @@ class _BuilderRaceHudTheme {
   final Color inkSplash;
   final Color inkHighlight;
   final Color frameShadow;
+  /// Tinte suave en cards de stats por unidad del resumen (Humans mantiene el violeta del listado).
+  final Color summaryUnitCardAccent;
+  /// Opacidad del segundo color del gradiente en esas cards (Humans ≈ listado original).
+  final double summaryUnitCardGradientEndAlpha;
 
   static _BuilderRaceHudTheme forRace(String race) {
     switch (race) {
@@ -754,6 +767,8 @@ class _BuilderRaceHudTheme {
           inkSplash: Colors.white24,
           inkHighlight: Colors.white10,
           frameShadow: const Color(0x73000000),
+          summaryUnitCardAccent: const Color(0xFF667eea),
+          summaryUnitCardGradientEndAlpha: 0.04,
         );
       case 'Tribes':
         return _BuilderRaceHudTheme(
@@ -780,6 +795,8 @@ class _BuilderRaceHudTheme {
           inkSplash: const Color(0x33D4A574),
           inkHighlight: const Color(0x18D4A574),
           frameShadow: const Color(0x80000000),
+          summaryUnitCardAccent: const Color(0xFFC4A57B),
+          summaryUnitCardGradientEndAlpha: 0.09,
         );
       case 'Aliens':
         return _BuilderRaceHudTheme(
@@ -806,6 +823,8 @@ class _BuilderRaceHudTheme {
           inkSplash: const Color(0x4040FF88),
           inkHighlight: const Color(0x2040FF88),
           frameShadow: const Color(0xAA003020),
+          summaryUnitCardAccent: const Color(0xFF3CB878),
+          summaryUnitCardGradientEndAlpha: 0.09,
         );
       default:
         return _BuilderRaceHudTheme(
@@ -830,6 +849,8 @@ class _BuilderRaceHudTheme {
           inkSplash: Colors.black12,
           inkHighlight: Colors.black12,
           frameShadow: const Color(0x73000000),
+          summaryUnitCardAccent: const Color(0xFF667eea),
+          summaryUnitCardGradientEndAlpha: 0.04,
         );
     }
   }
@@ -866,6 +887,8 @@ class _EquipmentPanel extends StatelessWidget {
     required this.selectedRace,
     required this.races,
     required this.onRaceChanged,
+    required this.panelTab,
+    required this.onPanelTabChanged,
     required this.slotsForRace,
     required this.equippedBySlot,
     required this.onPickItem,
@@ -927,6 +950,8 @@ class _EquipmentPanel extends StatelessWidget {
   final String selectedRace;
   final List<String> races;
   final ValueChanged<String> onRaceChanged;
+  final _BuilderPanelTab panelTab;
+  final ValueChanged<_BuilderPanelTab> onPanelTabChanged;
   final List<Map<String, String>> slotsForRace;
   final Map<String, Item> equippedBySlot;
   final void Function(String slotKey, String slotLabel) onPickItem;
@@ -936,6 +961,160 @@ class _EquipmentPanel extends StatelessWidget {
     return {
       for (final s in slotsForRace) s['key'] ?? '': s,
     };
+  }
+
+  /// Selector unido; cada segmento usa el HUD de su raza (oscuro + tinte).
+  static Widget _darkRaceSegmentedBar({
+    required List<String> races,
+    required String selectedRace,
+    required ValueChanged<String> onRaceChanged,
+    required Color dividerAndOutlineColor,
+  }) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          border: Border.all(color: dividerAndOutlineColor, width: 1),
+        ),
+        child: Row(
+          children: List.generate(races.length, (i) {
+            final rh = _BuilderRaceHudTheme.forRace(races[i]);
+            final sel = races[i] == selectedRace;
+            return Expanded(
+              child: Material(
+                color: sel ? rh.chipSelected : rh.chipBackground,
+                child: InkWell(
+                  onTap: () => onRaceChanged(races[i]),
+                  splashColor: rh.inkSplash,
+                  highlightColor: rh.inkHighlight,
+                  child: Container(
+                    height: 36,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      border: Border(
+                        right: i < races.length - 1
+                            ? BorderSide(
+                                color: dividerAndOutlineColor,
+                                width: 1,
+                              )
+                            : BorderSide.none,
+                      ),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        races[i],
+                        maxLines: 1,
+                        overflow: TextOverflow.clip,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w800,
+                          fontSize: 13,
+                          color: sel
+                              ? rh.chipLabelSelected
+                              : rh.chipLabelUnselected,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }),
+        ),
+      ),
+    );
+  }
+
+  /// Items / Skill tree con el HUD de la raza activa.
+  static Widget _panelModeSegmentedBar({
+    required _BuilderPanelTab tab,
+    required ValueChanged<_BuilderPanelTab> onChanged,
+    required _BuilderRaceHudTheme hud,
+    required Color dividerAndOutlineColor,
+  }) {
+    const modes = _BuilderPanelTab.values;
+    String label(_BuilderPanelTab m) {
+      switch (m) {
+        case _BuilderPanelTab.items:
+          return 'Items';
+        case _BuilderPanelTab.skillTree:
+          return 'Skill tree';
+      }
+    }
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          border: Border.all(color: dividerAndOutlineColor, width: 1),
+        ),
+        child: Row(
+          children: List.generate(modes.length, (i) {
+            final m = modes[i];
+            final sel = tab == m;
+            return Expanded(
+              child: Material(
+                color: sel ? hud.chipSelected : hud.chipBackground,
+                child: InkWell(
+                  onTap: () => onChanged(m),
+                  splashColor: hud.inkSplash,
+                  highlightColor: hud.inkHighlight,
+                  child: Container(
+                    height: 36,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      border: Border(
+                        right: i < modes.length - 1
+                            ? BorderSide(
+                                color: dividerAndOutlineColor,
+                                width: 1,
+                              )
+                            : BorderSide.none,
+                      ),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        label(m),
+                        maxLines: 1,
+                        overflow: TextOverflow.clip,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w800,
+                          fontSize: 13,
+                          color: sel
+                              ? hud.chipLabelSelected
+                              : hud.chipLabelUnselected,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }),
+        ),
+      ),
+    );
+  }
+
+  static Widget _skillTreePlaceholder(_BuilderRaceHudTheme hud) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 12),
+      child: Center(
+        child: Text(
+          'Coming next: per-race skill tree using existing icons.',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: hud.hintColor,
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            height: 1.35,
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -961,6 +1140,7 @@ class _EquipmentPanel extends StatelessWidget {
       child: LayoutBuilder(
         builder: (context, constraints) {
           final panelHasBoundedHeight = constraints.maxHeight.isFinite;
+          final barOutline = hud.panelBorder;
 
           final header = Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -975,33 +1155,24 @@ class _EquipmentPanel extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 8),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: races.map((race) {
-                  final sel = race == selectedRace;
-                  final chipHud = _BuilderRaceHudTheme.forRace(race);
-                  return ChoiceChip(
-                    selected: sel,
-                    label: Text(race),
-                    selectedColor: chipHud.chipSelected,
-                    backgroundColor: chipHud.chipBackground,
-                    labelStyle: TextStyle(
-                      color: sel
-                          ? chipHud.chipLabelSelected
-                          : chipHud.chipLabelUnselected,
-                      fontWeight: FontWeight.w700,
-                    ),
-                    side: BorderSide(
-                      color: chipHud.chipSide,
-                    ),
-                    onSelected: (_) => onRaceChanged(race),
-                  );
-                }).toList(),
+              _EquipmentPanel._darkRaceSegmentedBar(
+                races: races,
+                selectedRace: selectedRace,
+                onRaceChanged: onRaceChanged,
+                dividerAndOutlineColor: barOutline,
+              ),
+              const SizedBox(height: 8),
+              _EquipmentPanel._panelModeSegmentedBar(
+                tab: panelTab,
+                onChanged: onPanelTabChanged,
+                hud: hud,
+                dividerAndOutlineColor: barOutline,
               ),
               const SizedBox(height: 12),
               Text(
-                'Tap a slot to equip an item.',
+                panelTab == _BuilderPanelTab.items
+                    ? 'Tap a slot to equip an item.'
+                    : 'Skill tree for this race — work in progress.',
                 style: TextStyle(
                   color: hud.hintColor,
                   fontSize: 13,
@@ -1013,7 +1184,7 @@ class _EquipmentPanel extends StatelessWidget {
           );
 
           final zig = _zigzagKeysForRace(selectedRace);
-          final slotBody = zig != null
+          final equipmentBody = zig != null
               ? _BuilderEquipmentZigzag(
                   hud: hud,
                   slotsByKey: _slotsByKey(),
@@ -1101,6 +1272,10 @@ class _EquipmentPanel extends StatelessWidget {
                     );
                   },
                 );
+
+          final slotBody = panelTab == _BuilderPanelTab.items
+              ? equipmentBody
+              : _EquipmentPanel._skillTreePlaceholder(hud);
 
           final footer = Column(
             mainAxisSize: MainAxisSize.min,
@@ -1365,10 +1540,10 @@ class _SummaryPanel extends StatelessWidget {
   final String Function(double) formatValue;
   final bool scrollUnitsInternally;
 
-  static const Color _accent = Color(0xFF667eea);
-
   @override
   Widget build(BuildContext context) {
+    final summaryHud = _BuilderRaceHudTheme.forRace(selectedRace);
+
     final header = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -1378,15 +1553,6 @@ class _SummaryPanel extends StatelessWidget {
             fontSize: 20,
             fontWeight: FontWeight.w800,
             color: Color(0xFF1F2937),
-          ),
-        ),
-        const SizedBox(height: 6),
-        Text(
-          'Loadout: $selectedRace',
-          style: TextStyle(
-            color: Colors.grey.shade600,
-            fontSize: 13,
-            fontWeight: FontWeight.w700,
           ),
         ),
         const SizedBox(height: 8),
@@ -1402,7 +1568,7 @@ class _SummaryPanel extends StatelessWidget {
         ),
         const SizedBox(height: 14),
         const Text(
-          'Totals by unit',
+          'Stats',
           style: TextStyle(
             fontWeight: FontWeight.w800,
             color: Color(0xFF334155),
@@ -1456,7 +1622,9 @@ class _SummaryPanel extends StatelessWidget {
             _UnitTotalsCard(
               unit: summary.perUnit[i],
               formatValue: formatValue,
-              accent: _accent,
+              accent: summaryHud.summaryUnitCardAccent,
+              gradientEndAlpha: summaryHud.summaryUnitCardGradientEndAlpha,
+              raceChipSide: summaryHud.chipSide,
               onInfoTap: () => _showUnitSlotSourcesSheet(
                 context,
                 unit: summary.perUnit[i],
@@ -1561,12 +1729,12 @@ void _showUnitSlotSourcesSheet(
                       final c = unit.slotContributions[index];
                       final slotTitle =
                           getSlotValueOrDescription(c.slotKey);
+                      final rarityColor = getRarityColor(c.itemRarity);
                       final lines = c.attrs.entries.toList()
                         ..sort(
                           (a, b) => b.value.abs().compareTo(a.value.abs()),
                         );
                       return Container(
-                        padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(14),
@@ -1579,65 +1747,116 @@ void _showUnitSlotSourcesSheet(
                             ),
                           ],
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              slotTitle,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w800,
-                                fontSize: 14,
-                                color: Color(0xFF334155),
+                        clipBehavior: Clip.antiAlias,
+                        child: IntrinsicHeight(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Container(
+                                width: 4,
+                                color: rarityColor.withValues(alpha: 0.85),
                               ),
-                            ),
-                            const SizedBox(height: 2),
-                            Text(
-                              c.itemName,
-                              style: TextStyle(
-                                color: Colors.grey.shade700,
-                                fontSize: 12.5,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            ...lines.map((e) {
-                              final v = e.value;
-                              final sign = v >= 0 ? '+' : '';
-                              final isNeg = v < 0;
-                              final amtColor = isNeg
-                                  ? const Color(0xFFC75A5A)
-                                  : const Color(0xFF2E9B62);
-                              return Padding(
-                                padding: const EdgeInsets.only(top: 4),
-                                child: Row(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      '$sign${formatValue(v)}',
-                                      style: TextStyle(
-                                        color: amtColor,
-                                        fontSize: 12.5,
-                                        fontWeight: FontWeight.w800,
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          _ResolvedAssetImage(
+                                            candidates: [
+                                              'assets/generated/item_icons/named/icons/${c.slotKey}.png',
+                                            ],
+                                            size: 44,
+                                            borderRadius: 10,
+                                            fallbackIcon: Icons
+                                                .inventory_2_outlined,
+                                          ),
+                                          const SizedBox(width: 12),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  slotTitle,
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.w800,
+                                                    fontSize: 14,
+                                                    color: Color(0xFF334155),
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 4),
+                                                Text(
+                                                  c.itemName,
+                                                  style: TextStyle(
+                                                    color: Colors
+                                                        .grey.shade800,
+                                                    fontSize: 13,
+                                                    fontWeight: FontWeight.w700,
+                                                    height: 1.2,
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 8),
+                                                RarityIndicator(
+                                                  rarity: c.itemRarity,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    ),
-                                    const SizedBox(width: 6),
-                                    Expanded(
-                                      child: Text(
-                                        getAttributeValue(e.key),
-                                        style: const TextStyle(
-                                          color: Color(0xFF3D4452),
-                                          fontSize: 12.5,
-                                          fontWeight: FontWeight.w700,
-                                          height: 1.2,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                      const SizedBox(height: 10),
+                                      ...lines.asMap().entries.map((me) {
+                                        final e = me.value;
+                                        final v = e.value;
+                                        final sign = v >= 0 ? '+' : '';
+                                        final isNeg = v < 0;
+                                        final amtColor = isNeg
+                                            ? const Color(0xFFC75A5A)
+                                            : const Color(0xFF2E9B62);
+                                        return Padding(
+                                          padding: EdgeInsets.only(
+                                            top: me.key == 0 ? 0 : 4,
+                                          ),
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                '$sign${formatValue(v)}',
+                                                style: TextStyle(
+                                                  color: amtColor,
+                                                  fontSize: 12.5,
+                                                  fontWeight: FontWeight.w800,
+                                                ),
+                                              ),
+                                              const SizedBox(width: 6),
+                                              Expanded(
+                                                child: Text(
+                                                  getAttributeValue(e.key),
+                                                  style: const TextStyle(
+                                                    color: Color(0xFF3D4452),
+                                                    fontSize: 12.5,
+                                                    fontWeight: FontWeight.w700,
+                                                    height: 1.2,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      }),
+                                    ],
+                                  ),
                                 ),
-                              );
-                            }),
-                          ],
+                              ),
+                            ],
+                          ),
                         ),
                       );
                     },
@@ -1657,12 +1876,16 @@ class _UnitTotalsCard extends StatelessWidget {
     required this.unit,
     required this.formatValue,
     required this.accent,
+    required this.gradientEndAlpha,
+    required this.raceChipSide,
     required this.onInfoTap,
   });
 
   final _PerUnitBuildSummary unit;
   final String Function(double) formatValue;
   final Color accent;
+  final double gradientEndAlpha;
+  final Color raceChipSide;
   final VoidCallback onInfoTap;
 
   @override
@@ -1676,16 +1899,7 @@ class _UnitTotalsCard extends StatelessWidget {
     );
 
     return Container(
-      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.white,
-            accent.withValues(alpha: 0.04),
-          ],
-        ),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -1704,130 +1918,176 @@ class _UnitTotalsCard extends StatelessWidget {
           width: 1,
         ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.08),
-                      blurRadius: 8,
-                      offset: const Offset(0, 3),
+      clipBehavior: Clip.antiAlias,
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              width: 5,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    raceChipSide,
+                    Color.alphaBlend(
+                      raceChipSide.withValues(alpha: 0.55),
+                      Colors.white,
                     ),
                   ],
                 ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: ColoredBox(
-                    color: const Color(0xFFF1F3F7),
-                    child: Padding(
-                      padding: const EdgeInsets.all(4),
-                      child: ResolvedMiniAssetImage(
-                        candidates: unitIconAssetCandidates(unit.unitKey),
-                        size: 28,
-                        borderRadius: 6,
-                      ),
-                    ),
+              ),
+            ),
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Colors.white,
+                      accent.withValues(alpha: gradientEndAlpha),
+                    ],
                   ),
                 ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
+                padding: const EdgeInsets.fromLTRB(12, 14, 14, 14),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text(
-                      unit.displayLabel,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        color: readableAccent,
-                        fontWeight: FontWeight.w800,
-                        fontSize: 16,
-                        height: 1.1,
-                        letterSpacing: 0.2,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      '${sortedAttrs.length} stacked attributes',
-                      style: TextStyle(
-                        color: Colors.grey.shade600,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              IconButton(
-                tooltip: 'Slots contributing to this unit',
-                onPressed: onInfoTap,
-                icon: Icon(
-                  Icons.info_outline_rounded,
-                  color: accent.withValues(alpha: 0.9),
-                ),
-              ),
-            ],
-          ),
-          if (sortedAttrs.isNotEmpty) ...[
-            const SizedBox(height: 12),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: const Color(0xFFF6F7FB),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: Colors.grey.shade200,
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: sortedAttrs.asMap().entries.map((me) {
-                  final v = me.value.value;
-                  final sign = v >= 0 ? '+' : '';
-                  final isNeg = v < 0;
-                  return Padding(
-                    padding: EdgeInsets.only(top: me.key == 0 ? 0 : 4),
-                    child: Row(
+                    Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          '$sign${formatValue(v)}',
-                          style: TextStyle(
-                            color: isNeg
-                                ? const Color(0xFFC75A5A)
-                                : const Color(0xFF2E9B62),
-                            fontSize: 12.5,
-                            fontWeight: FontWeight.w800,
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.08),
+                                blurRadius: 8,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: ColoredBox(
+                              color: const Color(0xFFF1F3F7),
+                              child: Padding(
+                                padding: const EdgeInsets.all(4),
+                                child: ResolvedMiniAssetImage(
+                                  candidates:
+                                      unitIconAssetCandidates(unit.unitKey),
+                                  size: 28,
+                                  borderRadius: 6,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
-                        const SizedBox(width: 6),
+                        const SizedBox(width: 12),
                         Expanded(
-                          child: Text(
-                            getAttributeValue(me.value.key),
-                            style: const TextStyle(
-                              color: Color(0xFF3D4452),
-                              fontSize: 12.5,
-                              fontWeight: FontWeight.w700,
-                              height: 1.2,
-                            ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                unit.displayLabel,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  color: readableAccent,
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 16,
+                                  height: 1.1,
+                                  letterSpacing: 0.2,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                '${sortedAttrs.length} stacked attributes',
+                                style: TextStyle(
+                                  color: Colors.grey.shade600,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        IconButton(
+                          tooltip: 'Slots contributing to this unit',
+                          onPressed: onInfoTap,
+                          icon: Icon(
+                            Icons.info_outline_rounded,
+                            color: accent.withValues(alpha: 0.9),
                           ),
                         ),
                       ],
                     ),
-                  );
-                }).toList(),
+                    if (sortedAttrs.isNotEmpty) ...[
+                      const SizedBox(height: 12),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: Color.alphaBlend(
+                            accent.withValues(alpha: 0.045),
+                            const Color(0xFFF6F7FB),
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: Color.alphaBlend(
+                              accent.withValues(alpha: 0.12),
+                              Colors.grey.shade200,
+                            ),
+                          ),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: sortedAttrs.asMap().entries.map((me) {
+                            final v = me.value.value;
+                            final sign = v >= 0 ? '+' : '';
+                            final isNeg = v < 0;
+                            return Padding(
+                              padding: EdgeInsets.only(top: me.key == 0 ? 0 : 4),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '$sign${formatValue(v)}',
+                                    style: TextStyle(
+                                      color: isNeg
+                                          ? const Color(0xFFC75A5A)
+                                          : const Color(0xFF2E9B62),
+                                      fontSize: 12.5,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Expanded(
+                                    child: Text(
+                                      getAttributeValue(me.value.key),
+                                      style: const TextStyle(
+                                        color: Color(0xFF3D4452),
+                                        fontSize: 12.5,
+                                        fontWeight: FontWeight.w700,
+                                        height: 1.2,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
               ),
             ),
           ],
-        ],
+        ),
       ),
     );
   }
@@ -1837,11 +2097,13 @@ class _SlotStatContribution {
   const _SlotStatContribution({
     required this.slotKey,
     required this.itemName,
+    required this.itemRarity,
     required this.attrs,
   });
 
   final String slotKey;
   final String itemName;
+  final String itemRarity;
   final Map<String, double> attrs;
 }
 
