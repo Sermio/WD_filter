@@ -26,6 +26,28 @@ import 'package:worldshift_assistant/models/spec_star_allocation.dart';
 import 'package:worldshift_assistant/widgets/race_spec_tree_panel.dart';
 import 'package:worldshift_assistant/widgets/resolved_mini_asset_image.dart';
 
+/// Sufijo en mapas de totales del builder: mismo stat en plano vs % no se suman en una sola línea.
+const _builderTotalsPctSuffix = '__pct';
+
+String _builderTotalsStorageKey(String baseKey, bool isPercent) {
+  final k = baseKey.trim().toLowerCase();
+  return isPercent ? '$k$_builderTotalsPctSuffix' : k;
+}
+
+String _builderTotalsBaseAttrKey(String storageKey) {
+  if (storageKey.endsWith(_builderTotalsPctSuffix)) {
+    return storageKey.substring(
+      0,
+      storageKey.length - _builderTotalsPctSuffix.length,
+    );
+  }
+  return storageKey;
+}
+
+String _builderTotalsAttrDisplayLabel(String storageKey) {
+  return getAttributeValue(_builderTotalsBaseAttrKey(storageKey));
+}
+
 /// Distinct from [null] so closing the sheet without choosing does not unequip.
 final Object _builderPickerUnequip = Object();
 
@@ -417,9 +439,10 @@ class _BuilderScreenState extends State<BuilderScreen> {
           if (parsed == null) {
             continue;
           }
-          sc.totalsItems[ae.key] = (sc.totalsItems[ae.key] ?? 0) + parsed.value;
+          final tk = _builderTotalsStorageKey(ae.key, parsed.isPercent);
+          sc.totalsItems[tk] = (sc.totalsItems[tk] ?? 0) + parsed.value;
           sc.itemPercentHints
-              .putIfAbsent(ae.key, _PercentHintAgg.new)
+              .putIfAbsent(tk, _PercentHintAgg.new)
               .add(parsed.isPercent);
           slotAttrs.update(
             ae.key,
@@ -470,10 +493,12 @@ class _BuilderScreenState extends State<BuilderScreen> {
             ),
           );
           for (final ae in row.attrs.entries) {
-            sc.totalsSkills[ae.key] =
-                (sc.totalsSkills[ae.key] ?? 0) + ae.value.value;
+            final tk =
+                _builderTotalsStorageKey(ae.key, ae.value.isPercent);
+            sc.totalsSkills[tk] =
+                (sc.totalsSkills[tk] ?? 0) + ae.value.value;
             sc.skillPercentHints
-                .putIfAbsent(ae.key, _PercentHintAgg.new)
+                .putIfAbsent(tk, _PercentHintAgg.new)
                 .add(ae.value.isPercent);
           }
         }
@@ -2764,7 +2789,7 @@ class _UnitTotalsCard extends StatelessWidget {
                                   const SizedBox(width: 6),
                                   Expanded(
                                     child: Text(
-                                      getAttributeValue(e.key),
+                                      _builderTotalsAttrDisplayLabel(e.key),
                                       style: const TextStyle(
                                         color: Color(0xFF3D4452),
                                         fontSize: 12.5,

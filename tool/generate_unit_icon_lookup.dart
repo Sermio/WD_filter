@@ -52,6 +52,7 @@ const _builderDisplayKeys = <String>[
   'Overseer',
   'Defiler',
   'PsiDetonator',
+  'AttackDrone',
 ];
 
 /// Sustituye id .dt cuando no coincide con la clave PascalCase compacta.

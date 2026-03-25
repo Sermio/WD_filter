@@ -3,7 +3,6 @@ import 'package:worldshift_assistant/screens/abilities_list_screen.dart';
 import 'package:worldshift_assistant/screens/builder_screen.dart';
 import 'package:worldshift_assistant/screens/card_list.dart';
 import 'package:worldshift_assistant/screens/units_list_screen.dart';
-import 'package:worldshift_assistant/screens/upload_info.dart';
 
 class HomeShell extends StatefulWidget {
   const HomeShell({super.key});
@@ -25,7 +24,6 @@ class _HomeShellState extends State<HomeShell> {
           UnitsListScreen(),
           AbilitiesListScreen(),
           BuilderScreen(),
-          UploadScreen(),
         ],
       ),
       bottomNavigationBar: NavigationBar(
@@ -51,11 +49,6 @@ class _HomeShellState extends State<HomeShell> {
             icon: Icon(Icons.build_outlined),
             selectedIcon: Icon(Icons.build),
             label: 'Builder',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.cloud_upload_outlined),
-            selectedIcon: Icon(Icons.cloud_upload),
-            label: 'Data',
           ),
         ],
       ),

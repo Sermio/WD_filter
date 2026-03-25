@@ -744,8 +744,8 @@ class _SelectActionChip extends StatelessWidget {
   }
 }
 
-/// Bottom-sheet body: same information as an expanded [ExpandableCard] (summary + [ItemDescription]).
-class ItemCatalogDetailSheetBody extends StatelessWidget {
+/// Bottom-sheet body: same information as an expanded [ExpandableCard] (summary + optional [ItemDescription]).
+class ItemCatalogDetailSheetBody extends StatefulWidget {
   const ItemCatalogDetailSheetBody({
     super.key,
     required this.name,
@@ -766,12 +766,21 @@ class ItemCatalogDetailSheetBody extends StatelessWidget {
   final String primaryActionLabel;
 
   @override
+  State<ItemCatalogDetailSheetBody> createState() =>
+      _ItemCatalogDetailSheetBodyState();
+}
+
+class _ItemCatalogDetailSheetBodyState extends State<ItemCatalogDetailSheetBody> {
+  bool _ingamePreviewOpen = false;
+
+  @override
   Widget build(BuildContext context) {
+    final itemData = widget.itemData;
     final rarityColor = getRarityColor(itemData['rarity']);
     final readableAccent = _itemCatalogReadableAccent(rarityColor);
     final previewGroups = _itemCatalogPreviewGroups(itemData['attributes']);
     final affectedUnits = _itemCatalogAffectedUnits(itemData['attributes']);
-    final sourceText = _itemCatalogSourceText(map, itemData);
+    final sourceText = _itemCatalogSourceText(widget.map, itemData);
     final hasSourceText = sourceText.isNotEmpty;
 
     return Column(
@@ -791,7 +800,7 @@ class ItemCatalogDetailSheetBody extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    name,
+                    widget.name,
                     style: TextStyle(
                       color: readableAccent,
                       fontWeight: FontWeight.w800,
@@ -800,11 +809,11 @@ class ItemCatalogDetailSheetBody extends StatelessWidget {
                       letterSpacing: 0.2,
                     ),
                   ),
-                  if (onPrimaryAction != null) ...[
+                  if (widget.onPrimaryAction != null) ...[
                     const SizedBox(height: 10),
                     _SelectActionChip(
-                      label: primaryActionLabel,
-                      onPressed: onPrimaryAction!,
+                      label: widget.primaryActionLabel,
+                      onPressed: widget.onPrimaryAction!,
                     ),
                   ],
                   const SizedBox(height: 8),
@@ -813,7 +822,7 @@ class ItemCatalogDetailSheetBody extends StatelessWidget {
                     runSpacing: 8,
                     children: [
                       _InfoChip(
-                        label: rarityToString(rarity),
+                        label: rarityToString(widget.rarity),
                         color: rarityColor,
                         icon: Icons.stars_rounded,
                       ),
@@ -898,20 +907,55 @@ class ItemCatalogDetailSheetBody extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 16),
-        Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: Colors.grey.shade200),
-          ),
-          padding: const EdgeInsets.all(8),
-          child: ItemDescription(
-            itemName: itemData['name'],
-            rarity: itemData['rarity'],
-            slot: itemData['slot'],
-            obtainedFrom: obtainedFrom,
-            attributes: itemData['attributes'],
+        Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () =>
+                setState(() => _ingamePreviewOpen = !_ingamePreviewOpen),
+            borderRadius: BorderRadius.circular(12),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'In-game preview',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 14,
+                        color: readableAccent.withValues(alpha: 0.95),
+                      ),
+                    ),
+                  ),
+                  Icon(
+                    _ingamePreviewOpen
+                        ? Icons.expand_less_rounded
+                        : Icons.expand_more_rounded,
+                    color: const Color(0xFF64748B),
+                    size: 26,
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
+        if (_ingamePreviewOpen) ...[
+          const SizedBox(height: 4),
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: Colors.grey.shade200),
+            ),
+            padding: const EdgeInsets.all(8),
+            child: ItemDescription(
+              itemName: itemData['name'] as String,
+              rarity: itemData['rarity'] as String,
+              slot: itemData['slot'] as String,
+              obtainedFrom: widget.obtainedFrom,
+              attributes: itemData['attributes'] as Map<String, dynamic>,
+            ),
+          ),
+        ],
       ],
     );
   }

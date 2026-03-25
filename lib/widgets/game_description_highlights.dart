@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:worldshift_assistant/data/data.dart';
+import 'package:worldshift_assistant/utils/game_text_repair.dart';
 
 /// Resalta tokens `[stat:…]`, `[stats.…]`, etc. y los sustituye por etiquetas legibles.
 class GameDescriptionText extends StatelessWidget {
@@ -23,32 +24,14 @@ class GameDescriptionText extends StatelessWidget {
 
   /// Quita marcas Unity/TextMeshPro/HTML que a veces vienen literales en los `.dt`
   /// (`<color=tooltip.lite>`, `</>`, `<b>`, etc.).
-  /// Fixes U+FFFD / `ï¿½` mojibake where *_specs.dt lost a typographic apostrophe.
-  static String repairCorruptedApostrophesInGameText(String s) {
-    if (s.isEmpty) {
-      return s;
-    }
-    const mojibake = '\u00EF\u00BF\u00BD';
-    var o = s.contains(mojibake) ? s.replaceAll(mojibake, '\uFFFD') : s;
-    if (!o.contains('\uFFFD')) {
-      return o;
-    }
-    o = o.replaceAllMapped(
-      RegExp(r'([A-Za-z]+)\uFFFDs(?=[\s\.,;:!?\)\]]|$)'),
-      (m) => "${m[1]}'s",
-    );
-    o = o.replaceAllMapped(
-      RegExp(r'([A-Za-z]+)\uFFFD(?=\s)'),
-      (m) => "${m[1]}' ",
-    );
-    return o;
-  }
+  static String repairCorruptedApostrophesInGameText(String s) =>
+      repairGameTextEncodingArtifacts(s);
 
   static String stripGameUiMarkup(String raw) {
     if (raw.isEmpty) {
       return raw;
     }
-    var s = repairCorruptedApostrophesInGameText(raw);
+    var s = repairGameTextEncodingArtifacts(raw);
     s = s.replaceAll(RegExp(r'</>'), '');
     s = s.replaceAll(RegExp(r'</color>', caseSensitive: false), '');
     s = s.replaceAll(RegExp(r'<color[^>]*>', caseSensitive: false), '');

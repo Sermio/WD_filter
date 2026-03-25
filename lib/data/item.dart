@@ -1,3 +1,5 @@
+import 'package:worldshift_assistant/utils/game_text_repair.dart';
+
 class Item {
   final int id;
   final int lootTable;
@@ -39,9 +41,10 @@ class Item {
     return Item(
       id: json['id'] as int,
       lootTable: json['lootTable'] as int,
-      map: json['map'] as String,
-      obtainedFrom: json['obtainedFrom'] as String,
-      name: json['name'] as String,
+      map: repairGameTextEncodingArtifacts(json['map'] as String),
+      obtainedFrom:
+          repairGameTextEncodingArtifacts(json['obtainedFrom'] as String),
+      name: repairGameTextEncodingArtifacts(json['name'] as String),
       rarity: json['rarity'] as String,
       race: json['race'] as String,
       slot: json['slot'] as String,
@@ -49,7 +52,9 @@ class Item {
           Map<String, Map<String, String>>.from(json['attributes'] ?? {}),
     );
   }
-}final List<String> unitsFlat = [
+}
+
+final List<String> unitsFlat = [
   'Commander',
   'Assassin',
   'Constructor',
