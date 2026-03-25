@@ -79,7 +79,8 @@ void main(List<String> args) {
       stderr.writeln('Aviso: falta ${dt.path}; se omite ${race.jsonKey}.');
       continue;
     }
-    final text = _readLatinFile(dt);
+    var text = _readSpecsDtFile(dt);
+    text = _repairSpecApostrophePlaceholders(text);
     final parsedByRepo = <String, _ParsedSpec>{};
     for (final block in _itemBlocks(text)) {
       final repo = _firstMatch(block, RegExp(r'^\s*repo\s*=\s*(\w+)', multiLine: true));
@@ -88,12 +89,14 @@ void main(List<String> args) {
       }
       final title = _firstMatch(block, RegExp(r'^\s*name\s*=\s*"([^"]*)"', multiLine: true))?.trim();
       final description = _extractDescription(block);
+      final targets = _extractTargets(block);
       final rankCount = _inferRanks(block);
       final snippets = _rankStatSnippets(block, rankCount);
       parsedByRepo[repo] = _ParsedSpec(
         repo: repo,
         title: title ?? repo,
         description: description,
+        targets: targets,
         rankCount: rankCount,
         rankStatSnippets: snippets,
       );
@@ -155,6 +158,7 @@ class _ParsedSpec {
     required this.repo,
     required this.title,
     required this.description,
+    required this.targets,
     required this.rankCount,
     required this.rankStatSnippets,
   });
@@ -162,6 +166,8 @@ class _ParsedSpec {
   final String repo;
   final String title;
   final String description;
+  /// Unit class ids from `target { ... }` in the `.dt` (overrides JSON replaces when set).
+  final List<String> targets;
   final int rankCount;
   final List<String> rankStatSnippets;
 }
@@ -240,7 +246,13 @@ class _OverridesFile {
           rankBonuses = rb.whereType<String>().toList();
         }
         final desc = v['descriptionOverride'] is String ? v['descriptionOverride'] as String : null;
-        nodes[repo] = _NodeOverride(targets: targets, rankBonuses: rankBonuses, descriptionOverride: desc);
+        final titleOv = v['titleOverride'] is String ? v['titleOverride'] as String : null;
+        nodes[repo] = _NodeOverride(
+          targets: targets,
+          rankBonuses: rankBonuses,
+          descriptionOverride: desc,
+          titleOverride: titleOv,
+        );
       }
     }
     return _RaceOverrides(
@@ -274,11 +286,17 @@ class _RaceOverrides {
 }
 
 class _NodeOverride {
-  const _NodeOverride({this.targets, this.rankBonuses, this.descriptionOverride});
+  const _NodeOverride({
+    this.targets,
+    this.rankBonuses,
+    this.descriptionOverride,
+    this.titleOverride,
+  });
 
   final List<String>? targets;
   final List<String>? rankBonuses;
   final String? descriptionOverride;
+  final String? titleOverride;
 }
 
 class _TechSlot {
@@ -322,7 +340,31 @@ File? _resolveTechgrid(String? worldshiftArg) {
   return null;
 }
 
-String _readLatinFile(File f) => latin1.decode(f.readAsBytesSync(), allowInvalid: true);
+/// *specs.dt are UTF-8 in current Worldshift trees; Latin-1 was wrong and produced `ï¿½` mojibake.
+String _readSpecsDtFile(File f) {
+  final bytes = f.readAsBytesSync();
+  try {
+    return utf8.decode(bytes, allowMalformed: false);
+  } catch (_) {
+    return latin1.decode(bytes, allowInvalid: true);
+  }
+}
+
+/// U+FFFD in shipped *_specs.dt where a typographic apostrophe was lost.
+String _repairSpecApostrophePlaceholders(String s) {
+  if (!s.contains('\uFFFD')) {
+    return s;
+  }
+  var o = s.replaceAllMapped(
+    RegExp(r'([A-Za-z]+)\uFFFDs(?=[\s\.,;:!?\)\]]|$)'),
+    (m) => "${m[1]}'s",
+  );
+  o = o.replaceAllMapped(
+    RegExp(r'([A-Za-z]+)\uFFFD(?=\s)'),
+    (m) => "${m[1]}' ",
+  );
+  return o;
+}
 
 Iterable<String> _itemBlocks(String text) sync* {
   final re = RegExp(r'item\s+\w+\s*:\s*\w+SpecItem\s*\{', caseSensitive: false);
@@ -359,7 +401,9 @@ int? _closingBrace(String s, int openBrace) {
 String? _firstMatch(String block, RegExp re) => re.firstMatch(block)?.group(1);
 
 String _extractDescription(String block) {
+  // Worldshift *specs.dt uses `text = "..."` for the player-facing blurb.
   for (final re in [
+    RegExp(r'^\s*text\s*=\s*"((?:[^"\\]|\\.)*)"', multiLine: true),
     RegExp(r'^\s*description\s*=\s*"((?:[^"\\]|\\.)*)"', multiLine: true),
     RegExp(r'^\s*desc\s*=\s*"((?:[^"\\]|\\.)*)"', multiLine: true),
     RegExp(r'^\s*info\s*=\s*"((?:[^"\\]|\\.)*)"', multiLine: true),
@@ -370,6 +414,40 @@ String _extractDescription(String block) {
     }
   }
   return '';
+}
+
+/// `target { Technician ... }` blocks in *specs.dt`.
+List<String> _extractTargets(String block) {
+  final head = RegExp(r'\btarget\s*\{', caseSensitive: false).firstMatch(block);
+  if (head == null) {
+    return const [];
+  }
+  final open = block.indexOf('{', head.start);
+  if (open < 0) {
+    return const [];
+  }
+  final close = _closingBrace(block, open);
+  if (close == null) {
+    return const [];
+  }
+  final body = block.substring(open + 1, close);
+  final out = <String>[];
+  for (final rawLine in body.split('\n')) {
+    var t = rawLine.trim();
+    if (t.isEmpty || t.startsWith('--')) {
+      continue;
+    }
+    if (t.endsWith(',')) {
+      t = t.substring(0, t.length - 1).trim();
+    }
+    if (t.isEmpty) {
+      continue;
+    }
+    if (RegExp(r'^\w+$').hasMatch(t)) {
+      out.add(t);
+    }
+  }
+  return out;
 }
 
 String _unescapeLuaString(String s) =>
@@ -605,10 +683,11 @@ void _writeGeneratedPart({
         exit(1);
       }
       final node = ro.nodes[repo];
-      final targets = node?.targets ?? const <String>[];
+      final targets = node?.targets ?? p.targets;
       final description = node?.descriptionOverride ?? p.description;
+      final title = node?.titleOverride ?? p.title;
       final rankBonuses = _mergeRankBonuses(
-        title: p.title,
+        title: title,
         rankCount: p.rankCount,
         snippets: p.rankStatSnippets,
         override: node?.rankBonuses,
@@ -628,7 +707,7 @@ void _writeGeneratedPart({
 
       buf.writeln('    ${race.typedefName}(');
       buf.writeln("      repo: ${_dartStr(repo)},");
-      buf.writeln("      title: ${_dartStr(p.title)},");
+      buf.writeln("      title: ${_dartStr(title)},");
       buf.writeln('      description: ${_dartStr(description)},');
       buf.writeln('      targets: ${_dartStringList(targets)},');
       buf.writeln('      iconRow: $iconRow,');

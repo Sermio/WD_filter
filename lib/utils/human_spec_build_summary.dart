@@ -1,4 +1,5 @@
 import 'package:worldshift_assistant/data/human_skill_tree_data.dart';
+import 'package:worldshift_assistant/data/spec_tree_node.dart';
 
 final _snippetPairRe =
     RegExp(r'([A-Za-z0-9_]+)\s*=\s*([^,]+)', caseSensitive: false);
@@ -11,7 +12,7 @@ class NumericAttrValue {
   final bool isPercent;
 }
 
-/// Pares `clave = valor` de un tramo de [HumanSpecTreeNode.rankStatSnippets].
+/// Pares `clave = valor` de un tramo de [SpecTreeNode.rankStatSnippets].
 /// Claves en minúsculas; [NumericAttrValue.isPercent] si el fragmento de valor contiene `%`.
 Map<String, NumericAttrValue> parseHumanSpecRankSnippet(String snippet) {
   final out = <String, NumericAttrValue>{};
@@ -58,9 +59,10 @@ class HumanSpecUnitContribution {
   final int maxRanks;
 }
 
-/// Lista de nodos que aportan stats a cada unidad (misma entrada repetida en cada [HumanSpecTreeNode.targets]).
-Map<String, List<HumanSpecUnitContribution>> humanSpecContributionsDetailed(
+/// Lista de nodos que aportan stats a cada unidad (misma entrada repetida en cada [SpecTreeNode.targets]).
+Map<String, List<HumanSpecUnitContribution>> specTreeContributionsDetailed(
   Map<String, int> specByRepo,
+  SpecTreeNode? Function(String repo) nodeForRepo,
 ) {
   final out = <String, List<HumanSpecUnitContribution>>{};
   for (final e in specByRepo.entries) {
@@ -68,7 +70,7 @@ Map<String, List<HumanSpecUnitContribution>> humanSpecContributionsDetailed(
     if (invested <= 0) {
       continue;
     }
-    final node = humanSpecTreeByRepo[e.key];
+    final node = nodeForRepo(e.key);
     if (node == null) {
       continue;
     }
@@ -92,4 +94,13 @@ Map<String, List<HumanSpecUnitContribution>> humanSpecContributionsDetailed(
     }
   }
   return out;
+}
+
+Map<String, List<HumanSpecUnitContribution>> humanSpecContributionsDetailed(
+  Map<String, int> specByRepo,
+) {
+  return specTreeContributionsDetailed(
+    specByRepo,
+    (repo) => humanSpecTreeByRepo[repo],
+  );
 }

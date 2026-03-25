@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:worldshift_assistant/data/human_skill_tree_data.dart';
+import 'package:worldshift_assistant/data/spec_tree_node.dart';
 import 'package:worldshift_assistant/widgets/game_description_highlights.dart';
 
-/// Replaces `[stats.xxx]` / `[stat:xxx]` with values from [HumanSpecTreeNode.rankStatSnippets]:
+/// Replaces `[stats.xxx]` / `[stat.xxx]` / `[stat:xxx]` with values from [SpecTreeNode.rankStatSnippets]:
 /// with ranks invested, the current value in **green** and the rest in gray parentheses;
 /// with 0 ranks, only the possible values in one parenthesis.
 ///
@@ -15,12 +15,16 @@ class SpecNodeEffectTooltip extends StatelessWidget {
     required this.baseStyle,
   });
 
-  final HumanSpecTreeNode node;
+  final SpecTreeNode node;
   final int investedRanks;
   final TextStyle baseStyle;
 
-  static final _tokenRe =
-      RegExp(r'\[stats\.([a-zA-Z0-9_]+)\]|\[stat:([a-zA-Z0-9_]+)\]');
+  static final _tokenRe = RegExp(
+    r'\[stats\.([a-zA-Z0-9_]+)\]|\[stat\.([a-zA-Z0-9_]+)\]|\[stat:([a-zA-Z0-9_]+)\]',
+  );
+
+  static String _keyFromTokenMatch(RegExpMatch m) =>
+      m.group(1) ?? m.group(2) ?? m.group(3)!;
 
   static String? _valueForKey(String snippet, String key) {
     if (snippet.isEmpty) {
@@ -60,11 +64,11 @@ class SpecNodeEffectTooltip extends StatelessWidget {
   }
 
   static _ParsedSingleStat? _tryParseSingleSlot(
-    HumanSpecTreeNode node,
+    SpecTreeNode node,
     String desc,
     RegExpMatch m,
   ) {
-    final key = (m.group(1) ?? m.group(2))!;
+    final key = _keyFromTokenMatch(m);
     final perRank = <String>[];
     for (var i = 0; i < node.maxRanks; i++) {
       final sn =
@@ -86,13 +90,13 @@ class SpecNodeEffectTooltip extends StatelessWidget {
   }
 
   static _ParsedMultiStat? _tryParseMulti(
-    HumanSpecTreeNode node,
+    SpecTreeNode node,
     String desc,
     List<RegExpMatch> matches,
   ) {
     final valuesPerSlot = <List<String>>[];
     for (final m in matches) {
-      final key = (m.group(1) ?? m.group(2))!;
+      final key = _keyFromTokenMatch(m);
       final perRank = <String>[];
       for (var i = 0; i < node.maxRanks; i++) {
         final sn =

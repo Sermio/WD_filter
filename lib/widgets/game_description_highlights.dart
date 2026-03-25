@@ -23,11 +23,32 @@ class GameDescriptionText extends StatelessWidget {
 
   /// Quita marcas Unity/TextMeshPro/HTML que a veces vienen literales en los `.dt`
   /// (`<color=tooltip.lite>`, `</>`, `<b>`, etc.).
+  /// Fixes U+FFFD / `ï¿½` mojibake where *_specs.dt lost a typographic apostrophe.
+  static String repairCorruptedApostrophesInGameText(String s) {
+    if (s.isEmpty) {
+      return s;
+    }
+    const mojibake = '\u00EF\u00BF\u00BD';
+    var o = s.contains(mojibake) ? s.replaceAll(mojibake, '\uFFFD') : s;
+    if (!o.contains('\uFFFD')) {
+      return o;
+    }
+    o = o.replaceAllMapped(
+      RegExp(r'([A-Za-z]+)\uFFFDs(?=[\s\.,;:!?\)\]]|$)'),
+      (m) => "${m[1]}'s",
+    );
+    o = o.replaceAllMapped(
+      RegExp(r'([A-Za-z]+)\uFFFD(?=\s)'),
+      (m) => "${m[1]}' ",
+    );
+    return o;
+  }
+
   static String stripGameUiMarkup(String raw) {
     if (raw.isEmpty) {
       return raw;
     }
-    var s = raw;
+    var s = repairCorruptedApostrophesInGameText(raw);
     s = s.replaceAll(RegExp(r'</>'), '');
     s = s.replaceAll(RegExp(r'</color>', caseSensitive: false), '');
     s = s.replaceAll(RegExp(r'<color[^>]*>', caseSensitive: false), '');
@@ -67,6 +88,175 @@ class GameDescriptionText extends StatelessWidget {
     return key.replaceAll('_', ' ');
   }
 
+  static bool _specStatKeyIsDuration(String key) =>
+      key.toLowerCase().contains('duration');
+
+  /// Game `.dt` often omits `%` on chance stats (e.g. `crit_chance = 5`).
+  static bool _specStatKeyLikelyPercent(String key) {
+    final k = key.toLowerCase();
+    if (k.contains('chance')) {
+      return true;
+    }
+    if (k == 'motivation' || k == 'elusion' || k == 'bandage_crit') {
+      return true;
+    }
+    return false;
+  }
+
+  static bool _looksLikePlainNumericToken(String s) {
+    final t = s.trim();
+    return t.isNotEmpty && RegExp(r'^-?\d+(\.\d+)?$').hasMatch(t);
+  }
+
+  static String _durationNumberWithUnit(String nStr) {
+    final t = nStr.trim();
+    final n = num.tryParse(t);
+    if (n == null) {
+      return t;
+    }
+    if (n == 1) {
+      return '$t second';
+    }
+    return '$t seconds';
+  }
+
+  /// Adds `%` to numeric chance values; adds `second(s)` for duration stats when missing.
+  static String formatSpecRankStatValueForDisplay(String key, String rawValue) {
+    var v = rawValue.trim();
+    if (v.isEmpty) {
+      return v;
+    }
+
+    if (_specStatKeyIsDuration(key)) {
+      if (RegExp(r'second', caseSensitive: false).hasMatch(v)) {
+        return v;
+      }
+      if (v.contains('/')) {
+        final parts = v
+            .split('/')
+            .map((e) => e.trim())
+            .where((e) => e.isNotEmpty)
+            .toList();
+        if (parts.isNotEmpty && parts.every(_looksLikePlainNumericToken)) {
+          return parts.map(_durationNumberWithUnit).join(' / ');
+        }
+        return '$v seconds';
+      }
+      if (_looksLikePlainNumericToken(v)) {
+        return _durationNumberWithUnit(v);
+      }
+      return v;
+    }
+
+    if (v.contains('%') || !_specStatKeyLikelyPercent(key)) {
+      return v;
+    }
+    final parts = v
+        .split('/')
+        .map((e) => e.trim())
+        .where((e) => e.isNotEmpty)
+        .toList();
+    if (parts.isEmpty || !parts.every(_looksLikePlainNumericToken)) {
+      return v;
+    }
+    return parts.map((p) => '$p%').join('/');
+  }
+
+  static const _specRankAcronyms = <String>{
+    'hp',
+    'mp',
+    'xp',
+    'npc',
+    'ai',
+    'ui',
+    'id',
+    'aoe',
+    'pvp',
+    'pve',
+  };
+
+  static const _specRankMinorWords = <String>{
+    'a',
+    'an',
+    'the',
+    'and',
+    'or',
+    'to',
+    'of',
+    'in',
+    'on',
+    'for',
+    'from',
+    'with',
+    'by',
+    'as',
+    'at',
+  };
+
+  static bool _isSpecRankMinorWord(String lower) =>
+      _specRankMinorWords.contains(lower);
+
+  /// Title-case alphabetic runs; keeps acronyms (HP); small words lower mid-clause.
+  static String _titleCaseSpecRankClause(String clause) {
+    var firstWord = true;
+    return clause.replaceAllMapped(
+      RegExp(r"[A-Za-z]+(?:'[A-Za-z]+)?"),
+      (m) {
+        final w = m[0]!;
+        final lower = w.toLowerCase();
+        if (_specRankAcronyms.contains(lower)) {
+          firstWord = false;
+          return lower.toUpperCase();
+        }
+        late final String out;
+        if (firstWord) {
+          out = '${w[0].toUpperCase()}${w.substring(1).toLowerCase()}';
+          firstWord = false;
+        } else if (_isSpecRankMinorWord(lower)) {
+          out = lower;
+        } else {
+          out = '${w[0].toUpperCase()}${w.substring(1).toLowerCase()}';
+        }
+        return out;
+      },
+    );
+  }
+
+  /// Prose lines from overrides: `a, b, c` → `A; B; C` with consistent separators.
+  static String _formatSpecRankProseLine(String line) {
+    final clauses = line.split(RegExp(r',\s*'));
+    if (clauses.length == 1) {
+      return _titleCaseSpecRankClause(clauses.single.trim());
+    }
+    return clauses
+        .map((c) => c.trim())
+        .where((c) => c.isNotEmpty)
+        .map(_titleCaseSpecRankClause)
+        .join('; ');
+  }
+
+  /// DT `key = value` chunks → `Label: value`; prose (e.g. human overrides) → title case + `; ` between stats.
+  static String formatSpecRankBonusLineForDisplay(String line) {
+    var trimmed = line.trim();
+    if (trimmed.isEmpty) {
+      return trimmed;
+    }
+    trimmed = trimmed.replaceAll('\u2212', '-');
+
+    final chunks = trimmed.split(RegExp(r',\s*'));
+    final out = <String>[];
+    for (final chunk in chunks) {
+      final m = RegExp(r'^(\w+)\s*=\s*(.+)$').firstMatch(chunk.trim());
+      if (m == null) {
+        return _formatSpecRankProseLine(trimmed);
+      }
+      final key = m.group(1)!;
+      final val = formatSpecRankStatValueForDisplay(key, m.group(2)!);
+      out.add('${statLabel(key)}: $val');
+    }
+    return out.join('; ');
+  }
+
   static String humanizeDynamicToken(String token) {
     if (token.length < 3 || !token.startsWith('[') || !token.endsWith(']')) {
       return token;
@@ -77,10 +267,13 @@ class GameDescriptionText extends StatelessWidget {
     }
 
     String? rawKey;
-    if (inner.startsWith('stat:')) {
-      rawKey = inner.substring(5);
-    } else if (inner.startsWith('stats.')) {
+    // `stats.` before `stat.` — otherwise "stats.foo" would match the shorter prefix.
+    if (inner.startsWith('stats.')) {
       rawKey = inner.substring(6);
+    } else if (inner.startsWith('stat.')) {
+      rawKey = inner.substring(5);
+    } else if (inner.startsWith('stat:')) {
+      rawKey = inner.substring(5);
     } else if (inner.startsWith('var:')) {
       rawKey = inner.substring(4);
     }

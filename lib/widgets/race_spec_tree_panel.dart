@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:worldshift_assistant/data/alien_skill_tree_data.dart';
 import 'package:worldshift_assistant/data/human_skill_tree_data.dart';
+import 'package:worldshift_assistant/data/mutant_skill_tree_data.dart';
+import 'package:worldshift_assistant/data/spec_tree_node.dart';
 import 'package:worldshift_assistant/models/spec_star_allocation.dart';
 import 'package:worldshift_assistant/utils/unit_icon_candidates.dart';
 import 'package:worldshift_assistant/widgets/catalog_info_eye_button.dart';
 import 'package:worldshift_assistant/widgets/resolved_mini_asset_image.dart';
+import 'package:worldshift_assistant/widgets/game_description_highlights.dart';
 import 'package:worldshift_assistant/widgets/spec_node_effect_tooltip.dart';
 
-/// Specialization tree (2-3-2-3 visual layout). Data: game `*specs.dt`.
+/// Specialization tree (visual layout from generated `*VisualRowRepos`). Data: game `*specs.dt`.
 class RaceSpecTreePanel extends StatelessWidget {
-  RaceSpecTreePanel.humans({
+  // ignore: prefer_const_constructors_in_immutables — node maps are built in factories, not const.
+  RaceSpecTreePanel._({
     super.key,
+    required this.visualRowRepos,
+    required this.nodesByRepo,
     required this.hudTitleColor,
     required this.hudHintColor,
     required this.hudChipBg,
@@ -19,11 +26,94 @@ class RaceSpecTreePanel extends StatelessWidget {
     this.allocatedByRepo = const {},
     this.onSpecAllocationChanged,
     this.starBudget = kSpecStarBudgetPerRace,
-  })  : visualRowRepos = humanSpecTreeVisualRowRepos,
-        nodesByRepo = humanSpecTreeByRepo;
+  });
+
+  factory RaceSpecTreePanel.humans({
+    Key? key,
+    required Color hudTitleColor,
+    required Color hudHintColor,
+    required Color hudChipBg,
+    required Color hudInkSplash,
+    required Color hudInkHighlight,
+    required Color hudPanelBorder,
+    Map<String, int> allocatedByRepo = const {},
+    void Function(Map<String, int> nextByRepo)? onSpecAllocationChanged,
+    int starBudget = kSpecStarBudgetPerRace,
+  }) {
+    return RaceSpecTreePanel._(
+      key: key,
+      visualRowRepos: humanSpecTreeVisualRowRepos,
+      nodesByRepo: Map<String, SpecTreeNode>.from(humanSpecTreeByRepo),
+      hudTitleColor: hudTitleColor,
+      hudHintColor: hudHintColor,
+      hudChipBg: hudChipBg,
+      hudInkSplash: hudInkSplash,
+      hudInkHighlight: hudInkHighlight,
+      hudPanelBorder: hudPanelBorder,
+      allocatedByRepo: allocatedByRepo,
+      onSpecAllocationChanged: onSpecAllocationChanged,
+      starBudget: starBudget,
+    );
+  }
+
+  factory RaceSpecTreePanel.mutants({
+    Key? key,
+    required Color hudTitleColor,
+    required Color hudHintColor,
+    required Color hudChipBg,
+    required Color hudInkSplash,
+    required Color hudInkHighlight,
+    required Color hudPanelBorder,
+    Map<String, int> allocatedByRepo = const {},
+    void Function(Map<String, int> nextByRepo)? onSpecAllocationChanged,
+    int starBudget = kSpecStarBudgetPerRace,
+  }) {
+    return RaceSpecTreePanel._(
+      key: key,
+      visualRowRepos: mutantSpecTreeVisualRowRepos,
+      nodesByRepo: Map<String, SpecTreeNode>.from(mutantSpecTreeByRepo),
+      hudTitleColor: hudTitleColor,
+      hudHintColor: hudHintColor,
+      hudChipBg: hudChipBg,
+      hudInkSplash: hudInkSplash,
+      hudInkHighlight: hudInkHighlight,
+      hudPanelBorder: hudPanelBorder,
+      allocatedByRepo: allocatedByRepo,
+      onSpecAllocationChanged: onSpecAllocationChanged,
+      starBudget: starBudget,
+    );
+  }
+
+  factory RaceSpecTreePanel.aliens({
+    Key? key,
+    required Color hudTitleColor,
+    required Color hudHintColor,
+    required Color hudChipBg,
+    required Color hudInkSplash,
+    required Color hudInkHighlight,
+    required Color hudPanelBorder,
+    Map<String, int> allocatedByRepo = const {},
+    void Function(Map<String, int> nextByRepo)? onSpecAllocationChanged,
+    int starBudget = kSpecStarBudgetPerRace,
+  }) {
+    return RaceSpecTreePanel._(
+      key: key,
+      visualRowRepos: alienSpecTreeVisualRowRepos,
+      nodesByRepo: Map<String, SpecTreeNode>.from(alienSpecTreeByRepo),
+      hudTitleColor: hudTitleColor,
+      hudHintColor: hudHintColor,
+      hudChipBg: hudChipBg,
+      hudInkSplash: hudInkSplash,
+      hudInkHighlight: hudInkHighlight,
+      hudPanelBorder: hudPanelBorder,
+      allocatedByRepo: allocatedByRepo,
+      onSpecAllocationChanged: onSpecAllocationChanged,
+      starBudget: starBudget,
+    );
+  }
 
   final List<List<String>> visualRowRepos;
-  final Map<String, HumanSpecTreeNode> nodesByRepo;
+  final Map<String, SpecTreeNode> nodesByRepo;
 
   final Color hudTitleColor;
   final Color hudHintColor;
@@ -43,9 +133,9 @@ class RaceSpecTreePanel extends StatelessWidget {
   static const double _hGap = 1;
   static const double _vGap = 12;
 
-  HumanSpecTreeNode _n(String repo) => nodesByRepo[repo]!;
+  SpecTreeNode _n(String repo) => nodesByRepo[repo]!;
 
-  void _tryQuickAddStar(BuildContext context, HumanSpecTreeNode node) {
+  void _tryQuickAddStar(BuildContext context, SpecTreeNode node) {
     if (onSpecAllocationChanged == null) {
       return;
     }
@@ -80,7 +170,7 @@ class RaceSpecTreePanel extends StatelessWidget {
     onSpecAllocationChanged!(Map<String, int>.from(m));
   }
 
-  void _openDetail(BuildContext context, HumanSpecTreeNode node) {
+  void _openDetail(BuildContext context, SpecTreeNode node) {
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -492,6 +582,66 @@ class _SpecDeltaButton extends StatelessWidget {
   }
 }
 
+/// One rank line: single paragraph, or a vertical list when several stats (`;`-separated).
+class _SpecPerRankBonusList extends StatelessWidget {
+  const _SpecPerRankBonusList({required this.rawLine});
+
+  final String rawLine;
+
+  @override
+  Widget build(BuildContext context) {
+    final formatted =
+        GameDescriptionText.formatSpecRankBonusLineForDisplay(rawLine);
+    final style = _SpecDetailSheetTheme.descriptionStyle;
+    final segments = formatted
+        .split(';')
+        .map((s) => s.trim())
+        .where((s) => s.isNotEmpty)
+        .toList();
+    if (segments.isEmpty) {
+      return const SizedBox.shrink();
+    }
+    if (segments.length == 1) {
+      return GameDescriptionText(
+        segments.single,
+        baseStyle: style,
+        compact: true,
+      );
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (var i = 0; i < segments.length; i++) ...[
+          if (i > 0) const SizedBox(height: 6),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 2, right: 8),
+                child: Text(
+                  '\u2022',
+                  style: style.copyWith(
+                    color: const Color(0xFF64748B),
+                    fontWeight: FontWeight.w800,
+                    height: 1.25,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: GameDescriptionText(
+                  segments[i],
+                  baseStyle: style,
+                  compact: true,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ],
+    );
+  }
+}
+
 class _SpecNodeDetailSheet extends StatefulWidget {
   const _SpecNodeDetailSheet({
     required this.node,
@@ -501,7 +651,7 @@ class _SpecNodeDetailSheet extends StatefulWidget {
     this.onCommit,
   });
 
-  final HumanSpecTreeNode node;
+  final SpecTreeNode node;
   final int starBudget;
   final bool readOnly;
   final Map<String, int> initialByRepo;
@@ -686,9 +836,8 @@ class _SpecNodeDetailSheetState extends State<_SpecNodeDetailSheet> {
                     ),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: Text(
-                        node.rankBonuses[i],
-                        style: _SpecDetailSheetTheme.descriptionStyle,
+                      child: _SpecPerRankBonusList(
+                        rawLine: node.rankBonuses[i],
                       ),
                     ),
                   ],
@@ -732,7 +881,7 @@ class _SpecTreeCell extends StatelessWidget {
     required this.onOpenDetail,
   });
 
-  final HumanSpecTreeNode node;
+  final SpecTreeNode node;
   final double frameSize;
   final int filledStars;
   final Color hudHintColor;

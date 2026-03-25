@@ -6,7 +6,10 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:worldshift_assistant/data/data.dart';
+import 'package:worldshift_assistant/data/alien_skill_tree_data.dart';
 import 'package:worldshift_assistant/data/human_skill_tree_data.dart';
+import 'package:worldshift_assistant/data/mutant_skill_tree_data.dart';
+import 'package:worldshift_assistant/data/spec_tree_node.dart';
 import 'package:worldshift_assistant/data/item.dart';
 import 'package:worldshift_assistant/data/worldshift_assets.dart';
 import 'package:worldshift_assistant/models/item_filters_model.dart';
@@ -25,6 +28,18 @@ import 'package:worldshift_assistant/widgets/resolved_mini_asset_image.dart';
 
 /// Distinct from [null] so closing the sheet without choosing does not unequip.
 final Object _builderPickerUnequip = Object();
+
+SpecTreeNode? _specTreeNodeForBuilderRace(String uiRace, String repo) {
+  switch (uiRace) {
+    case 'Humans':
+      return humanSpecTreeByRepo[repo];
+    case 'Tribes':
+      return mutantSpecTreeByRepo[repo];
+    case 'Aliens':
+      return alienSpecTreeByRepo[repo];
+  }
+  return null;
+}
 
 enum _BuilderPanelTab { items, skillTree }
 
@@ -277,9 +292,17 @@ class _BuilderScreenState extends State<BuilderScreen> {
   }
 
   Widget _buildSkillTreeForHud(_BuilderRaceHudTheme hud) {
+    final m = _specStarsByRace[_selectedRace]!;
+    void commit(Map<String, int> next) {
+      setState(() {
+        m.clear();
+        m.addAll(next);
+      });
+      unawaited(_persistBuilderState());
+    }
+    final allocated = Map<String, int>.from(m);
     switch (_selectedRace) {
       case 'Humans':
-        final m = _specStarsByRace['Humans']!;
         return RaceSpecTreePanel.humans(
           hudTitleColor: hud.titleColor,
           hudHintColor: hud.hintColor,
@@ -287,14 +310,30 @@ class _BuilderScreenState extends State<BuilderScreen> {
           hudInkSplash: hud.inkSplash,
           hudInkHighlight: hud.inkHighlight,
           hudPanelBorder: hud.panelBorder,
-          allocatedByRepo: Map<String, int>.from(m),
-          onSpecAllocationChanged: (next) {
-            setState(() {
-              m.clear();
-              m.addAll(next);
-            });
-            unawaited(_persistBuilderState());
-          },
+          allocatedByRepo: allocated,
+          onSpecAllocationChanged: commit,
+        );
+      case 'Tribes':
+        return RaceSpecTreePanel.mutants(
+          hudTitleColor: hud.titleColor,
+          hudHintColor: hud.hintColor,
+          hudChipBg: hud.chipBackground,
+          hudInkSplash: hud.inkSplash,
+          hudInkHighlight: hud.inkHighlight,
+          hudPanelBorder: hud.panelBorder,
+          allocatedByRepo: allocated,
+          onSpecAllocationChanged: commit,
+        );
+      case 'Aliens':
+        return RaceSpecTreePanel.aliens(
+          hudTitleColor: hud.titleColor,
+          hudHintColor: hud.hintColor,
+          hudChipBg: hud.chipBackground,
+          hudInkSplash: hud.inkSplash,
+          hudInkHighlight: hud.inkHighlight,
+          hudPanelBorder: hud.panelBorder,
+          allocatedByRepo: allocated,
+          onSpecAllocationChanged: commit,
         );
       default:
         return _EquipmentPanel.skillTreePlaceholder(hud);
@@ -329,10 +368,7 @@ class _BuilderScreenState extends State<BuilderScreen> {
   }
 
   Future<void> _confirmResetCurrentRaceSpecStars() async {
-    if (_selectedRace != 'Humans') {
-      return;
-    }
-    final m = _specStarsByRace['Humans']!;
+    final m = _specStarsByRace[_selectedRace]!;
     if (totalSpecStarsAllocated(m) == 0) {
       return;
     }
@@ -340,8 +376,8 @@ class _BuilderScreenState extends State<BuilderScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Reset skills'),
-        content: const Text(
-          'Clear all specialization skills (stars) for Humans? Other races are not affected.',
+        content: Text(
+          'Clear all specialization skills (stars) for $_selectedRace? Other races are not affected.',
         ),
         actions: [
           TextButton(
@@ -409,10 +445,15 @@ class _BuilderScreenState extends State<BuilderScreen> {
 
     final specStarsUsed =
         totalSpecStarsAllocated(_specStarsByRace[_selectedRace]!);
-    final specAppliesToSummary = _selectedRace == 'Humans';
+    final specAppliesToSummary =
+        _selectedRace == 'Humans' ||
+            _selectedRace == 'Tribes' ||
+            _selectedRace == 'Aliens';
     if (specAppliesToSummary) {
-      final detailed =
-          humanSpecContributionsDetailed(_specStarsByRace['Humans']!);
+      final detailed = specTreeContributionsDetailed(
+        _specStarsByRace[_selectedRace]!,
+        (repo) => _specTreeNodeForBuilderRace(_selectedRace, repo),
+      );
       for (final ue in detailed.entries) {
         final sc = byUnit.putIfAbsent(
           ue.key,
@@ -634,11 +675,10 @@ class _BuilderScreenState extends State<BuilderScreen> {
                     : 'Reset skills',
                 footerResetEnabled: _panelTab == _BuilderPanelTab.items
                     ? _equipForSelectedRace.isNotEmpty
-                    : (_selectedRace == 'Humans' &&
-                        totalSpecStarsAllocated(
-                              _specStarsByRace['Humans']!,
-                            ) >
-                            0),
+                    : totalSpecStarsAllocated(
+                          _specStarsByRace[_selectedRace]!,
+                        ) >
+                        0,
                 skillTreeForHud: _buildSkillTreeForHud,
               );
               final panelRight = _SummaryPanel(
@@ -2247,7 +2287,7 @@ Widget _buildStatSourceDetailCard({
     );
   }
 
-  final node = humanSpecTreeByRepo[c.specRepo!];
+  final node = _specTreeNodeForBuilderRace(sheetRaceLabel, c.specRepo!);
   final iconPath = node?.iconAsset;
   final accent = CatalogCardStripe.accentForRaceLabel(sheetRaceLabel);
   return Container(

@@ -119,6 +119,13 @@
     "visualRowRepos": null,
     "iconColOverride": {},
     "iconRowOverride": {},
-    "nodes": {}
+    "nodes": {
+      "ALIEN_SPECA1": {
+        "titleOverride": "Terrify"
+      },
+      "ALIEN_SPECB3": {
+        "descriptionOverride": "When a Tritech is killed there is [stats.bio_split_chance]% chance for 2-3 Hatchlings to spawn from its corpse."
+      }
+    }
   }
 }
