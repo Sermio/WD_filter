@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -1630,7 +1629,7 @@ class _EquipmentPanel extends StatelessWidget {
                 );
 
           final skillsBody = skillTreeForHud(hud);
-          final animatedBody = _BuilderTabAnimateDoBody(
+          final animatedBody = _BuilderTabLateralSlide(
             tab: panelTab,
             items: equipmentBody,
             skills: skillsBody,
@@ -1703,9 +1702,10 @@ class _EquipmentPanel extends StatelessWidget {
   }
 }
 
-/// Transición al cambiar pestaña (animate_do): [FadeInUp] suave al montar cada vista.
-class _BuilderTabAnimateDoBody extends StatelessWidget {
-  const _BuilderTabAnimateDoBody({
+/// Simula el cierre de un [PageView]: la vista anterior se desliza fuera y la nueva entra
+/// desde el lateral (animación al soltar / al pulsar chip; no sigue el dedo en tiempo real).
+class _BuilderTabLateralSlide extends StatefulWidget {
+  const _BuilderTabLateralSlide({
     required this.tab,
     required this.items,
     required this.skills,
@@ -1716,14 +1716,101 @@ class _BuilderTabAnimateDoBody extends StatelessWidget {
   final Widget skills;
 
   @override
+  State<_BuilderTabLateralSlide> createState() => _BuilderTabLateralSlideState();
+}
+
+class _BuilderTabLateralSlideState extends State<_BuilderTabLateralSlide>
+    with SingleTickerProviderStateMixin {
+  static const Duration _duration = Duration(milliseconds: 300);
+
+  late final AnimationController _controller;
+  _BuilderPanelTab _idleTab = _BuilderPanelTab.items;
+  _BuilderPanelTab? _fromTab;
+  _BuilderPanelTab? _toTab;
+  bool _forward = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _idleTab = widget.tab;
+    _controller = AnimationController(vsync: this, duration: _duration)
+      ..addStatusListener(_onAnimStatus);
+  }
+
+  void _onAnimStatus(AnimationStatus status) {
+    if (status != AnimationStatus.completed) {
+      return;
+    }
+    setState(() {
+      _idleTab = _toTab!;
+      _fromTab = null;
+      _toTab = null;
+    });
+    _controller.reset();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant _BuilderTabLateralSlide oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.tab != _idleTab && _fromTab == null && _toTab == null) {
+      setState(() {
+        _fromTab = _idleTab;
+        _toTab = widget.tab;
+        _forward = widget.tab.index > _idleTab.index;
+      });
+      _controller.forward();
+    }
+  }
+
+  Widget _bodyFor(_BuilderPanelTab t) =>
+      t == _BuilderPanelTab.items ? widget.items : widget.skills;
+
+  @override
   Widget build(BuildContext context) {
-    final child = tab == _BuilderPanelTab.items ? items : skills;
-    return FadeInUp(
-      key: ValueKey<_BuilderPanelTab>(tab),
-      duration: const Duration(milliseconds: 360),
-      curve: Curves.easeOutCubic,
-      from: 22,
-      child: child,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final w = constraints.maxWidth.clamp(1.0, double.infinity);
+
+        if (_fromTab == null && _toTab == null) {
+          return _bodyFor(_idleTab);
+        }
+
+        return AnimatedBuilder(
+          animation: _controller,
+          builder: (context, _) {
+            final tAnim =
+                Curves.easeOutCubic.transform(_controller.value);
+            final outTab = _fromTab!;
+            final inTab = _toTab!;
+            final ox = _forward ? -w * tAnim : w * tAnim;
+            final ix = _forward ? w * (1 - tAnim) : -w * (1 - tAnim);
+
+            return ClipRect(
+              clipBehavior: Clip.hardEdge,
+              child: Stack(
+                alignment: Alignment.topCenter,
+                clipBehavior: Clip.hardEdge,
+                children: [
+                  Transform.translate(
+                    offset: Offset(ox, 0),
+                    child: SizedBox(width: w, child: _bodyFor(outTab)),
+                  ),
+                  Transform.translate(
+                    offset: Offset(ix, 0),
+                    child: SizedBox(width: w, child: _bodyFor(inTab)),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }
