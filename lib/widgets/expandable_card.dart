@@ -253,7 +253,7 @@ class _ExpandableCardState extends State<ExpandableCard> {
           width: 1,
         ),
       ),
-      clipBehavior: Clip.antiAlias,
+      clipBehavior: Clip.hardEdge,
       child: IntrinsicHeight(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -281,45 +281,63 @@ class _ExpandableCardState extends State<ExpandableCard> {
                           _isExpanded = !_isExpanded;
                         });
                       },
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(14),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.1),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 4),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(
+                                  ItemCompleteFrame.cornerRadiusFor(62),
                                 ),
-                              ],
-                            ),
-                            child: ItemCompleteFrame(
-                              slot: widget.itemData['slot'],
-                              rarity: widget.rarity,
-                            ),
-                          ),
-                          const SizedBox(width: 14),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                clipBehavior: Clip.hardEdge,
+                                child: ItemCompleteFrame(
+                                  slot: widget.itemData['slot'],
+                                  rarity: widget.rarity,
+                                  lightInteriorFill: Colors.transparent,
+                                ),
+                              ),
+                              const SizedBox(width: 14),
+                              Expanded(
+                                child: Row(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.start,
                                   children: [
                                     Expanded(
-                                      child: Text(
-                                        widget.name,
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                          color: readableAccent,
-                                          fontWeight: FontWeight.w800,
-                                          fontSize: 17,
-                                          height: 1.1,
-                                          letterSpacing: 0.2,
-                                        ),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            widget.name,
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              color: readableAccent,
+                                              fontWeight: FontWeight.w800,
+                                              fontSize: 17,
+                                              height: 1.1,
+                                              letterSpacing: 0.2,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 1),
+                                          Text(
+                                            getSlotValueOrDescription(
+                                              widget.itemData['slot'],
+                                            ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.grey.shade700,
+                                              height: 1.1,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                     const SizedBox(width: 10),
@@ -342,103 +360,81 @@ class _ExpandableCardState extends State<ExpandableCard> {
                                     ),
                                   ],
                                 ),
-                                const SizedBox(height: 8),
-                                Wrap(
-                                  spacing: 8,
-                                  runSpacing: 8,
-                                  children: [
-                                    _InfoChip(
-                                      label: rarityToString(widget.rarity),
-                                      color: rarityColor,
-                                      icon: Icons.stars_rounded,
-                                    ),
-                                    _InfoChip(
-                                      label: getSlotValueOrDescription(
-                                        widget.itemData['slot'],
-                                      ),
+                              ),
+                            ],
+                          ),
+                          if (affectedUnits.isNotEmpty) ...[
+                            const SizedBox(height: 8),
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 8,
+                              children: affectedUnits
+                                  .map(
+                                    (unit) => _UnitInfoChip(
+                                      label: unit.label,
                                       color: const Color(0xFF5E6678),
-                                      icon: Icons.category_outlined,
+                                      assetCandidates: unit.assetCandidates,
                                     ),
-                                  ],
+                                  )
+                                  .toList(),
+                            ),
+                          ],
+                          if (hasSourceText) ...[
+                            const SizedBox(height: 10),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Icon(
+                                  Icons.place_outlined,
+                                  size: 16,
+                                  color: Colors.grey.shade600,
                                 ),
-                                if (affectedUnits.isNotEmpty) ...[
-                                  const SizedBox(height: 8),
-                                  Wrap(
-                                    spacing: 8,
-                                    runSpacing: 8,
-                                    children: affectedUnits
-                                        .map(
-                                          (unit) => _UnitInfoChip(
-                                            label: unit.label,
-                                            color: const Color(0xFF5E6678),
-                                            assetCandidates:
-                                                unit.assetCandidates,
-                                          ),
-                                        )
-                                        .toList(),
-                                  ),
-                                ],
-                                if (hasSourceText) ...[
-                                  const SizedBox(height: 10),
-                                  Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Icon(
-                                        Icons.place_outlined,
-                                        size: 16,
-                                        color: Colors.grey.shade600,
-                                      ),
-                                      const SizedBox(width: 6),
-                                      Expanded(
-                                        child: Text(
-                                          sourceText,
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                            color: Color(0xFF525A69),
-                                            fontSize: 13,
-                                            fontWeight: FontWeight.w700,
-                                            height: 1.2,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                                if (previewGroups.isNotEmpty) ...[
-                                  const SizedBox(height: 12),
-                                  Container(
-                                    width: double.infinity,
-                                    padding: const EdgeInsets.all(10),
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFFF6F7FB),
-                                      borderRadius: BorderRadius.circular(12),
-                                      border: Border.all(
-                                        color: Colors.grey.shade200,
-                                      ),
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: previewGroups
-                                          .map(
-                                            (group) => Padding(
-                                              padding: const EdgeInsets.only(
-                                                bottom: 6,
-                                              ),
-                                              child: _PreviewStatGroupRow(
-                                                group: group,
-                                              ),
-                                            ),
-                                          )
-                                          .toList(),
+                                const SizedBox(width: 6),
+                                Expanded(
+                                  child: Text(
+                                    sourceText,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      color: Color(0xFF525A69),
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w700,
+                                      height: 1.2,
                                     ),
                                   ),
-                                ],
+                                ),
                               ],
                             ),
-                          ),
+                          ],
+                          if (previewGroups.isNotEmpty) ...[
+                            const SizedBox(height: 12),
+                            Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFF6F7FB),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: Colors.grey.shade200,
+                                ),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: previewGroups
+                                    .map(
+                                      (group) => Padding(
+                                        padding: const EdgeInsets.only(
+                                          bottom: 6,
+                                        ),
+                                        child: _PreviewStatGroupRow(
+                                          group: group,
+                                        ),
+                                      ),
+                                    )
+                                    .toList(),
+                              ),
+                            ),
+                          ],
                         ],
                       ),
                     ),
@@ -485,6 +481,8 @@ class ItemCompleteFrame extends StatelessWidget {
   final BuilderHudInterior builderHudInterior;
   /// Si es false, solo se ve el marco y el fondo (sin icono del slot).
   final bool showInteriorIcon;
+  /// Con [darkInterior] false: color detrás del icono. [Colors.transparent] en cards con degradado o sheets (#F8F9FA) evita el “plato” gris/blanco.
+  final Color? lightInteriorFill;
 
   const ItemCompleteFrame({
     super.key,
@@ -494,7 +492,14 @@ class ItemCompleteFrame extends StatelessWidget {
     this.darkInterior = false,
     this.builderHudInterior = BuilderHudInterior.human,
     this.showInteriorIcon = true,
+    this.lightInteriorFill,
   });
+
+  /// Corner radius consistent with frame art (scales with [size]).
+  static double cornerRadiusFor(double size) => size * 10 / 62;
+
+  /// Slight upscale then clip removes 1px halos from PNGs / mip scaling.
+  static const double _kDefringeScale = 1.055;
 
   @override
   Widget build(BuildContext context) {
@@ -508,130 +513,94 @@ class ItemCompleteFrame extends StatelessWidget {
     final double s = size;
     final double pad = s * 7 / 62;
     final double inner = s * 48 / 62;
-    final double radius = s * 10 / 62;
-    final int cache = (s * 2).round();
+    final double radius = cornerRadiusFor(s);
 
-    return Container(
-      width: s,
-      height: s,
-      color: Colors.transparent,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          Positioned.fill(
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: darkInterior ? null : const Color(0xFFF7F7F9),
-                gradient: darkInterior ? _darkHudGradient(builderHudInterior) : null,
-                borderRadius: BorderRadius.circular(radius),
-              ),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(radius),
+      clipBehavior: Clip.hardEdge,
+      child: SizedBox(
+        width: s,
+        height: s,
+        child: Transform.scale(
+          scale: _kDefringeScale,
+          alignment: Alignment.center,
+          filterQuality: FilterQuality.none,
+          child: SizedBox(
+            width: s,
+            height: s,
+            child: Stack(
+              alignment: Alignment.center,
+              clipBehavior: Clip.hardEdge,
+              children: [
+                Positioned.fill(
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: darkInterior
+                          ? null
+                          : (lightInteriorFill ?? const Color(0xFFF7F7F9)),
+                      gradient: darkInterior
+                          ? _darkHudGradient(builderHudInterior)
+                          : null,
+                    ),
+                  ),
+                ),
+                if (showInteriorIcon)
+                  Padding(
+                    padding: EdgeInsets.all(pad),
+                    child: Image.asset(
+                      iconPath,
+                      width: inner,
+                      height: inner,
+                      fit: BoxFit.contain,
+                      filterQuality: FilterQuality.low,
+                      isAntiAlias: false,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Icon(
+                          Icons.inventory_2_outlined,
+                          size: inner * 0.58,
+                          color: const Color(0xFF8F96A3),
+                        );
+                      },
+                    ),
+                  ),
+                Positioned.fill(
+                  child: IgnorePointer(
+                    child: Image.asset(
+                      overlayPath,
+                      width: s,
+                      height: s,
+                      fit: BoxFit.cover,
+                      alignment: Alignment.center,
+                      filterQuality: FilterQuality.low,
+                      isAntiAlias: false,
+                      color: highlightColor,
+                      colorBlendMode: BlendMode.srcIn,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const SizedBox.shrink();
+                      },
+                    ),
+                  ),
+                ),
+                Positioned.fill(
+                  child: IgnorePointer(
+                    child: Image.asset(
+                      framePath,
+                      width: s,
+                      height: s,
+                      fit: BoxFit.cover,
+                      alignment: Alignment.center,
+                      filterQuality: FilterQuality.low,
+                      isAntiAlias: false,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const SizedBox.shrink();
+                      },
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-          if (showInteriorIcon)
-            Padding(
-              padding: EdgeInsets.all(pad),
-              child: Image.asset(
-                iconPath,
-                width: inner,
-                height: inner,
-                cacheWidth: cache,
-                cacheHeight: cache,
-                fit: BoxFit.contain,
-                errorBuilder: (context, error, stackTrace) {
-                  return Icon(
-                    Icons.inventory_2_outlined,
-                    size: inner * 0.58,
-                    color: const Color(0xFF8F96A3),
-                  );
-                },
-              ),
-            ),
-          Positioned.fill(
-            child: IgnorePointer(
-              child: Image.asset(
-                overlayPath,
-                width: s,
-                height: s,
-                cacheWidth: cache,
-                cacheHeight: cache,
-                fit: BoxFit.contain,
-                color: highlightColor,
-                colorBlendMode: BlendMode.srcIn,
-                errorBuilder: (context, error, stackTrace) {
-                  return const SizedBox.shrink();
-                },
-              ),
-            ),
-          ),
-          Positioned.fill(
-            child: IgnorePointer(
-              child: Image.asset(
-                framePath,
-                width: s,
-                height: s,
-                cacheWidth: cache,
-                cacheHeight: cache,
-                fit: BoxFit.contain,
-                errorBuilder: (context, error, stackTrace) {
-                  return const SizedBox.shrink();
-                },
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _InfoChip extends StatelessWidget {
-  const _InfoChip({
-    required this.label,
-    required this.color,
-    required this.icon,
-  });
-
-  final String label;
-  final Color color;
-  final IconData icon;
-
-  @override
-  Widget build(BuildContext context) {
-    final isBright = color.computeLuminance() > 0.6;
-    final textColor = Color.alphaBlend(
-      Colors.black.withValues(alpha: isBright ? 0.72 : 0.6),
-      color,
-    );
-    final iconColor = isBright
-        ? Color.alphaBlend(
-            Colors.black.withValues(alpha: 0.58),
-            color,
-          )
-        : color;
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: isBright ? 0.055 : 0.08),
-        borderRadius: BorderRadius.circular(999),
-        border: Border.all(
-          color: color.withValues(alpha: isBright ? 0.1 : 0.14),
         ),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 14, color: iconColor),
-          const SizedBox(width: 6),
-          Text(
-            label,
-            style: TextStyle(
-              color: textColor,
-              fontSize: 12,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -789,14 +758,22 @@ class _ItemCatalogDetailSheetBodyState extends State<ItemCatalogDetailSheetBody>
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ItemCompleteFrame(
-              slot: itemData['slot'],
-              rarity: itemData['rarity'],
-              size: 56,
+            ClipRRect(
+              borderRadius: BorderRadius.circular(
+                ItemCompleteFrame.cornerRadiusFor(56),
+              ),
+              clipBehavior: Clip.hardEdge,
+              child: ItemCompleteFrame(
+                slot: itemData['slot'],
+                rarity: itemData['rarity'],
+                size: 56,
+                lightInteriorFill: Colors.transparent,
+              ),
             ),
             const SizedBox(width: 14),
             Expanded(
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
@@ -805,107 +782,102 @@ class _ItemCatalogDetailSheetBodyState extends State<ItemCatalogDetailSheetBody>
                       color: readableAccent,
                       fontWeight: FontWeight.w800,
                       fontSize: 20,
-                      height: 1.1,
+                      height: 1.15,
                       letterSpacing: 0.2,
                     ),
                   ),
                   if (widget.onPrimaryAction != null) ...[
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 8),
                     _SelectActionChip(
                       label: widget.primaryActionLabel,
                       onPressed: widget.onPrimaryAction!,
                     ),
                   ],
-                  const SizedBox(height: 8),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: [
-                      _InfoChip(
-                        label: rarityToString(widget.rarity),
-                        color: rarityColor,
-                        icon: Icons.stars_rounded,
-                      ),
-                      _InfoChip(
-                        label: getSlotValueOrDescription(itemData['slot']),
-                        color: const Color(0xFF5E6678),
-                        icon: Icons.category_outlined,
-                      ),
-                    ],
+                  const SizedBox(height: 3),
+                  Text(
+                    getSlotValueOrDescription(itemData['slot']),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey.shade700,
+                      height: 1.15,
+                    ),
                   ),
-                  if (affectedUnits.isNotEmpty) ...[
-                    const SizedBox(height: 8),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: affectedUnits
-                          .map(
-                            (unit) => _UnitInfoChip(
-                              label: unit.label,
-                              color: const Color(0xFF5E6678),
-                              assetCandidates: unit.assetCandidates,
-                            ),
-                          )
-                          .toList(),
-                    ),
-                  ],
-                  if (hasSourceText) ...[
-                    const SizedBox(height: 10),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Icon(
-                          Icons.place_outlined,
-                          size: 16,
-                          color: Colors.grey.shade600,
-                        ),
-                        const SizedBox(width: 6),
-                        Expanded(
-                          child: Text(
-                            sourceText,
-                            maxLines: 4,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              color: Color(0xFF525A69),
-                              fontSize: 13,
-                              fontWeight: FontWeight.w700,
-                              height: 1.2,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                  if (previewGroups.isNotEmpty) ...[
-                    const SizedBox(height: 12),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF6F7FB),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: Colors.grey.shade200,
-                        ),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: previewGroups
-                            .map(
-                              (group) => Padding(
-                                padding: const EdgeInsets.only(bottom: 6),
-                                child: _PreviewStatGroupRow(group: group),
-                              ),
-                            )
-                            .toList(),
-                      ),
-                    ),
-                  ],
                 ],
               ),
             ),
           ],
         ),
+        if (affectedUnits.isNotEmpty) ...[
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: affectedUnits
+                .map(
+                  (unit) => _UnitInfoChip(
+                    label: unit.label,
+                    color: const Color(0xFF5E6678),
+                    assetCandidates: unit.assetCandidates,
+                  ),
+                )
+                .toList(),
+          ),
+        ],
+        if (hasSourceText) ...[
+          const SizedBox(height: 10),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(
+                Icons.place_outlined,
+                size: 16,
+                color: Colors.grey.shade600,
+              ),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(
+                  sourceText,
+                  maxLines: 4,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: Color(0xFF525A69),
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    height: 1.2,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+        if (previewGroups.isNotEmpty) ...[
+          const SizedBox(height: 12),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: const Color(0xFFF6F7FB),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: Colors.grey.shade200,
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: previewGroups
+                  .map(
+                    (group) => Padding(
+                      padding: const EdgeInsets.only(bottom: 6),
+                      child: _PreviewStatGroupRow(group: group),
+                    ),
+                  )
+                  .toList(),
+            ),
+          ),
+        ],
         const SizedBox(height: 16),
         Material(
           color: Colors.transparent,

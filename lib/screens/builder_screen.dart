@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:worldshift_assistant/data/data.dart';
@@ -22,7 +22,6 @@ import 'package:worldshift_assistant/utils/utils.dart';
 import 'package:worldshift_assistant/widgets/catalog_info_eye_button.dart';
 import 'package:worldshift_assistant/widgets/expandable_card.dart';
 import 'package:worldshift_assistant/widgets/item_catalog_filters_panel.dart';
-import 'package:worldshift_assistant/widgets/rarity_indicator.dart';
 import 'package:worldshift_assistant/models/spec_star_allocation.dart';
 import 'package:worldshift_assistant/widgets/race_spec_tree_panel.dart';
 import 'package:worldshift_assistant/widgets/resolved_mini_asset_image.dart';
@@ -2190,7 +2189,7 @@ class _EquipmentPanel extends StatelessWidget {
                     crossAxisCount: 2,
                     crossAxisSpacing: gridCellGap,
                     mainAxisSpacing: gridCellGap,
-                    childAspectRatio: 1.65,
+                    childAspectRatio: 1.4,
                   ),
                   itemBuilder: (context, index) {
                     final slot = slotsForRace[index];
@@ -2216,79 +2215,130 @@ class _EquipmentPanel extends StatelessWidget {
                           child: Container(
                             color: const Color(0xFFF8FAFC),
                             padding: const EdgeInsets.all(gridCellPadding),
-                            child: Row(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
-                                SizedBox(
-                                  width: gridItemFrameSize,
-                                  height: gridItemFrameSize,
-                                  child: Stack(
-                                    clipBehavior: Clip.none,
-                                    children: [
-                                      ItemCompleteFrame(
-                                        slot: slotKey,
-                                        rarity: equipped?.rarity ?? '1',
-                                        size: gridItemFrameSize,
-                                        showInteriorIcon: equipped != null,
-                                      ),
-                                      if (equipped != null)
-                                        Positioned(
-                                          top: gridCellPadding * 0.3,
-                                          right: gridCellPadding * 0.3,
-                                          child: CatalogInfoEyeButton(
-                                            frameSize: gridItemFrameSize,
-                                            tooltip: 'View item details',
-                                            onPressed: () {
-                                              final e = equippedBySlot[slotKey];
-                                              if (e == null) {
-                                                return;
-                                              }
-                                              showItemCatalogDetailSheet(
-                                                context,
-                                                name: e.name,
-                                                map: e.map,
-                                                rarity: e.rarity.isEmpty
-                                                    ? 'unknown'
-                                                    : e.rarity,
-                                                obtainedFrom: e.obtainedFrom,
-                                                itemData: e.toMap(),
-                                              );
-                                            },
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(
+                                      width: gridItemFrameSize,
+                                      height: gridItemFrameSize,
+                                      child: Stack(
+                                        clipBehavior: Clip.none,
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.circular(
+                                              ItemCompleteFrame.cornerRadiusFor(
+                                                gridItemFrameSize,
+                                              ),
+                                            ),
+                                            clipBehavior: Clip.hardEdge,
+                                            child: ItemCompleteFrame(
+                                              slot: slotKey,
+                                              rarity: equipped?.rarity ?? '1',
+                                              size: gridItemFrameSize,
+                                              showInteriorIcon: equipped != null,
+                                              lightInteriorFill:
+                                                  Colors.transparent,
+                                            ),
                                           ),
-                                        ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        slotLabel,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.w800,
-                                          color: Color(0xFF1F2937),
-                                        ),
+                                          if (equipped != null)
+                                            Positioned(
+                                              top: gridCellPadding * 0.3,
+                                              right: gridCellPadding * 0.3,
+                                              child: CatalogInfoEyeButton(
+                                                frameSize: gridItemFrameSize,
+                                                tooltip: 'View item details',
+                                                onPressed: () {
+                                                  final e =
+                                                      equippedBySlot[slotKey];
+                                                  if (e == null) {
+                                                    return;
+                                                  }
+                                                  showItemCatalogDetailSheet(
+                                                    context,
+                                                    name: e.name,
+                                                    map: e.map,
+                                                    rarity: e.rarity.isEmpty
+                                                        ? 'unknown'
+                                                        : e.rarity,
+                                                    obtainedFrom: e.obtainedFrom,
+                                                    itemData: e.toMap(),
+                                                  );
+                                                },
+                                              ),
+                                            ),
+                                        ],
                                       ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        equipped?.name ?? 'Empty slot',
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: equipped == null
-                                              ? const Color(0xFF94A3B8)
-                                              : const Color(0xFF334155),
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: equipped == null
+                                          ? Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  slotLabel,
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.w800,
+                                                    color: Color(0xFF1F2937),
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 4),
+                                                Text(
+                                                  'Empty slot',
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                    color: Colors.grey.shade500,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                          : Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Text(
+                                                  equipped.name,
+                                                  maxLines: 2,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: const TextStyle(
+                                                    fontSize: 13,
+                                                    fontWeight: FontWeight.w800,
+                                                    color: Color(0xFF334155),
+                                                    height: 1.15,
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 2),
+                                                Text(
+                                                  slotLabel,
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: const TextStyle(
+                                                    fontSize: 11.5,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Color(0xFF64748B),
+                                                    height: 1.1,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
@@ -2708,17 +2758,15 @@ class _BuilderHudSlotCell extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(14),
-                  boxShadow: [
-                    BoxShadow(
-                      color: hud.frameShadow,
-                      blurRadius: 12,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
+              Material(
+                color: Colors.transparent,
+                elevation: 3,
+                shadowColor: hud.frameShadow,
+                surfaceTintColor: Colors.transparent,
+                borderRadius: BorderRadius.circular(
+                  ItemCompleteFrame.cornerRadiusFor(frameSize),
                 ),
+                clipBehavior: Clip.hardEdge,
                 child: SizedBox(
                   width: frameSize,
                   height: frameSize,
@@ -2761,29 +2809,43 @@ class _BuilderHudSlotCell extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 8),
-              Text(
-                slotLabel,
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: hud.slotLabelPrimary,
-                  fontSize: 12.5,
-                  fontWeight: FontWeight.w600,
-                  height: 1.15,
+              if (equipped == null) ...[
+                Text(
+                  slotLabel,
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: hud.slotLabelPrimary,
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.w600,
+                    height: 1.15,
+                  ),
                 ),
-              ),
-              if (equipped != null) ...[
-                const SizedBox(height: 2),
+              ] else ...[
                 Text(
                   equipped!.name,
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: hud.slotLabelPrimary,
+                    fontSize: 11.5,
+                    fontWeight: FontWeight.w800,
+                    height: 1.15,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  slotLabel,
                   textAlign: TextAlign.center,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     color: hud.slotLabelSecondary,
-                    fontSize: 10.5,
-                    fontWeight: FontWeight.w500,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                    height: 1.05,
                   ),
                 ),
               ],
@@ -3088,6 +3150,15 @@ class _SheetSpecRankStars extends StatelessWidget {
   }
 }
 
+/// Título del ítem en cards alineado al estilo catálogo ([ExpandableCard]).
+Color _statSourceItemTitleAccent(Color rarityColor) {
+  final darkness = rarityColor.computeLuminance() > 0.6 ? 0.72 : 0.42;
+  return Color.alphaBlend(
+    Colors.black.withValues(alpha: darkness),
+    rarityColor,
+  );
+}
+
 String _statSourcesSheetSubtitle(_BuildSummaryViewTab tab) {
   switch (tab) {
     case _BuildSummaryViewTab.all:
@@ -3108,23 +3179,32 @@ Widget _buildStatSourceDetailCard({
     ..sort((a, b) => b.value.value.abs().compareTo(a.value.value.abs()));
 
   if (c.kind == _BuildStatSourceKind.item) {
-    final slotTitle = getSlotValueOrDescription(c.slotKey!);
+    final slotLabel = getSlotValueOrDescription(c.slotKey!);
     final rarityColor = getRarityColor(c.itemRarity!);
+    final titleAccent = _statSourceItemTitleAccent(rarityColor);
+    final rarityStr =
+        c.itemRarity!.isEmpty ? 'unknown' : c.itemRarity!;
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: rarityColor.withValues(alpha: 0.12),
-        ),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
+            color: Colors.black.withValues(alpha: 0.08),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+          BoxShadow(
             color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
           ),
         ],
+        border: Border.all(
+          color: rarityColor.withValues(alpha: 0.12),
+          width: 1,
+        ),
       ),
-      clipBehavior: Clip.antiAlias,
+      clipBehavior: Clip.hardEdge,
       child: IntrinsicHeight(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -3142,53 +3222,81 @@ Widget _buildStatSourceDetailCard({
                     ],
                   ),
                 ),
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(14),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _ResolvedAssetImage(
-                          candidates: [
-                            'assets/generated/item_icons/named/icons/${c.slotKey}.png',
-                          ],
-                          size: 44,
-                          borderRadius: 10,
-                          fallbackIcon: Icons.inventory_2_outlined,
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(
+                            ItemCompleteFrame.cornerRadiusFor(62),
+                          ),
+                          clipBehavior: Clip.hardEdge,
+                          child: ItemCompleteFrame(
+                            slot: c.slotKey!,
+                            rarity: rarityStr,
+                            lightInteriorFill: Colors.transparent,
+                          ),
                         ),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: 14),
                         Expanded(
                           child: Column(
+                            mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                slotTitle,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w800,
-                                  fontSize: 14,
-                                  color: Color(0xFF334155),
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
                                 c.itemName!,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
-                                  color: Colors.grey.shade800,
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w700,
-                                  height: 1.2,
+                                  color: titleAccent,
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 17,
+                                  height: 1.1,
+                                  letterSpacing: 0.2,
                                 ),
                               ),
-                              const SizedBox(height: 8),
-                              RarityIndicator(rarity: c.itemRarity!),
+                              const SizedBox(height: 1),
+                              Text(
+                                slotLabel,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.grey.shade700,
+                                  height: 1.1,
+                                ),
+                              ),
                             ],
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 10),
-                    ..._statValueRowsFromNumeric(lines, formatAttrDisplay),
+                    if (lines.isNotEmpty) ...[
+                      const SizedBox(height: 12),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF6F7FB),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: Colors.grey.shade200,
+                          ),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: _statValueRowsFromNumeric(
+                            lines,
+                            formatAttrDisplay,
+                          ),
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),
@@ -3823,64 +3931,4 @@ class _BuildSummary {
   final List<_PerUnitBuildSummary> perUnit;
   final int specStarsUsed;
   final bool specAppliesToSummary;
-}
-
-class _ResolvedAssetImage extends StatelessWidget {
-  const _ResolvedAssetImage({
-    required this.candidates,
-    required this.size,
-    required this.borderRadius,
-    required this.fallbackIcon,
-  });
-
-  final List<String> candidates;
-  final double size;
-  final double borderRadius;
-  final IconData fallbackIcon;
-
-  Future<String?> _resolve() async {
-    for (final path in candidates) {
-      try {
-        await rootBundle.load(path);
-        return path;
-      } catch (_) {
-        continue;
-      }
-    }
-    return null;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<String?>(
-      future: _resolve(),
-      builder: (context, snapshot) {
-        final path = snapshot.data;
-        if (path == null) {
-          return Container(
-            width: size,
-            height: size,
-            decoration: BoxDecoration(
-              color: const Color(0xFFE2E8F0),
-              borderRadius: BorderRadius.circular(borderRadius),
-            ),
-            child: Icon(
-              fallbackIcon,
-              size: size * 0.6,
-              color: const Color(0xFF64748B),
-            ),
-          );
-        }
-        return ClipRRect(
-          borderRadius: BorderRadius.circular(borderRadius),
-          child: Image.asset(
-            path,
-            width: size,
-            height: size,
-            fit: BoxFit.cover,
-          ),
-        );
-      },
-    );
-  }
 }
