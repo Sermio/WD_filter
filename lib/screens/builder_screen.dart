@@ -6,22 +6,28 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:worldshift_assistant/data/data.dart';
+import 'package:worldshift_assistant/data/human_skill_tree_data.dart';
 import 'package:worldshift_assistant/data/item.dart';
 import 'package:worldshift_assistant/data/worldshift_assets.dart';
 import 'package:worldshift_assistant/models/item_filters_model.dart';
 import 'package:worldshift_assistant/utils/catalog_card_stripe.dart';
 import 'package:worldshift_assistant/utils/catalog_item_filter.dart';
+import 'package:worldshift_assistant/utils/human_spec_build_summary.dart';
 import 'package:worldshift_assistant/utils/unit_icon_candidates.dart';
 import 'package:worldshift_assistant/utils/utils.dart';
 import 'package:worldshift_assistant/widgets/expandable_card.dart';
 import 'package:worldshift_assistant/widgets/item_catalog_filters_panel.dart';
 import 'package:worldshift_assistant/widgets/rarity_indicator.dart';
+import 'package:worldshift_assistant/models/spec_star_allocation.dart';
+import 'package:worldshift_assistant/widgets/race_spec_tree_panel.dart';
 import 'package:worldshift_assistant/widgets/resolved_mini_asset_image.dart';
 
 /// Distinct from [null] so closing the sheet without choosing does not unequip.
 final Object _builderPickerUnequip = Object();
 
 enum _BuilderPanelTab { items, skillTree }
+
+enum _BuildSummaryViewTab { all, items, skills }
 
 class BuilderScreen extends StatefulWidget {
   const BuilderScreen({super.key});
@@ -43,12 +49,20 @@ class _BuilderScreenState extends State<BuilderScreen> {
   /// One equipment set per race (Humans / Tribes / Aliens). Skill tree can use the same split later.
   static const _prefsEquipKeyV2 = 'builder_equipped_by_race_v2';
   static const _prefsRaceKey = 'builder_selected_race_v1';
+  /// Asignación de estrellas por repo (Humans / Tribes / Aliens); misma persistencia que equipamiento.
+  static const _prefsSpecStarsKey = 'builder_spec_stars_by_race_v1';
 
   late final Future<List<Item>> _itemsFuture;
   String _selectedRace = 'Humans';
   _BuilderPanelTab _panelTab = _BuilderPanelTab.items;
+  _BuildSummaryViewTab _summaryViewTab = _BuildSummaryViewTab.all;
   final Map<String, Map<String, Item>> _equippedByRace = {
     for (final r in _races) r: <String, Item>{},
+  };
+
+  /// Estrellas de especialización por raza (`repo` → puntos invertidos). Máx. 10 por raza en total.
+  final Map<String, Map<String, int>> _specStarsByRace = {
+    for (final r in _races) r: <String, int>{},
   };
 
   Map<String, Item> get _equipForSelectedRace => _equippedByRace[_selectedRace]!;
@@ -155,6 +169,37 @@ class _BuilderScreenState extends State<BuilderScreen> {
         ? savedRace
         : _selectedRace;
 
+    try {
+      final rawSpec = prefs.getString(_prefsSpecStarsKey);
+      if (rawSpec != null && rawSpec.isNotEmpty) {
+        final decoded = jsonDecode(rawSpec);
+        if (decoded is Map) {
+          for (final raceName in _races) {
+            final inner = decoded[raceName];
+            if (inner is! Map) {
+              continue;
+            }
+            final m = _specStarsByRace[raceName]!;
+            m.clear();
+            for (final e in inner.entries) {
+              final k = '${e.key}';
+              final v = e.value;
+              final n = v is int
+                  ? v
+                  : v is num
+                      ? v.toInt()
+                      : int.tryParse('$v');
+              if (n != null && n > 0) {
+                m[k] = n;
+              }
+            }
+          }
+        }
+      }
+    } catch (_) {
+      // ignore corrupt spec stars
+    }
+
     if (!mounted) {
       return;
     }
@@ -179,6 +224,11 @@ class _BuilderScreenState extends State<BuilderScreen> {
     await prefs.setString(_prefsEquipKeyV2, jsonEncode(payload));
     await prefs.remove(_prefsEquipKeyV1);
     await prefs.setString(_prefsRaceKey, _selectedRace);
+    final specPayload = {
+      for (final r in _races)
+        r: {..._specStarsByRace[r]!},
+    };
+    await prefs.setString(_prefsSpecStarsKey, jsonEncode(specPayload));
   }
 
   List<Map<String, String>> _slotsForRace(String race) {
@@ -223,11 +273,36 @@ class _BuilderScreenState extends State<BuilderScreen> {
     }
   }
 
-  Future<void> _confirmResetCurrentRaceLoadout() async {
+  Widget _buildSkillTreeForHud(_BuilderRaceHudTheme hud) {
+    switch (_selectedRace) {
+      case 'Humans':
+        final m = _specStarsByRace['Humans']!;
+        return RaceSpecTreePanel.humans(
+          hudTitleColor: hud.titleColor,
+          hudHintColor: hud.hintColor,
+          hudChipBg: hud.chipBackground,
+          hudInkSplash: hud.inkSplash,
+          hudInkHighlight: hud.inkHighlight,
+          hudPanelBorder: hud.panelBorder,
+          allocatedByRepo: Map<String, int>.from(m),
+          onSpecAllocationChanged: (next) {
+            setState(() {
+              m.clear();
+              m.addAll(next);
+            });
+            unawaited(_persistBuilderState());
+          },
+        );
+      default:
+        return _EquipmentPanel.skillTreePlaceholder(hud);
+    }
+  }
+
+  Future<void> _confirmResetCurrentRaceItems() async {
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Reset loadout'),
+        title: const Text('Reset items'),
         content: Text(
           'Remove all equipped items for $_selectedRace? Other races are not affected.',
         ),
@@ -250,8 +325,42 @@ class _BuilderScreenState extends State<BuilderScreen> {
     unawaited(_persistBuilderState());
   }
 
+  Future<void> _confirmResetCurrentRaceSpecStars() async {
+    if (_selectedRace != 'Humans') {
+      return;
+    }
+    final m = _specStarsByRace['Humans']!;
+    if (totalSpecStarsAllocated(m) == 0) {
+      return;
+    }
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Reset skills'),
+        content: const Text(
+          'Clear all specialization skills (stars) for Humans? Other races are not affected.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: const Text('Reset'),
+          ),
+        ],
+      ),
+    );
+    if (ok != true || !mounted) {
+      return;
+    }
+    setState(() => m.clear());
+    unawaited(_persistBuilderState());
+  }
+
   _BuildSummary _buildSummary() {
-    final unitMap = <String, _UnitAggBuilder>{};
+    final byUnit = <String, _UnitSummaryScratch>{};
 
     for (final equip in _equipForSelectedRace.entries) {
       final slotKey = equip.key;
@@ -259,39 +368,98 @@ class _BuilderScreenState extends State<BuilderScreen> {
       for (final unitEntry in item.attributes.entries) {
         final unitKey = unitEntry.key;
         final rawAttrs = unitEntry.value;
-        final agg = unitMap.putIfAbsent(
+        final sc = byUnit.putIfAbsent(
           unitKey,
-          () => _UnitAggBuilder(unitKey),
+          () => _UnitSummaryScratch(unitKey),
         );
-        final slotNums = <String, double>{};
+        final slotAttrs = <String, NumericAttrValue>{};
         for (final ae in rawAttrs.entries) {
-          final v = _parseNumber(ae.value);
-          if (v == null) {
+          final parsed = _parseNumericAttr(ae.value);
+          if (parsed == null) {
             continue;
           }
-          agg.totals[ae.key] = (agg.totals[ae.key] ?? 0) + v;
-          slotNums[ae.key] = (slotNums[ae.key] ?? 0) + v;
+          sc.totalsItems[ae.key] =
+              (sc.totalsItems[ae.key] ?? 0) + parsed.value;
+          sc.itemPercentHints
+              .putIfAbsent(ae.key, _PercentHintAgg.new)
+              .add(parsed.isPercent);
+          slotAttrs.update(
+            ae.key,
+            (prev) => NumericAttrValue(
+              value: prev.value + parsed.value,
+              isPercent: prev.isPercent && parsed.isPercent,
+            ),
+            ifAbsent: () => parsed,
+          );
         }
-        if (slotNums.isNotEmpty) {
-          agg.slots.add(
-            _SlotStatContribution(
+        if (slotAttrs.isNotEmpty) {
+          sc.itemSources.add(
+            _BuildStatSource.item(
               slotKey: slotKey,
               itemName: item.name,
               itemRarity: item.rarity,
-              attrs: Map<String, double>.from(slotNums),
+              attrs: Map<String, NumericAttrValue>.from(slotAttrs),
             ),
           );
         }
       }
     }
 
-    final perUnit = unitMap.values
+    final specStarsUsed =
+        totalSpecStarsAllocated(_specStarsByRace[_selectedRace]!);
+    final specAppliesToSummary = _selectedRace == 'Humans';
+    if (specAppliesToSummary) {
+      final detailed =
+          humanSpecContributionsDetailed(_specStarsByRace['Humans']!);
+      for (final ue in detailed.entries) {
+        final sc = byUnit.putIfAbsent(
+          ue.key,
+          () => _UnitSummaryScratch(ue.key),
+        );
+        for (final row in ue.value) {
+          sc.skillSources.add(
+            _BuildStatSource.spec(
+              specRepo: row.repo,
+              nodeTitle: row.nodeTitle,
+              attrs: Map<String, NumericAttrValue>.from(row.attrs),
+              specInvestedRanks: row.investedRanks,
+              specMaxRanks: row.maxRanks,
+            ),
+          );
+          for (final ae in row.attrs.entries) {
+            sc.totalsSkills[ae.key] =
+                (sc.totalsSkills[ae.key] ?? 0) + ae.value.value;
+            sc.skillPercentHints
+                .putIfAbsent(ae.key, _PercentHintAgg.new)
+                .add(ae.value.isPercent);
+          }
+        }
+      }
+    }
+
+    final perUnit = byUnit.values
         .map(
           (b) => _PerUnitBuildSummary(
             unitKey: b.unitKey,
             displayLabel: _formatBuilderUnitLabel(b.unitKey),
-            attributeTotals: Map<String, double>.from(b.totals),
-            slotContributions: List<_SlotStatContribution>.from(b.slots),
+            totalsItems: Map<String, double>.from(b.totalsItems),
+            totalsSkills: Map<String, double>.from(b.totalsSkills),
+            totalsAll: _mergeAttrTotals(b.totalsItems, b.totalsSkills),
+            percentItems: {
+              for (final e in b.itemPercentHints.entries)
+                e.key: e.value.uniformPercent,
+            },
+            percentSkills: {
+              for (final e in b.skillPercentHints.entries)
+                e.key: e.value.uniformPercent,
+            },
+            percentAll: _percentFlagsMerged(
+              b.itemPercentHints,
+              b.skillPercentHints,
+              _mergeAttrTotals(b.totalsItems, b.totalsSkills),
+            ),
+            itemSources: List<_BuildStatSource>.from(b.itemSources),
+            skillSources: List<_BuildStatSource>.from(b.skillSources),
           ),
         )
         .toList()
@@ -304,7 +472,44 @@ class _BuilderScreenState extends State<BuilderScreen> {
     return _BuildSummary(
       itemCount: _equipForSelectedRace.length,
       perUnit: perUnit,
+      specStarsUsed: specStarsUsed,
+      specAppliesToSummary: specAppliesToSummary,
     );
+  }
+
+  static Map<String, double> _mergeAttrTotals(
+    Map<String, double> a,
+    Map<String, double> b,
+  ) {
+    final out = Map<String, double>.from(a);
+    for (final e in b.entries) {
+      out[e.key] = (out[e.key] ?? 0) + e.value;
+    }
+    return out;
+  }
+
+  static Map<String, bool> _percentFlagsMerged(
+    Map<String, _PercentHintAgg> itemHints,
+    Map<String, _PercentHintAgg> skillHints,
+    Map<String, double> totalsAll,
+  ) {
+    return {
+      for (final k in totalsAll.keys)
+        k: _uniformPercentAcross(itemHints[k], skillHints[k]),
+    };
+  }
+
+  static bool _uniformPercentAcross(
+    _PercentHintAgg? item,
+    _PercentHintAgg? skill,
+  ) {
+    final ti = item?.total ?? 0;
+    final pi = item?.percentCount ?? 0;
+    final ts = skill?.total ?? 0;
+    final ps = skill?.percentCount ?? 0;
+    final t = ti + ts;
+    final p = pi + ps;
+    return t > 0 && p == t;
   }
 
   static String _formatBuilderUnitLabel(String unitKey) {
@@ -315,12 +520,16 @@ class _BuilderScreenState extends State<BuilderScreen> {
     );
   }
 
-  double? _parseNumber(String raw) {
+  NumericAttrValue? _parseNumericAttr(String raw) {
     final m = RegExp(r'-?\d+(?:[.,]\d+)?').firstMatch(raw);
     if (m == null) {
       return null;
     }
-    return double.tryParse(m.group(0)!.replaceAll(',', '.'));
+    final v = double.tryParse(m.group(0)!.replaceAll(',', '.'));
+    if (v == null) {
+      return null;
+    }
+    return NumericAttrValue(value: v, isPercent: raw.contains('%'));
   }
 
   String _formatValue(double value) {
@@ -328,6 +537,11 @@ class _BuilderScreenState extends State<BuilderScreen> {
       return value.toInt().toString();
     }
     return value.toStringAsFixed(2);
+  }
+
+  String _formatAttrDisplay(double value, bool isPercent) {
+    final core = _formatValue(value);
+    return isPercent ? '$core%' : core;
   }
 
   @override
@@ -391,7 +605,10 @@ class _BuilderScreenState extends State<BuilderScreen> {
                 selectedRace: _selectedRace,
                 races: _races,
                 onRaceChanged: (race) {
-                  setState(() => _selectedRace = race);
+                  setState(() {
+                    _selectedRace = race;
+                    _summaryViewTab = _BuildSummaryViewTab.all;
+                  });
                   unawaited(_persistBuilderState());
                 },
                 panelTab: _panelTab,
@@ -403,14 +620,33 @@ class _BuilderScreenState extends State<BuilderScreen> {
                   slotLabel: slotLabel,
                   allItems: allItems,
                 ),
-                onResetLoadout: () =>
-                    unawaited(_confirmResetCurrentRaceLoadout()),
+                onFooterReset: () {
+                  if (_panelTab == _BuilderPanelTab.items) {
+                    unawaited(_confirmResetCurrentRaceItems());
+                  } else {
+                    unawaited(_confirmResetCurrentRaceSpecStars());
+                  }
+                },
+                footerResetLabel: _panelTab == _BuilderPanelTab.items
+                    ? 'Reset items'
+                    : 'Reset skills',
+                footerResetEnabled: _panelTab == _BuilderPanelTab.items
+                    ? _equipForSelectedRace.isNotEmpty
+                    : (_selectedRace == 'Humans' &&
+                        totalSpecStarsAllocated(
+                              _specStarsByRace['Humans']!,
+                            ) >
+                            0),
+                skillTreeForHud: _buildSkillTreeForHud,
               );
               final panelRight = _SummaryPanel(
                 selectedRace: _selectedRace,
                 summary: summary,
-                formatValue: _formatValue,
+                formatAttrDisplay: _formatAttrDisplay,
                 scrollUnitsInternally: constraints.maxWidth >= 1050,
+                summaryViewTab: _summaryViewTab,
+                onSummaryViewTabChanged: (t) =>
+                    setState(() => _summaryViewTab = t),
               );
 
               if (constraints.maxWidth >= 1050) {
@@ -893,7 +1129,10 @@ class _EquipmentPanel extends StatelessWidget {
     required this.slotsForRace,
     required this.equippedBySlot,
     required this.onPickItem,
-    required this.onResetLoadout,
+    required this.onFooterReset,
+    required this.footerResetLabel,
+    required this.footerResetEnabled,
+    required this.skillTreeForHud,
   });
 
   static const List<String> _humanCenterKeys = [
@@ -956,7 +1195,10 @@ class _EquipmentPanel extends StatelessWidget {
   final List<Map<String, String>> slotsForRace;
   final Map<String, Item> equippedBySlot;
   final void Function(String slotKey, String slotLabel) onPickItem;
-  final VoidCallback onResetLoadout;
+  final VoidCallback onFooterReset;
+  final String footerResetLabel;
+  final bool footerResetEnabled;
+  final Widget Function(_BuilderRaceHudTheme hud) skillTreeForHud;
 
   Map<String, Map<String, String>> _slotsByKey() {
     return {
@@ -1100,7 +1342,7 @@ class _EquipmentPanel extends StatelessWidget {
     );
   }
 
-  static Widget _skillTreePlaceholder(_BuilderRaceHudTheme hud) {
+  static Widget skillTreePlaceholder(_BuilderRaceHudTheme hud) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 12),
       child: Center(
@@ -1169,18 +1411,30 @@ class _EquipmentPanel extends StatelessWidget {
                 hud: hud,
                 dividerAndOutlineColor: barOutline,
               ),
-              const SizedBox(height: 12),
-              Text(
-                panelTab == _BuilderPanelTab.items
-                    ? 'Tap a slot to equip an item.'
-                    : 'Skill tree for this race — work in progress.',
-                style: TextStyle(
-                  color: hud.hintColor,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
+              if (panelTab == _BuilderPanelTab.items) ...[
+                const SizedBox(height: 12),
+                Text(
+                  'Tap a slot to equip an item.',
+                  style: TextStyle(
+                    color: hud.hintColor,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 12),
+                const SizedBox(height: 12),
+              ] else if (selectedRace != 'Humans') ...[
+                const SizedBox(height: 12),
+                Text(
+                  'Skill tree for this race — work in progress.',
+                  style: TextStyle(
+                    color: hud.hintColor,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 12),
+              ] else
+                const SizedBox(height: 8),
             ],
           );
 
@@ -1280,7 +1534,7 @@ class _EquipmentPanel extends StatelessWidget {
 
           final slotBody = panelTab == _BuilderPanelTab.items
               ? equipmentBody
-              : _EquipmentPanel._skillTreePlaceholder(hud);
+              : skillTreeForHud(hud);
 
           final footer = Column(
             mainAxisSize: MainAxisSize.min,
@@ -1298,12 +1552,11 @@ class _EquipmentPanel extends StatelessWidget {
                 alignment: Alignment.centerRight,
                 child: OutlinedButton.icon(
                   style: hud.resetStyle,
-                  onPressed:
-                      equippedBySlot.isEmpty ? null : onResetLoadout,
+                  onPressed: footerResetEnabled ? onFooterReset : null,
                   icon: const Icon(Icons.restart_alt_rounded, size: 20),
-                  label: const Text(
-                    'Reset loadout',
-                    style: TextStyle(fontWeight: FontWeight.w700),
+                  label: Text(
+                    footerResetLabel,
+                    style: const TextStyle(fontWeight: FontWeight.w700),
                   ),
                 ),
               ),
@@ -1533,18 +1786,63 @@ class _BuilderHudSlotCell extends StatelessWidget {
   }
 }
 
+Map<String, double> _summaryDisplayTotals(
+  _PerUnitBuildSummary u,
+  _BuildSummaryViewTab tab,
+) {
+  switch (tab) {
+    case _BuildSummaryViewTab.all:
+      return u.totalsAll;
+    case _BuildSummaryViewTab.items:
+      return u.totalsItems;
+    case _BuildSummaryViewTab.skills:
+      return u.totalsSkills;
+  }
+}
+
+Map<String, bool> _summaryPercentFlags(
+  _PerUnitBuildSummary u,
+  _BuildSummaryViewTab tab,
+) {
+  switch (tab) {
+    case _BuildSummaryViewTab.all:
+      return u.percentAll;
+    case _BuildSummaryViewTab.items:
+      return u.percentItems;
+    case _BuildSummaryViewTab.skills:
+      return u.percentSkills;
+  }
+}
+
+String _summaryInfoTooltip(_BuildSummaryViewTab tab) {
+  switch (tab) {
+    case _BuildSummaryViewTab.all:
+      return 'Fuentes: ítems y nodos de especialización';
+    case _BuildSummaryViewTab.items:
+      return 'Ranuras que aportan stats a esta unidad';
+    case _BuildSummaryViewTab.skills:
+      return 'Nodos de especialización que aportan stats';
+  }
+}
+
 class _SummaryPanel extends StatelessWidget {
   const _SummaryPanel({
     required this.selectedRace,
     required this.summary,
-    required this.formatValue,
+    required this.formatAttrDisplay,
     required this.scrollUnitsInternally,
+    required this.summaryViewTab,
+    required this.onSummaryViewTabChanged,
   });
 
   final String selectedRace;
   final _BuildSummary summary;
-  final String Function(double) formatValue;
+  final String Function(double value, bool isPercent) formatAttrDisplay;
   final bool scrollUnitsInternally;
+  final _BuildSummaryViewTab summaryViewTab;
+  final ValueChanged<_BuildSummaryViewTab> onSummaryViewTabChanged;
+
+  static const _tabLabels = ['All', 'Items', 'Skills'];
 
   @override
   Widget build(BuildContext context) {
@@ -1563,13 +1861,76 @@ class _SummaryPanel extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          summary.itemCount == 0
-              ? 'No items equipped for this race'
-              : '${summary.itemCount} equipped items · '
-                    '${summary.perUnit.length} units affected',
+          () {
+            if (summary.specAppliesToSummary) {
+              final equip = summary.itemCount == 0
+                  ? 'No items equipped'
+                  : '${summary.itemCount} equipped items';
+              final units =
+                  '${summary.perUnit.length} units in summary · ${summary.specStarsUsed}/10 spec stars';
+              return '$equip · $units';
+            }
+            if (summary.itemCount == 0) {
+              return 'No items equipped for this race';
+            }
+            return '${summary.itemCount} equipped items · '
+                '${summary.perUnit.length} units affected';
+          }(),
           style: const TextStyle(
             color: Color(0xFF475569),
             fontWeight: FontWeight.w700,
+          ),
+        ),
+        const SizedBox(height: 12),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              border: Border.all(color: const Color(0xFFE2E8F0)),
+            ),
+            child: Row(
+              children: List.generate(_BuildSummaryViewTab.values.length, (i) {
+                final tab = _BuildSummaryViewTab.values[i];
+                final sel = summaryViewTab == tab;
+                return Expanded(
+                  child: Material(
+                    color: sel
+                        ? const Color(0xFFEEF2FF)
+                        : const Color(0xFFF8FAFC),
+                    child: InkWell(
+                      onTap: () => onSummaryViewTabChanged(tab),
+                      splashColor: Colors.black12,
+                      child: Container(
+                        height: 36,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          border: Border(
+                            right: i < _BuildSummaryViewTab.values.length - 1
+                                ? const BorderSide(color: Color(0xFFE2E8F0))
+                                : BorderSide.none,
+                          ),
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            _tabLabels[i],
+                            maxLines: 1,
+                            style: TextStyle(
+                              fontWeight: sel ? FontWeight.w800 : FontWeight.w600,
+                              fontSize: 13,
+                              color: sel
+                                  ? const Color(0xFF4338CA)
+                                  : const Color(0xFF64748B),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              }),
+            ),
           ),
         ),
         const SizedBox(height: 14),
@@ -1584,57 +1945,48 @@ class _SummaryPanel extends StatelessWidget {
       ],
     );
 
-    final skillPlaceholder = Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF8FAFC),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
-      ),
-      child: const Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Skill Tree',
-            style: TextStyle(
-              fontWeight: FontWeight.w800,
-              color: Color(0xFF334155),
-            ),
-          ),
-          SizedBox(height: 6),
-          Text(
-            'Coming next: per-race skill tree using existing icons.',
-            style: TextStyle(
-              color: Color(0xFF64748B),
-              fontSize: 12.5,
-            ),
-          ),
-        ],
-      ),
-    );
-
     Widget unitSection() {
-      if (summary.perUnit.isEmpty) {
+      final visible = summary.perUnit
+          .where((u) => _summaryDisplayTotals(u, summaryViewTab).isNotEmpty)
+          .toList();
+
+      if (visible.isEmpty) {
+        final msg = switch (summaryViewTab) {
+          _BuildSummaryViewTab.all =>
+            'No hay stats que mostrar. Equipa ítems o asigna especialización (Humans).',
+          _BuildSummaryViewTab.items =>
+            'No hay bonos numéricos desde ítems para las unidades del resumen.',
+          _BuildSummaryViewTab.skills => summary.specAppliesToSummary
+              ? 'No hay bonos numéricos desde el árbol de especialización.'
+              : 'El árbol de especialización aún no está en el resumen para esta raza.',
+        };
         return Text(
-          'Equip items to see aggregated attributes by unit.',
-          style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
+          msg,
+          style: TextStyle(color: Colors.grey.shade600, fontSize: 13, height: 1.35),
         );
       }
+
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          for (var i = 0; i < summary.perUnit.length; i++) ...[
+          for (var i = 0; i < visible.length; i++) ...[
             if (i > 0) const SizedBox(height: 10),
             _UnitTotalsCard(
-              unit: summary.perUnit[i],
-              formatValue: formatValue,
+              unit: visible[i],
+              displayTotals: _summaryDisplayTotals(visible[i], summaryViewTab),
+              percentByAttrKey:
+                  _summaryPercentFlags(visible[i], summaryViewTab),
+              infoTooltip: _summaryInfoTooltip(summaryViewTab),
+              formatAttrDisplay: formatAttrDisplay,
               accent: summaryHud.summaryUnitCardAccent,
               gradientEndAlpha: summaryHud.summaryUnitCardGradientEndAlpha,
               stripeRaceLabel: selectedRace,
-              onInfoTap: () => _showUnitSlotSourcesSheet(
+              onInfoTap: () => _showUnitStatSourcesSheet(
                 context,
-                unit: summary.perUnit[i],
-                formatValue: formatValue,
+                unit: visible[i],
+                tab: summaryViewTab,
+                raceLabel: selectedRace,
+                formatAttrDisplay: formatAttrDisplay,
               ),
             ),
           ],
@@ -1664,11 +2016,7 @@ class _SummaryPanel extends StatelessWidget {
                 Expanded(
                   child: ListView(
                     padding: const EdgeInsets.only(bottom: 8),
-                    children: [
-                      unitSection(),
-                      const SizedBox(height: 14),
-                      skillPlaceholder,
-                    ],
+                    children: [unitSection()],
                   ),
                 ),
               ],
@@ -1678,19 +2026,335 @@ class _SummaryPanel extends StatelessWidget {
               children: [
                 header,
                 unitSection(),
-                const SizedBox(height: 14),
-                skillPlaceholder,
               ],
             ),
     );
   }
 }
 
-void _showUnitSlotSourcesSheet(
+/// Estrellas de rango en el sheet de fuentes (fondo claro).
+class _SheetSpecRankStars extends StatelessWidget {
+  const _SheetSpecRankStars({
+    required this.invested,
+    required this.maxRanks,
+  });
+
+  final int invested;
+  final int maxRanks;
+
+  /// Dorado legible sobre gradiente claro de la card.
+  static const Color _active = Color(0xFFFBBF24);
+  /// Gris pizarra sólido (alto contraste); el gris muy claro se perdía en el fondo.
+  static const Color _inactive = Color(0xFF57534E);
+
+  @override
+  Widget build(BuildContext context) {
+    final max = maxRanks.clamp(1, 10);
+    final n = invested.clamp(0, max);
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(max, (i) {
+        final filled = i < n;
+        return Padding(
+          padding: EdgeInsets.only(right: i < max - 1 ? 3 : 0),
+          child: Icon(
+            Icons.star_rounded,
+            size: 20,
+            color: filled ? _active : _inactive,
+            shadows: filled
+                ? const [
+                    Shadow(
+                      color: Color(0x66CA8A04),
+                      blurRadius: 5,
+                      offset: Offset(0, 0.5),
+                    ),
+                  ]
+                : null,
+          ),
+        );
+      }),
+    );
+  }
+}
+
+String _statSourcesSheetSubtitle(_BuildSummaryViewTab tab) {
+  switch (tab) {
+    case _BuildSummaryViewTab.all:
+      return 'Equipment slots and specialization nodes (current rank) contributing numeric bonuses.';
+    case _BuildSummaryViewTab.items:
+      return 'Equipment slots contributing numeric bonuses to this unit.';
+    case _BuildSummaryViewTab.skills:
+      return 'Specialization nodes (current rank) contributing numeric bonuses to this unit.';
+  }
+}
+
+Widget _buildStatSourceDetailCard({
+  required _BuildStatSource c,
+  required String sheetRaceLabel,
+  required String Function(double value, bool isPercent) formatAttrDisplay,
+}) {
+  final lines = c.attrs.entries.toList()
+    ..sort((a, b) => b.value.value.abs().compareTo(a.value.value.abs()));
+
+  if (c.kind == _BuildStatSourceKind.item) {
+    final slotTitle = getSlotValueOrDescription(c.slotKey!);
+    final rarityColor = getRarityColor(c.itemRarity!);
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: rarityColor.withValues(alpha: 0.12),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            CatalogCardStripe.forRarityColor(rarityColor),
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Colors.white,
+                      rarityColor.withValues(alpha: 0.06),
+                    ],
+                  ),
+                ),
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _ResolvedAssetImage(
+                          candidates: [
+                            'assets/generated/item_icons/named/icons/${c.slotKey}.png',
+                          ],
+                          size: 44,
+                          borderRadius: 10,
+                          fallbackIcon: Icons.inventory_2_outlined,
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                slotTitle,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 14,
+                                  color: Color(0xFF334155),
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                c.itemName!,
+                                style: TextStyle(
+                                  color: Colors.grey.shade800,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w700,
+                                  height: 1.2,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              RarityIndicator(rarity: c.itemRarity!),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    ..._statValueRowsFromNumeric(lines, formatAttrDisplay),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  final node = humanSpecTreeByRepo[c.specRepo!];
+  final iconPath = node?.iconAsset;
+  final accent = CatalogCardStripe.accentForRaceLabel(sheetRaceLabel);
+  return Container(
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(14),
+      border: Border.all(
+        color: accent.withValues(alpha: 0.12),
+      ),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withValues(alpha: 0.04),
+          blurRadius: 10,
+          offset: const Offset(0, 4),
+        ),
+      ],
+    ),
+    clipBehavior: Clip.antiAlias,
+    child: IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          CatalogCardStripe.forRaceLabel(sheetRaceLabel),
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Colors.white,
+                    accent.withValues(alpha: 0.06),
+                  ],
+                ),
+              ),
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: SizedBox(
+                          width: 44,
+                          height: 44,
+                          child: iconPath != null
+                              ? Image.asset(
+                                  iconPath,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (_, __, ___) => ColoredBox(
+                                    color: const Color(0xFFE2E8F0),
+                                    child: Icon(
+                                      Icons.auto_graph_rounded,
+                                      color: Colors.grey.shade600,
+                                      size: 26,
+                                    ),
+                                  ),
+                                )
+                              : ColoredBox(
+                                  color: const Color(0xFFE2E8F0),
+                                  child: Icon(
+                                    Icons.auto_graph_rounded,
+                                    color: Colors.grey.shade600,
+                                    size: 26,
+                                  ),
+                                ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              c.nodeTitle!,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w800,
+                                fontSize: 14,
+                                color: Color(0xFF334155),
+                              ),
+                            ),
+                            if (c.specInvestedRanks != null &&
+                                c.specMaxRanks != null) ...[
+                              const SizedBox(height: 8),
+                              _SheetSpecRankStars(
+                                invested: c.specInvestedRanks!,
+                                maxRanks: c.specMaxRanks!,
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  ..._statValueRowsFromNumeric(lines, formatAttrDisplay),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+List<Widget> _statValueRowsFromNumeric(
+  List<MapEntry<String, NumericAttrValue>> lines,
+  String Function(double value, bool isPercent) formatAttrDisplay,
+) {
+  return lines.asMap().entries.map((me) {
+    final e = me.value;
+    final v = e.value.value;
+    final pct = e.value.isPercent;
+    final sign = v >= 0 ? '+' : '';
+    final isNeg = v < 0;
+    final amtColor =
+        isNeg ? const Color(0xFFC75A5A) : const Color(0xFF2E9B62);
+    return Padding(
+      padding: EdgeInsets.only(top: me.key == 0 ? 0 : 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '$sign${formatAttrDisplay(v, pct)}',
+            style: TextStyle(
+              color: amtColor,
+              fontSize: 12.5,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          const SizedBox(width: 6),
+          Expanded(
+            child: Text(
+              getAttributeValue(e.key),
+              style: const TextStyle(
+                color: Color(0xFF3D4452),
+                fontSize: 12.5,
+                fontWeight: FontWeight.w700,
+                height: 1.2,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }).toList();
+}
+
+void _showUnitStatSourcesSheet(
   BuildContext context, {
   required _PerUnitBuildSummary unit,
-  required String Function(double) formatValue,
+  required _BuildSummaryViewTab tab,
+  required String raceLabel,
+  required String Function(double value, bool isPercent) formatAttrDisplay,
 }) {
+  final itemBlock = tab == _BuildSummaryViewTab.all ||
+          tab == _BuildSummaryViewTab.items
+      ? unit.itemSources
+      : const <_BuildStatSource>[];
+  final skillBlock = tab == _BuildSummaryViewTab.all ||
+          tab == _BuildSummaryViewTab.skills
+      ? unit.skillSources
+      : const <_BuildStatSource>[];
+
   showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
@@ -1703,6 +2367,66 @@ void _showUnitSlotSourcesSheet(
         minChildSize: 0.35,
         maxChildSize: 0.92,
         builder: (context, scrollController) {
+          final children = <Widget>[];
+          final showSplitHeaders = tab == _BuildSummaryViewTab.all &&
+              itemBlock.isNotEmpty &&
+              skillBlock.isNotEmpty;
+          if (showSplitHeaders) {
+            children.add(
+              const Padding(
+                padding: EdgeInsets.only(bottom: 8),
+                child: Text(
+                  'Equipped items',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w800,
+                    color: Color(0xFF475569),
+                  ),
+                ),
+              ),
+            );
+          }
+          for (final c in itemBlock) {
+            children.add(
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: _buildStatSourceDetailCard(
+                  c: c,
+                  sheetRaceLabel: raceLabel,
+                  formatAttrDisplay: formatAttrDisplay,
+                ),
+              ),
+            );
+          }
+          if (showSplitHeaders) {
+            children.add(const SizedBox(height: 8));
+            children.add(
+              const Padding(
+                padding: EdgeInsets.only(bottom: 8),
+                child: Text(
+                  'Skill tree',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w800,
+                    color: Color(0xFF475569),
+                  ),
+                ),
+              ),
+            );
+          }
+          for (final c in skillBlock) {
+            children.add(
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: _buildStatSourceDetailCard(
+                  c: c,
+                  sheetRaceLabel: raceLabel,
+                  formatAttrDisplay: formatAttrDisplay,
+                ),
+              ),
+            );
+          }
+
           return Padding(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
             child: Column(
@@ -1718,7 +2442,7 @@ void _showUnitSlotSourcesSheet(
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Equipment slots contributing numeric bonuses to this unit.',
+                  _statSourcesSheetSubtitle(tab),
                   style: TextStyle(
                     color: Colors.grey.shade600,
                     fontSize: 13,
@@ -1727,154 +2451,20 @@ void _showUnitSlotSourcesSheet(
                 ),
                 const SizedBox(height: 12),
                 Expanded(
-                  child: ListView.separated(
-                    controller: scrollController,
-                    itemCount: unit.slotContributions.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 10),
-                    itemBuilder: (context, index) {
-                      final c = unit.slotContributions[index];
-                      final slotTitle =
-                          getSlotValueOrDescription(c.slotKey);
-                      final rarityColor = getRarityColor(c.itemRarity);
-                      final lines = c.attrs.entries.toList()
-                        ..sort(
-                          (a, b) => b.value.abs().compareTo(a.value.abs()),
-                        );
-                      return Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(14),
-                          border: Border.all(
-                            color: rarityColor.withValues(alpha: 0.12),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.04),
-                              blurRadius: 10,
-                              offset: const Offset(0, 4),
+                  child: children.isEmpty
+                      ? Center(
+                          child: Text(
+                            'No sources for this view.',
+                            style: TextStyle(
+                              color: Colors.grey.shade600,
+                              fontSize: 14,
                             ),
-                          ],
-                        ),
-                        clipBehavior: Clip.antiAlias,
-                        child: IntrinsicHeight(
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              CatalogCardStripe.forRarityColor(rarityColor),
-                              Expanded(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                      colors: [
-                                        Colors.white,
-                                        rarityColor.withValues(alpha: 0.06),
-                                      ],
-                                    ),
-                                  ),
-                                  padding: const EdgeInsets.all(12),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          _ResolvedAssetImage(
-                                            candidates: [
-                                              'assets/generated/item_icons/named/icons/${c.slotKey}.png',
-                                            ],
-                                            size: 44,
-                                            borderRadius: 10,
-                                            fallbackIcon: Icons
-                                                .inventory_2_outlined,
-                                          ),
-                                          const SizedBox(width: 12),
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  slotTitle,
-                                                  style: const TextStyle(
-                                                    fontWeight: FontWeight.w800,
-                                                    fontSize: 14,
-                                                    color: Color(0xFF334155),
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 4),
-                                                Text(
-                                                  c.itemName,
-                                                  style: TextStyle(
-                                                    color: Colors
-                                                        .grey.shade800,
-                                                    fontSize: 13,
-                                                    fontWeight: FontWeight.w700,
-                                                    height: 1.2,
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 8),
-                                                RarityIndicator(
-                                                  rarity: c.itemRarity,
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 10),
-                                      ...lines.asMap().entries.map((me) {
-                                        final e = me.value;
-                                        final v = e.value;
-                                        final sign = v >= 0 ? '+' : '';
-                                        final isNeg = v < 0;
-                                        final amtColor = isNeg
-                                            ? const Color(0xFFC75A5A)
-                                            : const Color(0xFF2E9B62);
-                                        return Padding(
-                                          padding: EdgeInsets.only(
-                                            top: me.key == 0 ? 0 : 4,
-                                          ),
-                                          child: Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                '$sign${formatValue(v)}',
-                                                style: TextStyle(
-                                                  color: amtColor,
-                                                  fontSize: 12.5,
-                                                  fontWeight: FontWeight.w800,
-                                                ),
-                                              ),
-                                              const SizedBox(width: 6),
-                                              Expanded(
-                                                child: Text(
-                                                  getAttributeValue(e.key),
-                                                  style: const TextStyle(
-                                                    color: Color(0xFF3D4452),
-                                                    fontSize: 12.5,
-                                                    fontWeight: FontWeight.w700,
-                                                    height: 1.2,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        );
-                                      }),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
                           ),
+                        )
+                      : ListView(
+                          controller: scrollController,
+                          children: children,
                         ),
-                      );
-                    },
-                  ),
                 ),
               ],
             ),
@@ -1888,7 +2478,10 @@ void _showUnitSlotSourcesSheet(
 class _UnitTotalsCard extends StatelessWidget {
   const _UnitTotalsCard({
     required this.unit,
-    required this.formatValue,
+    required this.displayTotals,
+    required this.percentByAttrKey,
+    required this.infoTooltip,
+    required this.formatAttrDisplay,
     required this.accent,
     required this.gradientEndAlpha,
     required this.stripeRaceLabel,
@@ -1896,7 +2489,10 @@ class _UnitTotalsCard extends StatelessWidget {
   });
 
   final _PerUnitBuildSummary unit;
-  final String Function(double) formatValue;
+  final Map<String, double> displayTotals;
+  final Map<String, bool> percentByAttrKey;
+  final String infoTooltip;
+  final String Function(double value, bool isPercent) formatAttrDisplay;
   final Color accent;
   final double gradientEndAlpha;
   final String stripeRaceLabel;
@@ -1904,7 +2500,7 @@ class _UnitTotalsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sortedAttrs = unit.attributeTotals.entries.toList()
+    final sortedAttrs = displayTotals.entries.toList()
       ..sort((a, b) => b.value.abs().compareTo(a.value.abs()));
 
     final readableAccent = Color.alphaBlend(
@@ -1950,12 +2546,13 @@ class _UnitTotalsCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                padding: const EdgeInsets.fromLTRB(12, 14, 14, 14),
+                padding: const EdgeInsets.fromLTRB(12, 10, 10, 10),
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
                           decoration: BoxDecoration(
@@ -2001,30 +2598,31 @@ class _UnitTotalsCard extends StatelessWidget {
                                   letterSpacing: 0.2,
                                 ),
                               ),
-                              const SizedBox(height: 4),
-                              Text(
-                                '${sortedAttrs.length} stacked attributes',
-                                style: TextStyle(
-                                  color: Colors.grey.shade600,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
                             ],
                           ),
                         ),
-                        IconButton(
-                          tooltip: 'Slots contributing to this unit',
-                          onPressed: onInfoTap,
-                          icon: Icon(
-                            Icons.info_outline_rounded,
-                            color: accent.withValues(alpha: 0.9),
+                        Tooltip(
+                          message: infoTooltip,
+                          child: Material(
+                            type: MaterialType.transparency,
+                            child: InkWell(
+                              onTap: onInfoTap,
+                              borderRadius: BorderRadius.circular(20),
+                              child: Padding(
+                                padding: const EdgeInsets.all(6),
+                                child: Icon(
+                                  Icons.info_outline_rounded,
+                                  size: 22,
+                                  color: accent.withValues(alpha: 0.9),
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       ],
                     ),
                     if (sortedAttrs.isNotEmpty) ...[
-                      const SizedBox(height: 12),
+                      const SizedBox(height: 8),
                       Container(
                         width: double.infinity,
                         padding: const EdgeInsets.all(10),
@@ -2044,7 +2642,10 @@ class _UnitTotalsCard extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: sortedAttrs.asMap().entries.map((me) {
-                            final v = me.value.value;
+                            final e = me.value;
+                            final v = e.value;
+                            final isPct =
+                                percentByAttrKey[e.key] ?? false;
                             final sign = v >= 0 ? '+' : '';
                             final isNeg = v < 0;
                             return Padding(
@@ -2053,7 +2654,7 @@ class _UnitTotalsCard extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    '$sign${formatValue(v)}',
+                                    '$sign${formatAttrDisplay(v, isPct)}',
                                     style: TextStyle(
                                       color: isNeg
                                           ? const Color(0xFFC75A5A)
@@ -2065,7 +2666,7 @@ class _UnitTotalsCard extends StatelessWidget {
                                   const SizedBox(width: 6),
                                   Expanded(
                                     child: Text(
-                                      getAttributeValue(me.value.key),
+                                      getAttributeValue(e.key),
                                       style: const TextStyle(
                                         color: Color(0xFF3D4452),
                                         fontSize: 12.5,
@@ -2092,50 +2693,126 @@ class _UnitTotalsCard extends StatelessWidget {
   }
 }
 
-class _SlotStatContribution {
-  const _SlotStatContribution({
-    required this.slotKey,
-    required this.itemName,
-    required this.itemRarity,
+enum _BuildStatSourceKind { item, spec }
+
+class _BuildStatSource {
+  const _BuildStatSource._({
+    required this.kind,
+    this.slotKey,
+    this.itemName,
+    this.itemRarity,
+    this.specRepo,
+    this.nodeTitle,
+    this.specInvestedRanks,
+    this.specMaxRanks,
     required this.attrs,
   });
 
-  final String slotKey;
-  final String itemName;
-  final String itemRarity;
-  final Map<String, double> attrs;
+  factory _BuildStatSource.item({
+    required String slotKey,
+    required String itemName,
+    required String itemRarity,
+    required Map<String, NumericAttrValue> attrs,
+  }) =>
+      _BuildStatSource._(
+        kind: _BuildStatSourceKind.item,
+        slotKey: slotKey,
+        itemName: itemName,
+        itemRarity: itemRarity,
+        attrs: attrs,
+      );
+
+  factory _BuildStatSource.spec({
+    required String specRepo,
+    required String nodeTitle,
+    required Map<String, NumericAttrValue> attrs,
+    required int specInvestedRanks,
+    required int specMaxRanks,
+  }) =>
+      _BuildStatSource._(
+        kind: _BuildStatSourceKind.spec,
+        specRepo: specRepo,
+        nodeTitle: nodeTitle,
+        specInvestedRanks: specInvestedRanks,
+        specMaxRanks: specMaxRanks,
+        attrs: attrs,
+      );
+
+  final _BuildStatSourceKind kind;
+  final String? slotKey;
+  final String? itemName;
+  final String? itemRarity;
+  final String? specRepo;
+  final String? nodeTitle;
+  final int? specInvestedRanks;
+  final int? specMaxRanks;
+  final Map<String, NumericAttrValue> attrs;
 }
 
-class _UnitAggBuilder {
-  _UnitAggBuilder(this.unitKey);
+class _PercentHintAgg {
+  int total = 0;
+  int percentCount = 0;
+
+  void add(bool isPercent) {
+    total++;
+    if (isPercent) {
+      percentCount++;
+    }
+  }
+
+  bool get uniformPercent => total > 0 && percentCount == total;
+}
+
+class _UnitSummaryScratch {
+  _UnitSummaryScratch(this.unitKey);
 
   final String unitKey;
-  final Map<String, double> totals = {};
-  final List<_SlotStatContribution> slots = [];
+  final Map<String, double> totalsItems = {};
+  final Map<String, double> totalsSkills = {};
+  final Map<String, _PercentHintAgg> itemPercentHints = {};
+  final Map<String, _PercentHintAgg> skillPercentHints = {};
+  final List<_BuildStatSource> itemSources = [];
+  final List<_BuildStatSource> skillSources = [];
 }
 
 class _PerUnitBuildSummary {
   const _PerUnitBuildSummary({
     required this.unitKey,
     required this.displayLabel,
-    required this.attributeTotals,
-    required this.slotContributions,
+    required this.totalsItems,
+    required this.totalsSkills,
+    required this.totalsAll,
+    required this.percentItems,
+    required this.percentSkills,
+    required this.percentAll,
+    required this.itemSources,
+    required this.skillSources,
   });
 
   final String unitKey;
   final String displayLabel;
-  final Map<String, double> attributeTotals;
-  final List<_SlotStatContribution> slotContributions;
+  final Map<String, double> totalsItems;
+  final Map<String, double> totalsSkills;
+  final Map<String, double> totalsAll;
+  final Map<String, bool> percentItems;
+  final Map<String, bool> percentSkills;
+  final Map<String, bool> percentAll;
+  final List<_BuildStatSource> itemSources;
+  final List<_BuildStatSource> skillSources;
 }
 
 class _BuildSummary {
   const _BuildSummary({
     required this.itemCount,
     required this.perUnit,
+    this.specStarsUsed = 0,
+    this.specAppliesToSummary = false,
   });
 
   final int itemCount;
   final List<_PerUnitBuildSummary> perUnit;
+  final int specStarsUsed;
+  final bool specAppliesToSummary;
 }
 
 class _ResolvedAssetImage extends StatelessWidget {
