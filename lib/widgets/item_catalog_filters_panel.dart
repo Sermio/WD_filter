@@ -763,20 +763,14 @@ class _RaceLockedUnitDropdown extends StatelessWidget {
                 color: Colors.grey.shade600,
                 fontWeight: FontWeight.w500,
               ),
+              // Sin icono aquí si hay selección: el [DropdownMenuItem.child] ya es Row(badge, texto).
+              // Un prefixIcon duplicaría el mismo asset que muestra el ítem cerrado.
               prefixIcon: value == null
                   ? Icon(
                       Icons.category,
                       color: Colors.grey.shade600,
                     )
-                  : Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: _CatalogFilterAssetBadge(
-                        candidates: unitIconAssetCandidates(value),
-                        size: 22,
-                        borderRadius: 6,
-                        fallbackIcon: Icons.shield_outlined,
-                      ),
-                    ),
+                  : null,
             ),
             hint: Text(
               'All units',

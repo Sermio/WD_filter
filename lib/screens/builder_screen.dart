@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -28,6 +29,9 @@ import 'package:worldshift_assistant/widgets/resolved_mini_asset_image.dart';
 
 /// Sufijo en mapas de totales del builder: mismo stat en plano vs % no se suman en una sola línea.
 const _builderTotalsPctSuffix = '__pct';
+
+/// Escala visual (~−20%) para frames de equipo (zigzag + rejilla) en el panel del builder.
+const double _kBuilderItemFrameScale = 0.8;
 
 String _builderTotalsStorageKey(String baseKey, bool isPercent) {
   final k = baseKey.trim().toLowerCase();
@@ -1200,6 +1204,19 @@ class _EquipmentPanel extends StatelessWidget {
     required this.skillTreeForHud,
   });
 
+  final String selectedRace;
+  final List<String> races;
+  final ValueChanged<String> onRaceChanged;
+  final _BuilderPanelTab panelTab;
+  final ValueChanged<_BuilderPanelTab> onPanelTabChanged;
+  final List<Map<String, String>> slotsForRace;
+  final Map<String, Item> equippedBySlot;
+  final void Function(String slotKey, String slotLabel) onPickItem;
+  final VoidCallback onFooterReset;
+  final String footerResetLabel;
+  final bool footerResetEnabled;
+  final Widget Function(_BuilderRaceHudTheme hud) skillTreeForHud;
+
   static const List<String> _humanCenterKeys = [
     'HUMAN_IMPLANTS',
     'HUMAN_NEUROSCIENCE',
@@ -1251,25 +1268,6 @@ class _EquipmentPanel extends StatelessWidget {
     'ALIEN_MANIPULATOR',
     'ALIEN_ARBITER',
   ];
-
-  final String selectedRace;
-  final List<String> races;
-  final ValueChanged<String> onRaceChanged;
-  final _BuilderPanelTab panelTab;
-  final ValueChanged<_BuilderPanelTab> onPanelTabChanged;
-  final List<Map<String, String>> slotsForRace;
-  final Map<String, Item> equippedBySlot;
-  final void Function(String slotKey, String slotLabel) onPickItem;
-  final VoidCallback onFooterReset;
-  final String footerResetLabel;
-  final bool footerResetEnabled;
-  final Widget Function(_BuilderRaceHudTheme hud) skillTreeForHud;
-
-  Map<String, Map<String, String>> _slotsByKey() {
-    return {
-      for (final s in slotsForRace) s['key'] ?? '': s,
-    };
-  }
 
   /// Selector unido; cada segmento usa el HUD de su raza (oscuro + tinte).
   static Widget _darkRaceSegmentedBar({
@@ -1425,6 +1423,12 @@ class _EquipmentPanel extends StatelessWidget {
     );
   }
 
+  Map<String, Map<String, String>> _slotsByKey() {
+    return {
+      for (final s in slotsForRace) s['key'] ?? '': s,
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     final hud = _BuilderRaceHudTheme.forRace(selectedRace);
@@ -1449,6 +1453,9 @@ class _EquipmentPanel extends StatelessWidget {
         builder: (context, constraints) {
           final panelHasBoundedHeight = constraints.maxHeight.isFinite;
           final barOutline = hud.panelBorder;
+          const gridItemFrameSize = 42 * _kBuilderItemFrameScale;
+          const gridCellPadding = 10 * _kBuilderItemFrameScale;
+          const gridCellGap = 10 * _kBuilderItemFrameScale;
 
           final header = Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -1511,8 +1518,8 @@ class _EquipmentPanel extends StatelessWidget {
                   itemCount: slotsForRace.length,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
+                    crossAxisSpacing: gridCellGap,
+                    mainAxisSpacing: gridCellGap,
                     childAspectRatio: 1.65,
                   ),
                   itemBuilder: (context, index) {
@@ -1538,27 +1545,27 @@ class _EquipmentPanel extends StatelessWidget {
                           onTap: () => onPickItem(slotKey, slotLabel),
                           child: Container(
                             color: const Color(0xFFF8FAFC),
-                            padding: const EdgeInsets.all(10),
+                            padding: const EdgeInsets.all(gridCellPadding),
                             child: Row(
                               children: [
                                 SizedBox(
-                                  width: 42,
-                                  height: 42,
+                                  width: gridItemFrameSize,
+                                  height: gridItemFrameSize,
                                   child: Stack(
                                     clipBehavior: Clip.none,
                                     children: [
                                       ItemCompleteFrame(
                                         slot: slotKey,
                                         rarity: equipped?.rarity ?? '1',
-                                        size: 42,
+                                        size: gridItemFrameSize,
                                         showInteriorIcon: equipped != null,
                                       ),
                                       if (equipped != null)
                                         Positioned(
-                                          top: 3,
-                                          right: 3,
+                                          top: gridCellPadding * 0.3,
+                                          right: gridCellPadding * 0.3,
                                           child: CatalogInfoEyeButton(
-                                            frameSize: 42,
+                                            frameSize: gridItemFrameSize,
                                             tooltip: 'View item details',
                                             onPressed: () {
                                               final e = equippedBySlot[slotKey];
@@ -1622,9 +1629,18 @@ class _EquipmentPanel extends StatelessWidget {
                   },
                 );
 
-          final slotBody = panelTab == _BuilderPanelTab.items
-              ? equipmentBody
-              : skillTreeForHud(hud);
+          final skillsBody = skillTreeForHud(hud);
+          final animatedBody = _BuilderTabAnimateDoBody(
+            tab: panelTab,
+            items: equipmentBody,
+            skills: skillsBody,
+          );
+
+          final slotWithSwipe = _BuilderTabHorizontalSwipe(
+            panelTab: panelTab,
+            onSwitchTab: onPanelTabChanged,
+            child: animatedBody,
+          );
 
           final footer = Column(
             mainAxisSize: MainAxisSize.min,
@@ -1659,9 +1675,13 @@ class _EquipmentPanel extends StatelessWidget {
               children: [
                 header,
                 Expanded(
-                  child: SingleChildScrollView(
-                    clipBehavior: Clip.hardEdge,
-                    child: slotBody,
+                  child: _BuilderTabHorizontalSwipe(
+                    panelTab: panelTab,
+                    onSwitchTab: onPanelTabChanged,
+                    child: SingleChildScrollView(
+                      clipBehavior: Clip.hardEdge,
+                      child: animatedBody,
+                    ),
                   ),
                 ),
                 footer,
@@ -1673,12 +1693,69 @@ class _EquipmentPanel extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               header,
-              slotBody,
+              slotWithSwipe,
               footer,
             ],
           );
         },
       ),
+    );
+  }
+}
+
+/// Transición al cambiar pestaña (animate_do): [FadeInUp] suave al montar cada vista.
+class _BuilderTabAnimateDoBody extends StatelessWidget {
+  const _BuilderTabAnimateDoBody({
+    required this.tab,
+    required this.items,
+    required this.skills,
+  });
+
+  final _BuilderPanelTab tab;
+  final Widget items;
+  final Widget skills;
+
+  @override
+  Widget build(BuildContext context) {
+    final child = tab == _BuilderPanelTab.items ? items : skills;
+    return FadeInUp(
+      key: ValueKey<_BuilderPanelTab>(tab),
+      duration: const Duration(milliseconds: 360),
+      curve: Curves.easeOutCubic,
+      from: 22,
+      child: child,
+    );
+  }
+}
+
+/// Cambio de pestaña Items ↔ Skill tree con desliz horizontal (sin PageView ni altura fija).
+class _BuilderTabHorizontalSwipe extends StatelessWidget {
+  const _BuilderTabHorizontalSwipe({
+    required this.panelTab,
+    required this.onSwitchTab,
+    required this.child,
+  });
+
+  final _BuilderPanelTab panelTab;
+  final ValueChanged<_BuilderPanelTab> onSwitchTab;
+  final Widget child;
+
+  static const double _velocityThreshold = 240;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onHorizontalDragEnd: (details) {
+        final vx = details.velocity.pixelsPerSecond.dx;
+        if (vx < -_velocityThreshold && panelTab == _BuilderPanelTab.items) {
+          onSwitchTab(_BuilderPanelTab.skillTree);
+        } else if (vx > _velocityThreshold &&
+            panelTab == _BuilderPanelTab.skillTree) {
+          onSwitchTab(_BuilderPanelTab.items);
+        }
+      },
+      child: child,
     );
   }
 }
@@ -1702,15 +1779,16 @@ class _BuilderEquipmentZigzag extends StatelessWidget {
   final List<String> leftKeys;
   final List<String> rightKeys;
 
-  static const double _colGap = 6;
-  static const double _rowGap = 10;
+  static const double _colGap = 4.8;
+  static const double _rowGap = 8;
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
         final maxW = constraints.maxWidth;
-        final frameSize = (maxW / 3.2).clamp(64.0, 88.0);
+        final frameSize =
+            ((maxW / 3.2).clamp(64.0, 88.0)) * _kBuilderItemFrameScale;
 
         Widget columnSlot(String key) {
           final meta = slotsByKey[key];

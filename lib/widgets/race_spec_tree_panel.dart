@@ -131,7 +131,10 @@ class RaceSpecTreePanel extends StatelessWidget {
   final int starBudget;
 
   static const double _hGap = 1;
-  static const double _vGap = 12;
+  static const double _vGap = 9.6;
+
+  /// Misma escala que frames de ítems del builder (~−20%).
+  static const double _kSpecTreeFrameScale = 0.8;
 
   SpecTreeNode _n(String repo) => nodesByRepo[repo]!;
 
@@ -192,7 +195,8 @@ class RaceSpecTreePanel extends StatelessWidget {
   static double _frameSizeForWidth(double maxW) {
     final w2 = (maxW - _hGap) / 2;
     final w3 = (maxW - 2 * _hGap) / 3;
-    return (w2 < w3 ? w2 : w3).clamp(52.0, 88.0);
+    final base = (w2 < w3 ? w2 : w3).clamp(52.0, 88.0);
+    return base * _kSpecTreeFrameScale;
   }
 
   @override
@@ -245,7 +249,7 @@ class RaceSpecTreePanel extends StatelessWidget {
                   ),
                 ),
               ],
-              const SizedBox(height: 14),
+              const SizedBox(height: 11),
               Align(
                 alignment: Alignment.center,
                 child: _SpecStarPoolRow(
