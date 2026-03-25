@@ -1484,19 +1484,31 @@ class _EquipmentPanel extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-              ] else if (selectedRace != 'Humans') ...[
-                const SizedBox(height: 12),
-                Text(
-                  'Skill tree for this race — work in progress.',
-                  style: TextStyle(
-                    color: hud.hintColor,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
+              ] else if (panelTab == _BuilderPanelTab.skillTree) ...[
+                if (selectedRace != 'Humans') ...[
+                  const SizedBox(height: 12),
+                  Text(
+                    'Skill tree for this race — work in progress.',
+                    style: TextStyle(
+                      color: hud.hintColor,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 12),
-              ] else
-                const SizedBox(height: 8),
+                  const SizedBox(height: 12),
+                ] else ...[
+                  const SizedBox(height: 12),
+                  Text(
+                    'Tap a skill to add a star.',
+                    style: TextStyle(
+                      color: hud.hintColor,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                ],
+              ],
             ],
           );
 
@@ -1768,47 +1780,98 @@ class _BuilderTabLateralSlideState extends State<_BuilderTabLateralSlide>
     }
   }
 
-  Widget _bodyFor(_BuilderPanelTab t) =>
-      t == _BuilderPanelTab.items ? widget.items : widget.skills;
+  /// Orden fijo: [items], [skills]. Así el [Stack] siempre tiene altura
+  /// max(items, skills) y no hay salto al empezar/terminar la animación.
+  static double _itemsOffsetX({
+    required bool animating,
+    required bool forward,
+    required double t,
+    required double w,
+    required _BuilderPanelTab idleTab,
+  }) {
+    if (!animating) {
+      return idleTab == _BuilderPanelTab.items ? 0.0 : -w;
+    }
+    if (forward) {
+      return -w * t;
+    }
+    return -w * (1 - t);
+  }
+
+  static double _skillsOffsetX({
+    required bool animating,
+    required bool forward,
+    required double t,
+    required double w,
+    required _BuilderPanelTab idleTab,
+  }) {
+    if (!animating) {
+      return idleTab == _BuilderPanelTab.items ? w : 0.0;
+    }
+    if (forward) {
+      return w * (1 - t);
+    }
+    return w * t;
+  }
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
         final w = constraints.maxWidth.clamp(1.0, double.infinity);
+        final animating = _fromTab != null && _toTab != null;
 
-        if (_fromTab == null && _toTab == null) {
-          return _bodyFor(_idleTab);
+        Widget layer(double Function(double t) offsetX, Widget child) {
+          if (!animating) {
+            return Transform.translate(
+              offset: Offset(
+                offsetX(
+                  Curves.easeOutCubic.transform(_controller.value),
+                ),
+                0,
+              ),
+              child: SizedBox(width: w, child: child),
+            );
+          }
+          return AnimatedBuilder(
+            animation: _controller,
+            builder: (context, _) {
+              final tAnim =
+                  Curves.easeOutCubic.transform(_controller.value);
+              return Transform.translate(
+                offset: Offset(offsetX(tAnim), 0),
+                child: SizedBox(width: w, child: child),
+              );
+            },
+          );
         }
 
-        return AnimatedBuilder(
-          animation: _controller,
-          builder: (context, _) {
-            final tAnim =
-                Curves.easeOutCubic.transform(_controller.value);
-            final outTab = _fromTab!;
-            final inTab = _toTab!;
-            final ox = _forward ? -w * tAnim : w * tAnim;
-            final ix = _forward ? w * (1 - tAnim) : -w * (1 - tAnim);
-
-            return ClipRect(
-              clipBehavior: Clip.hardEdge,
-              child: Stack(
-                alignment: Alignment.topCenter,
-                clipBehavior: Clip.hardEdge,
-                children: [
-                  Transform.translate(
-                    offset: Offset(ox, 0),
-                    child: SizedBox(width: w, child: _bodyFor(outTab)),
-                  ),
-                  Transform.translate(
-                    offset: Offset(ix, 0),
-                    child: SizedBox(width: w, child: _bodyFor(inTab)),
-                  ),
-                ],
-              ),
+        double itemsT(double t) => _itemsOffsetX(
+              animating: animating,
+              forward: _forward,
+              t: t,
+              w: w,
+              idleTab: _idleTab,
             );
-          },
+
+        double skillsT(double t) => _skillsOffsetX(
+              animating: animating,
+              forward: _forward,
+              t: t,
+              w: w,
+              idleTab: _idleTab,
+            );
+
+        return ClipRect(
+          clipBehavior: Clip.hardEdge,
+          child: Stack(
+            alignment: Alignment.topCenter,
+            clipBehavior: Clip.hardEdge,
+            children: [
+              layer(itemsT, widget.items),
+              layer(skillsT, widget.skills),
+            ],
+          ),
         );
       },
     );
