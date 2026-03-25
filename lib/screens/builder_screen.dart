@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -70,6 +71,17 @@ enum _BuilderPanelTab { items, skillTree }
 
 enum _BuildSummaryViewTab { all, items, skills }
 
+/// Max length for loadout names (saved + text field). Change if you need another cap.
+const int _kMaxLoadoutNameChars = 30;
+
+String _clampLoadoutName(String value) {
+  final t = value.trim();
+  if (t.length <= _kMaxLoadoutNameChars) {
+    return t;
+  }
+  return t.substring(0, _kMaxLoadoutNameChars);
+}
+
 class BuilderScreen extends StatefulWidget {
   const BuilderScreen({super.key});
 
@@ -94,6 +106,9 @@ class _BuilderScreenState extends State<BuilderScreen> {
 
   /// Stars per repo (Humans / Tribes / Aliens); same persistence as equipment.
   static const _prefsSpecStarsKey = 'builder_spec_stars_by_race_v1';
+
+  /// Named snapshots: equipment + skill tree (all races) + selected race tab.
+  static const _prefsSavedBuildsKey = 'builder_saved_builds_v1';
 
   late final Future<List<Item>> _itemsFuture;
   String _selectedRace = 'Humans';
@@ -272,6 +287,408 @@ class _BuilderScreenState extends State<BuilderScreen> {
       for (final r in _races) r: {..._specStarsByRace[r]!},
     };
     await prefs.setString(_prefsSpecStarsKey, jsonEncode(specPayload));
+  }
+
+  Map<String, dynamic> _captureBuildSnapshot() {
+    return {
+      'equip': {
+        for (final r in _races)
+          r: {
+            for (final e in _equippedByRace[r]!.entries) e.key: e.value.id,
+          },
+      },
+      'specStars': {
+        for (final r in _races) r: {..._specStarsByRace[r]!},
+      },
+      'selectedRace': _selectedRace,
+    };
+  }
+
+  Future<List<Map<String, dynamic>>> _readSavedBuildsList() async {
+    final prefs = await SharedPreferences.getInstance();
+    final raw = prefs.getString(_prefsSavedBuildsKey);
+    if (raw == null || raw.isEmpty) {
+      return [];
+    }
+    try {
+      final decoded = jsonDecode(raw);
+      if (decoded is! List) {
+        return [];
+      }
+      return decoded
+          .whereType<Map>()
+          .map((e) => Map<String, dynamic>.from(e))
+          .toList();
+    } catch (_) {
+      return [];
+    }
+  }
+
+  Future<void> _writeSavedBuildsList(List<Map<String, dynamic>> list) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_prefsSavedBuildsKey, jsonEncode(list));
+  }
+
+  /// Aplica un snapshot guardado (misma validación que al leer prefs del builder).
+  void _applyBuildSnapshot(List<Item> items, Map<String, dynamic> snap) {
+    final byId = {for (final i in items) i.id: i};
+
+    final nextByRace = {
+      for (final r in _races) r: <String, Item>{},
+    };
+
+    void putIfValid(String race, String slotKey, int id) {
+      final item = byId[id];
+      if (item == null || item.slot != slotKey) {
+        return;
+      }
+      if (_raceForSlotKey(slotKey) != race) {
+        return;
+      }
+      nextByRace[race]![slotKey] = item;
+    }
+
+    final equip = snap['equip'];
+    if (equip is Map) {
+      for (final race in _races) {
+        final inner = equip[race];
+        if (inner is! Map) {
+          continue;
+        }
+        for (final e in inner.entries) {
+          final slotKey = '${e.key}';
+          final idVal = e.value;
+          final id = idVal is int
+              ? idVal
+              : idVal is num
+                  ? idVal.toInt()
+                  : int.tryParse('$idVal');
+          if (id == null) {
+            continue;
+          }
+          putIfValid(race, slotKey, id);
+        }
+      }
+    }
+
+    for (final raceName in _races) {
+      _specStarsByRace[raceName]!.clear();
+    }
+    final spec = snap['specStars'];
+    if (spec is Map) {
+      for (final raceName in _races) {
+        final inner = spec[raceName];
+        if (inner is! Map) {
+          continue;
+        }
+        final m = _specStarsByRace[raceName]!;
+        for (final e in inner.entries) {
+          final k = '${e.key}';
+          final v = e.value;
+          final n = v is int
+              ? v
+              : v is num
+                  ? v.toInt()
+                  : int.tryParse('$v');
+          if (n != null && n > 0) {
+            m[k] = n;
+          }
+        }
+      }
+    }
+
+    final sr = snap['selectedRace'];
+    final race = sr is String && _races.contains(sr) ? sr : _selectedRace;
+
+    setState(() {
+      for (final r in _races) {
+        _equippedByRace[r]!
+          ..clear()
+          ..addAll(nextByRace[r]!);
+      }
+      _selectedRace = race;
+      _summaryViewTab = _BuildSummaryViewTab.all;
+    });
+  }
+
+  /// Localiza la fila a sustituir tras re-leer prefs (orden puede cambiar).
+  int? _findSavedBuildToOverwrite(
+    List<Map<String, dynamic>> fresh,
+    Map<String, dynamic> marker,
+    int preferredIndex,
+  ) {
+    final mid = marker['id'];
+    if (mid != null && '$mid'.isNotEmpty) {
+      final i = fresh.indexWhere((e) => '${e['id']}' == '$mid');
+      if (i >= 0) {
+        return i;
+      }
+    }
+    final name = '${marker['name']}';
+    final at = '${marker['savedAt']}';
+    final i = fresh.indexWhere(
+      (e) => '${e['name']}' == name && '${e['savedAt']}' == at,
+    );
+    if (i >= 0) {
+      return i;
+    }
+    if (preferredIndex >= 0 && preferredIndex < fresh.length) {
+      return preferredIndex;
+    }
+    return null;
+  }
+
+  Future<void> _persistSaveOutcome(
+    List<Map<String, dynamic>> snapshotAtDialogOpen,
+    _SaveBuilderConfigOutcome outcome,
+  ) async {
+    final name = _clampLoadoutName(outcome.name);
+    if (name.isEmpty) {
+      return;
+    }
+    final snap = _captureBuildSnapshot();
+    final list = await _readSavedBuildsList();
+    if (outcome.createNew) {
+      final entry = <String, dynamic>{
+        'schema': 1,
+        'id': '${DateTime.now().millisecondsSinceEpoch}',
+        'name': name,
+        'savedAt': DateTime.now().toIso8601String(),
+        ...snap,
+      };
+      list.insert(0, entry);
+    } else {
+      final idx = outcome.overwriteSnapshotIndex;
+      if (idx == null ||
+          idx < 0 ||
+          idx >= snapshotAtDialogOpen.length) {
+        return;
+      }
+      final marker = snapshotAtDialogOpen[idx];
+      final target = _findSavedBuildToOverwrite(list, marker, idx);
+      if (target == null) {
+        return;
+      }
+      final preservedId =
+          list[target]['id'] ?? '${DateTime.now().millisecondsSinceEpoch}';
+      list[target] = <String, dynamic>{
+        'schema': 1,
+        'id': '$preservedId',
+        'name': name,
+        'savedAt': DateTime.now().toIso8601String(),
+        ...snap,
+      };
+    }
+    await _writeSavedBuildsList(list);
+  }
+
+  Future<void> _openSaveBuildDialog() async {
+    final existing = await _readSavedBuildsList();
+    if (!mounted) {
+      return;
+    }
+    final snapshot = List<Map<String, dynamic>>.from(existing);
+    final initial = _clampLoadoutName(
+      'Build ${DateFormat('yyyy-MM-dd HH:mm').format(DateTime.now())}',
+    );
+    final outcome = await showDialog<_SaveBuilderConfigOutcome>(
+      context: context,
+      builder: (ctx) => _SaveBuilderConfigDialog(
+        initialText: initial,
+        existingSaved: snapshot,
+      ),
+    );
+    if (outcome == null || outcome.name.trim().isEmpty || !mounted) {
+      return;
+    }
+    await _persistSaveOutcome(snapshot, outcome);
+    if (!mounted) {
+      return;
+    }
+    final label = outcome.name.trim();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          outcome.createNew
+              ? 'New loadout saved: $label'
+              : 'Loadout updated: $label',
+        ),
+      ),
+    );
+  }
+
+  Future<void> _openLoadBuildWhenReady() async {
+    final items = await _itemsFuture;
+    if (!mounted) {
+      return;
+    }
+    await _openLoadBuildSheet(items);
+  }
+
+  Future<void> _openLoadBuildSheet(List<Item> allItems) async {
+    final list = await _readSavedBuildsList();
+    if (!mounted) {
+      return;
+    }
+    final messenger = ScaffoldMessenger.of(context);
+    final picked = await showModalBottomSheet<Map<String, dynamic>?>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      backgroundColor: const Color(0xFFF8F9FA),
+      builder: (ctx) {
+        final h = (MediaQuery.sizeOf(ctx).height * 0.55).clamp(240.0, 520.0);
+        final localList = List<Map<String, dynamic>>.from(list);
+        return SizedBox(
+          height: h,
+          child: StatefulBuilder(
+            builder: (context, setModalState) {
+              final body = localList.isEmpty
+                  ? const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(24),
+                        child: Text(
+                          'No saved loadouts yet.\n'
+                          'Use Save Loadout above the build summary.',
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    )
+                  : ListView.separated(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      itemCount: localList.length,
+                      separatorBuilder: (_, __) => const Divider(
+                        height: 1,
+                        indent: 16,
+                        endIndent: 16,
+                      ),
+                      itemBuilder: (context, i) {
+                        final e = localList[i];
+                        final label = _savedLoadoutDisplayName(e);
+                        return ListTile(
+                          title: Text(
+                            label,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                tooltip: 'Delete',
+                                icon: Icon(
+                                  Icons.delete_outline,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .error,
+                                ),
+                                onPressed: () async {
+                                  final ok = await showDialog<bool>(
+                                    context: ctx,
+                                    builder: (dCtx) => AlertDialog(
+                                      title: const Text('Delete loadout'),
+                                      content: Text(
+                                        'Delete “$label”? This cannot be undone.',
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.of(dCtx).pop(false),
+                                          child: const Text('Cancel'),
+                                        ),
+                                        FilledButton(
+                                          style: FilledButton.styleFrom(
+                                            backgroundColor: Theme.of(dCtx)
+                                                .colorScheme
+                                                .error,
+                                            foregroundColor: Theme.of(dCtx)
+                                                .colorScheme
+                                                .onError,
+                                          ),
+                                          onPressed: () =>
+                                              Navigator.of(dCtx).pop(true),
+                                          child: const Text('Delete'),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                  if (ok != true) {
+                                    return;
+                                  }
+                                  localList.remove(e);
+                                  await _writeSavedBuildsList(localList);
+                                  if (!mounted) {
+                                    return;
+                                  }
+                                  setModalState(() {});
+                                  messenger.showSnackBar(
+                                    SnackBar(content: Text('Deleted: $label')),
+                                  );
+                                },
+                              ),
+                              const Icon(Icons.chevron_right),
+                            ],
+                          ),
+                          onTap: () => Navigator.of(ctx).pop(e),
+                        );
+                      },
+                    );
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+                    child: Text(
+                      'Saved loadouts',
+                      style: Theme.of(ctx).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                    ),
+                  ),
+                  Expanded(child: body),
+                ],
+              );
+            },
+          ),
+        );
+      },
+    );
+    if (picked == null || !mounted) {
+      return;
+    }
+    final displayName = '${picked['name'] ?? 'Loadout'}';
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Load loadout'),
+        content: Text(
+          'Load “$displayName”?\n\n'
+          'Equipped items and specialization trees for all races will be '
+          'replaced with this loadout.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: const Text('Load'),
+          ),
+        ],
+      ),
+    );
+    if (ok != true || !mounted) {
+      return;
+    }
+    _applyBuildSnapshot(allItems, picked);
+    await _persistBuilderState();
+    if (!mounted) {
+      return;
+    }
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Loaded: $displayName')),
+    );
   }
 
   List<Map<String, String>> _slotsForRace(String race) {
@@ -719,14 +1136,63 @@ class _BuilderScreenState extends State<BuilderScreen> {
                     setState(() => _summaryViewTab = t),
               );
 
+              final loadoutActions = Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: () => unawaited(_openSaveBuildDialog()),
+                        icon: const Icon(Icons.bookmark_add_outlined, size: 20),
+                        label: const Text('Save Loadout'),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: const Color(0xFF4338CA),
+                          side: const BorderSide(color: Color(0xFFE2E8F0)),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 12,
+                            horizontal: 8,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: FilledButton.icon(
+                        onPressed: () => unawaited(_openLoadBuildWhenReady()),
+                        icon: const Icon(Icons.folder_open_outlined, size: 20),
+                        label: const Text('Load Loadout'),
+                        style: FilledButton.styleFrom(
+                          backgroundColor: const Color(0xFF667eea),
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 12,
+                            horizontal: 8,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+
               if (constraints.maxWidth >= 1050) {
                 return Padding(
                   padding: const EdgeInsets.all(12),
                   child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(flex: 7, child: panelLeft),
                       const SizedBox(width: 12),
-                      Expanded(flex: 5, child: panelRight),
+                      Expanded(
+                        flex: 5,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            loadoutActions,
+                            Expanded(child: panelRight),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 );
@@ -737,6 +1203,7 @@ class _BuilderScreenState extends State<BuilderScreen> {
                 children: [
                   panelLeft,
                   const SizedBox(height: 12),
+                  loadoutActions,
                   panelRight,
                 ],
               );
@@ -744,6 +1211,198 @@ class _BuilderScreenState extends State<BuilderScreen> {
           );
         },
       ),
+    );
+  }
+}
+
+/// Loadout name only (no date), for dropdowns and lists.
+String _savedLoadoutDisplayName(Map<String, dynamic> e) {
+  return _clampLoadoutName('${e['name'] ?? 'Unnamed'}');
+}
+
+class _SaveBuilderConfigOutcome {
+  const _SaveBuilderConfigOutcome({
+    required this.createNew,
+    this.overwriteSnapshotIndex,
+    required this.name,
+  });
+
+  final bool createNew;
+  final int? overwriteSnapshotIndex;
+  final String name;
+}
+
+class _SaveBuilderConfigDialog extends StatefulWidget {
+  const _SaveBuilderConfigDialog({
+    required this.initialText,
+    required this.existingSaved,
+  });
+
+  final String initialText;
+  final List<Map<String, dynamic>> existingSaved;
+
+  @override
+  State<_SaveBuilderConfigDialog> createState() =>
+      _SaveBuilderConfigDialogState();
+}
+
+class _SaveBuilderConfigDialogState extends State<_SaveBuilderConfigDialog> {
+  late final TextEditingController _controller;
+  late bool _createNew;
+  late int _overwriteIdx;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(
+      text: _clampLoadoutName(widget.initialText),
+    );
+    _createNew = true;
+    _overwriteIdx = 0;
+  }
+
+  void _syncNameFromOverwriteSelection() {
+    if (widget.existingSaved.isEmpty) {
+      return;
+    }
+    final i = _overwriteIdx.clamp(0, widget.existingSaved.length - 1);
+    final n = _clampLoadoutName('${widget.existingSaved[i]['name'] ?? ''}');
+    if (n.isNotEmpty) {
+      _controller.text = n;
+    }
+  }
+
+  void _onLoadoutSaveModeChanged(bool? v) {
+    if (v == null) {
+      return;
+    }
+    setState(() {
+      _createNew = v;
+      if (!v) {
+        _syncNameFromOverwriteSelection();
+      }
+    });
+  }
+
+  void _submit() {
+    final name = _clampLoadoutName(_controller.text);
+    if (name.isEmpty) {
+      return;
+    }
+    final canOverwrite = widget.existingSaved.isNotEmpty;
+    final createNew = _createNew || !canOverwrite;
+    Navigator.of(context).pop(
+      _SaveBuilderConfigOutcome(
+        createNew: createNew,
+        overwriteSnapshotIndex: createNew ? null : _overwriteIdx,
+        name: name,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final canOverwrite = widget.existingSaved.isNotEmpty;
+    return AlertDialog(
+      title: const Text('Save loadout'),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (canOverwrite) ...[
+              RadioListTile<bool>(
+                title: const Text('New loadout'),
+                subtitle: const Text('Adds another entry to the list'),
+                value: true,
+                groupValue: _createNew,
+                onChanged: _onLoadoutSaveModeChanged,
+              ),
+              RadioListTile<bool>(
+                title: const Text('Overwrite existing'),
+                subtitle: const Text(
+                  'Updates items and skill tree on a saved loadout',
+                ),
+                value: false,
+                groupValue: _createNew,
+                onChanged: _onLoadoutSaveModeChanged,
+              ),
+              if (!_createNew) ...[
+                DropdownButtonFormField<int>(
+                  isExpanded: true,
+                  value: _overwriteIdx.clamp(
+                    0,
+                    widget.existingSaved.length - 1,
+                  ),
+                  decoration: const InputDecoration(
+                    labelText: 'Loadout to update',
+                  ),
+                  selectedItemBuilder: (context) => [
+                    for (var i = 0; i < widget.existingSaved.length; i++)
+                      Align(
+                        alignment: AlignmentDirectional.centerStart,
+                        child: Text(
+                          _savedLoadoutDisplayName(widget.existingSaved[i]),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                  ],
+                  items: [
+                    for (var i = 0; i < widget.existingSaved.length; i++)
+                      DropdownMenuItem(
+                        value: i,
+                        child: Text(
+                          _savedLoadoutDisplayName(widget.existingSaved[i]),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                  ],
+                  onChanged: (v) {
+                    if (v == null) {
+                      return;
+                    }
+                    setState(() {
+                      _overwriteIdx = v;
+                      _syncNameFromOverwriteSelection();
+                    });
+                  },
+                ),
+                const SizedBox(height: 12),
+              ],
+            ],
+            TextField(
+              controller: _controller,
+              decoration: const InputDecoration(
+                labelText: 'Name',
+                hintText: 'e.g. Mutant tank PvE',
+              ),
+              autofocus: !canOverwrite,
+              maxLength: _kMaxLoadoutNameChars,
+              maxLengthEnforcement: MaxLengthEnforcement.enforced,
+              textCapitalization: TextCapitalization.sentences,
+              onSubmitted: (_) => _submit(),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Cancel'),
+        ),
+        FilledButton(
+          onPressed: _submit,
+          child: const Text('Save'),
+        ),
+      ],
     );
   }
 }
