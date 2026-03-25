@@ -71,6 +71,33 @@ const _extraDtIdsByBuilderKey = <String, List<String>>{
 /// Retratos solo por nombre (búsquedas / UI que no usan id .dt). El resto de campaña va en [units_manual.json].
 const _manualPortraitPathsByName = <String, List<String>>{};
 
+/// Ids en [units.json] sin `mainIconRow`/`mainIconCol`: reutilizar PNG de otra unidad (solo lista/UI).
+const _orphanIconSourceByUnitId = <String, String>{
+  'alien': 'tritech',
+  'triad': 'overseer',
+  'battleyamu': 'bsabattleyamu',
+  'berserker': 'ripper',
+  'havoc': 'hellfire',
+  'heavyinfantry': 'trooper',
+  'mercenary': 'nomad',
+  'surgeonmob': 'surgeon',
+  'crew': 'technician',
+  'heavybot': 'assaultbot',
+  'personnelcarrier': 'humanship',
+  'repairdrone': 'kharumdrone',
+  'repair_drone': 'kharumdrone',
+  'xenolitebarge': 'assaultbot',
+  'cargocopter': 'humanship',
+  'hellfire2': 'hellfire',
+  'hellfire_v3': 'hellfire',
+  'spiderboss': 'spiderspawn',
+  'suppliescopter': 'humanship',
+  'transportcopter': 'humanship',
+  'trooper_lod': 'trooper',
+  'battleyamu_test': 'bsabattleyamu',
+  'nightmare2': 'howlinghorror',
+};
+
 String? _iconPathForUnit(Map<String, dynamic> u) {
   final cls = '${u['unitIconClass'] ?? 'unit'}'.trim();
   final mainR = u['mainIconRow'];
@@ -184,6 +211,24 @@ void main() {
 
   for (final e in _manualPortraitPathsByName.entries) {
     for (final p in e.value) {
+      addPath(e.key, p);
+      final norm =
+          e.key.replaceAll(RegExp(r'[^A-Za-z0-9]+'), '').toLowerCase();
+      if (norm.isNotEmpty && norm != e.key) {
+        addPath(norm, p);
+      }
+    }
+  }
+
+  for (final e in _orphanIconSourceByUnitId.entries) {
+    final srcPaths = merged[e.value];
+    if (srcPaths == null || srcPaths.isEmpty) {
+      stderr.writeln(
+        'Aviso: icono huérfano "${e.key}" → "${e.value}" sin rutas en merged',
+      );
+      continue;
+    }
+    for (final p in srcPaths) {
       addPath(e.key, p);
       final norm =
           e.key.replaceAll(RegExp(r'[^A-Za-z0-9]+'), '').toLowerCase();
