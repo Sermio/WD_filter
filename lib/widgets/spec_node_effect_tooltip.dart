@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:worldshift_assistant/data/human_skill_tree_data.dart';
 import 'package:worldshift_assistant/widgets/game_description_highlights.dart';
 
-/// Sustituye `[stats.xxx]` / `[stat:xxx]` por valores de [HumanSpecTreeNode.rankStatSnippets]:
-/// con rangos invertidos, el valor actual en **verde** y el resto entre paréntesis en gris;
-/// con 0 rangos, solo los valores posibles en un paréntesis.
+/// Replaces `[stats.xxx]` / `[stat:xxx]` with values from [HumanSpecTreeNode.rankStatSnippets]:
+/// with ranks invested, the current value in **green** and the rest in gray parentheses;
+/// with 0 ranks, only the possible values in one parenthesis.
 ///
-/// Si no se puede enlazar, cae en [GameDescriptionText] (etiquetas normalizadas).
+/// If linking fails, falls back to [GameDescriptionText] (normalized labels).
 class SpecNodeEffectTooltip extends StatelessWidget {
   const SpecNodeEffectTooltip({
     super.key,

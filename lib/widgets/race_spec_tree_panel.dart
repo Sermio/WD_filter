@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:worldshift_assistant/data/human_skill_tree_data.dart';
 import 'package:worldshift_assistant/models/spec_star_allocation.dart';
 import 'package:worldshift_assistant/utils/unit_icon_candidates.dart';
+import 'package:worldshift_assistant/widgets/catalog_info_eye_button.dart';
 import 'package:worldshift_assistant/widgets/resolved_mini_asset_image.dart';
 import 'package:worldshift_assistant/widgets/spec_node_effect_tooltip.dart';
 
-/// Árbol de especialización (patrón visual 2-3-2-3). Datos: `*specs.dt` del juego.
+/// Specialization tree (2-3-2-3 visual layout). Data: game `*specs.dt`.
 class RaceSpecTreePanel extends StatelessWidget {
   RaceSpecTreePanel.humans({
     super.key,
@@ -31,10 +32,10 @@ class RaceSpecTreePanel extends StatelessWidget {
   final Color hudInkHighlight;
   final Color hudPanelBorder;
 
-  /// Estrellas asignadas a cada `repo` (0 = sin entrada en el mapa).
+  /// Stars assigned per `repo` (0 = no entry in the map).
   final Map<String, int> allocatedByRepo;
 
-  /// Sustituye el mapa de la raza actual (tras +/- en un nodo). Null = solo lectura.
+  /// Replaces the current race map (after +/- on a node). Null = read-only.
   final void Function(Map<String, int> nextByRepo)? onSpecAllocationChanged;
 
   final int starBudget;
@@ -52,7 +53,7 @@ class RaceSpecTreePanel extends StatelessWidget {
     if (before >= node.maxRanks) {
       ScaffoldMessenger.maybeOf(context)?.showSnackBar(
         const SnackBar(
-          content: Text('Este nodo ya tiene todas sus estrellas.'),
+          content: Text('This node already has all its stars.'),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -70,7 +71,7 @@ class RaceSpecTreePanel extends StatelessWidget {
     if (after <= before) {
       ScaffoldMessenger.maybeOf(context)?.showSnackBar(
         const SnackBar(
-          content: Text('No quedan estrellas en el pool (10 por raza).'),
+          content: Text('No stars left in the pool (10 per race).'),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -112,7 +113,7 @@ class RaceSpecTreePanel extends StatelessWidget {
         final frameSize = _frameSizeForWidth(maxW);
         final starsUsedTotal = totalSpecStarsAllocated(allocatedByRepo);
         final remaining = (starBudget - starsUsedTotal).clamp(0, starBudget);
-        // Mismo tamaño que [_SpecStarPlate] en cada nodo.
+        // Same size as [_SpecStarPlate] on each node.
         final plateStarSize = (frameSize * 0.16).clamp(8.0, 14.0);
 
         return Padding(
@@ -177,7 +178,7 @@ class RaceSpecTreePanel extends StatelessWidget {
   }
 }
 
-/// Pool global: a la izquierda estrellas **doradas** (aún en el pool); a la derecha **oscuras** (ya asignadas a nodos).
+/// Global pool: **gold** stars on the left (still in the pool); **dark** on the right (already on nodes).
 class _SpecStarPoolRow extends StatelessWidget {
   const _SpecStarPoolRow({
     required this.remainingInPool,
@@ -211,7 +212,7 @@ class _SpecStarPoolRow extends StatelessWidget {
   }
 }
 
-/// Estrella **activa**: dorada con brillo. **Inactiva**: gris-marrón apagado (referencia juego).
+/// **Active** star: gold with glow. **Inactive**: muted gray-brown (game reference).
 class _SpecStarGlyph extends StatelessWidget {
   const _SpecStarGlyph({
     required this.active,
@@ -221,7 +222,7 @@ class _SpecStarGlyph extends StatelessWidget {
 
   final bool active;
   final double size;
-  /// Si no es null, sustituye el gris oscuro de inactiva (p. ej. fondo claro del sheet).
+  /// If non-null, overrides inactive dark gray (e.g. light sheet background).
   final Color? inactiveColor;
 
   static const Color _activeFill = Color(0xFFFFD85A);
@@ -350,7 +351,7 @@ class _SpecStarRowInteractive extends StatelessWidget {
   }
 }
 
-/// Misma línea visual que los bottom sheets claros del builder (`0xFFF8F9FA`, etc.).
+/// Same visual baseline as the builder’s light bottom sheets (`0xFFF8F9FA`, etc.).
 abstract final class _SpecDetailSheetTheme {
   static const sheetBackground = Color(0xFFF8F9FA);
   static const titleAccent = Color(0xFFFFB74D);
@@ -366,11 +367,11 @@ abstract final class _SpecDetailSheetTheme {
         fontWeight: FontWeight.w500,
       );
 
-  /// Estrellas vacías en sheets claros: gris pizarra sólido (mejor contraste que slate-300).
+  /// Empty stars on light sheets: solid slate gray (better contrast than slate-300).
   static const starInactiveOnSheet = Color(0xFF57534E);
 }
 
-/// Indica el rango **k** (1…max): **k** estrellas doradas y el resto apagadas.
+/// Shows rank **k** (1…max): **k** gold stars and the rest dimmed.
 class _SpecPerRankStarRow extends StatelessWidget {
   const _SpecPerRankStarRow({
     required this.rank,
@@ -442,7 +443,7 @@ class _SpecAffectedUnitChip extends StatelessWidget {
   }
 }
 
-/// Botones `+` / `-` tipográficos (preview claro del builder).
+/// Typographic `+` / `-` buttons (builder light preview).
 class _SpecDeltaButton extends StatelessWidget {
   const _SpecDeltaButton({
     required this.label,
@@ -596,7 +597,7 @@ class _SpecNodeDetailSheetState extends State<_SpecNodeDetailSheet> {
                         const SizedBox(height: 6),
                         if (!widget.readOnly) ...[
                           Text(
-                            'Estrellas en la raza: $_usedTotal / ${widget.starBudget}',
+                            'Race stars: $_usedTotal / ${widget.starBudget}',
                             style: const TextStyle(
                               color: _SpecDetailSheetTheme.body,
                               fontSize: 12,
@@ -718,46 +719,6 @@ class _SpecNodeDetailSheetState extends State<_SpecNodeDetailSheet> {
   }
 }
 
-/// Abre el panel de detalle; tap aislado para no sumar estrella.
-class _SpecNodeInfoEyeButton extends StatelessWidget {
-  const _SpecNodeInfoEyeButton({
-    required this.onPressed,
-    required this.frameSize,
-  });
-
-  final VoidCallback onPressed;
-  final double frameSize;
-
-  @override
-  Widget build(BuildContext context) {
-    final side = (frameSize * 0.34).clamp(26.0, 34.0);
-    final iconSize = (side * 0.55).clamp(14.0, 18.0);
-    return Tooltip(
-      message: 'Ver efecto y rangos',
-      child: Material(
-        color: Colors.black.withValues(alpha: 0.5),
-        borderRadius: BorderRadius.circular(7),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: onPressed,
-          splashColor:
-              Theme.of(context).colorScheme.primary.withValues(alpha: 0.35),
-          highlightColor: Colors.white.withValues(alpha: 0.12),
-          child: SizedBox(
-            width: side,
-            height: side,
-            child: Icon(
-              Icons.visibility_rounded,
-              size: iconSize,
-              color: Colors.white.withValues(alpha: 0.92),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class _SpecTreeCell extends StatelessWidget {
   const _SpecTreeCell({
     required this.node,
@@ -829,9 +790,10 @@ class _SpecTreeCell extends StatelessWidget {
                       Positioned(
                         top: 4,
                         right: 4,
-                        child: _SpecNodeInfoEyeButton(
-                          onPressed: onOpenDetail,
+                        child: CatalogInfoEyeButton(
                           frameSize: frameSize,
+                          tooltip: 'View effect and ranks',
+                          onPressed: onOpenDetail,
                         ),
                       ),
                     ],

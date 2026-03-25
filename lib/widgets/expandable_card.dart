@@ -47,6 +47,151 @@ RadialGradient _darkHudGradient(BuilderHudInterior kind) {
   }
 }
 
+// --- Shared item-card detail helpers (list card + preview sheet) ---
+
+Color _itemCatalogReadableAccent(Color base) {
+  final darkness = base.computeLuminance() > 0.6 ? 0.72 : 0.42;
+  return Color.alphaBlend(
+    Colors.black.withValues(alpha: darkness),
+    base,
+  );
+}
+
+String _itemCatalogSourceText(String map, Map<String, dynamic> itemData) {
+  final m = map.trim();
+  final obtainedFrom = '${itemData['obtainedFrom'] ?? ''}'.trim();
+  if (m.isNotEmpty && obtainedFrom.isNotEmpty) {
+    return '$m · $obtainedFrom';
+  }
+  if (m.isNotEmpty) {
+    return m;
+  }
+  if (obtainedFrom.isNotEmpty) {
+    return obtainedFrom;
+  }
+  return '';
+}
+
+String _itemCatalogFormatUnitLabel(String unitKey) {
+  final rawLabel = getUnitValue(unitKey).replaceAll('_', ' ').trim();
+  return rawLabel.replaceAllMapped(
+    RegExp(r'(?<=[a-z])(?=[A-Z])'),
+    (_) => ' ',
+  );
+}
+
+List<_AffectedUnitChipData> _itemCatalogAffectedUnits(dynamic rawAttributes) {
+  if (rawAttributes is! Map<String, dynamic> || rawAttributes.isEmpty) {
+    return const [];
+  }
+
+  final seen = <String>{};
+  final affectedUnits = <_AffectedUnitChipData>[];
+
+  for (final entry in rawAttributes.entries) {
+    final key = entry.key.trim();
+    if (key.isEmpty || !seen.add(key)) {
+      continue;
+    }
+    if (entry.value is Map<String, dynamic>) {
+      affectedUnits.add(
+        _AffectedUnitChipData(
+          label: _itemCatalogFormatUnitLabel(entry.key),
+          assetCandidates: unitIconAssetCandidates(entry.key),
+        ),
+      );
+    }
+  }
+
+  return affectedUnits;
+}
+
+List<_PreviewStatGroup> _itemCatalogPreviewGroups(dynamic rawAttributes) {
+  if (rawAttributes is! Map<String, dynamic>) {
+    return const [];
+  }
+
+  final groups = <_PreviewStatGroup>[];
+  for (final entry in rawAttributes.entries) {
+    final unitName = _itemCatalogFormatUnitLabel(entry.key);
+    final value = entry.value;
+
+    if (value is Map<String, dynamic>) {
+      final lines = <_PreviewStatLine>[];
+      for (final attrEntry in value.entries) {
+        final amount = '${attrEntry.value}';
+        lines.add(
+          _PreviewStatLine(
+            amount: amount.startsWith('-') ? amount : '+$amount',
+            attribute: getAttributeValue(attrEntry.key),
+          ),
+        );
+      }
+      if (lines.isNotEmpty) {
+        groups.add(_PreviewStatGroup(unit: unitName, lines: lines));
+      }
+    } else {
+      groups.add(
+        _PreviewStatGroup(
+          unit: unitName,
+          lines: [
+            _PreviewStatLine(
+              amount: '$value',
+              attribute: '',
+            ),
+          ],
+        ),
+      );
+    }
+  }
+  return groups;
+}
+
+/// Light bottom sheet matching skill-tree node detail (background, radius).
+void showItemCatalogDetailSheet(
+  BuildContext context, {
+  required String name,
+  required String map,
+  required String rarity,
+  required String obtainedFrom,
+  required Map<String, dynamic> itemData,
+  VoidCallback? onPrimaryAction,
+  String primaryActionLabel = 'Equip',
+}) {
+  showModalBottomSheet<void>(
+    context: context,
+    isScrollControlled: true,
+    useSafeArea: true,
+    backgroundColor: const Color(0xFFF8F9FA),
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+    ),
+    builder: (sheetContext) {
+      return SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+          child: SingleChildScrollView(
+            child: ItemCatalogDetailSheetBody(
+              name: name,
+              map: map,
+              rarity: rarity,
+              obtainedFrom: obtainedFrom,
+              itemData: itemData,
+              onPrimaryAction: onPrimaryAction == null
+                  ? null
+                  : () {
+                      Navigator.of(sheetContext).pop();
+                      onPrimaryAction();
+                    },
+              primaryActionLabel: primaryActionLabel,
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
+
 class ExpandableCard extends StatefulWidget {
   final String name;
   final String map;
@@ -78,12 +223,12 @@ class _ExpandableCardState extends State<ExpandableCard> {
   @override
   Widget build(BuildContext context) {
     final rarityColor = getRarityColor(widget.itemData['rarity']);
-    final readableAccent = _buildReadableAccent(rarityColor);
-    final previewGroups = _buildPreviewGroups(widget.itemData['attributes']);
-    final affectedUnits = _buildAffectedUnits(
+    final readableAccent = _itemCatalogReadableAccent(rarityColor);
+    final previewGroups = _itemCatalogPreviewGroups(widget.itemData['attributes']);
+    final affectedUnits = _itemCatalogAffectedUnits(
       widget.itemData['attributes'],
     );
-    final sourceText = _buildSourceText();
+    final sourceText = _itemCatalogSourceText(widget.map, widget.itemData);
     final hasSourceText = sourceText.isNotEmpty;
 
     return AnimatedContainer(
@@ -327,105 +472,6 @@ class _ExpandableCardState extends State<ExpandableCard> {
     );
   }
 
-  String _buildSourceText() {
-    final map = widget.map.trim();
-    final obtainedFrom = '${widget.itemData['obtainedFrom'] ?? ''}'.trim();
-    if (map.isNotEmpty && obtainedFrom.isNotEmpty) {
-      return '$map · $obtainedFrom';
-    }
-    if (map.isNotEmpty) {
-      return map;
-    }
-    if (obtainedFrom.isNotEmpty) {
-      return obtainedFrom;
-    }
-    return '';
-  }
-
-  Color _buildReadableAccent(Color base) {
-    final darkness = base.computeLuminance() > 0.6 ? 0.72 : 0.42;
-    return Color.alphaBlend(
-      Colors.black.withValues(alpha: darkness),
-      base,
-    );
-  }
-
-  List<_AffectedUnitChipData> _buildAffectedUnits(dynamic rawAttributes) {
-    if (rawAttributes is! Map<String, dynamic> || rawAttributes.isEmpty) {
-      return const [];
-    }
-
-    final seen = <String>{};
-    final affectedUnits = <_AffectedUnitChipData>[];
-
-    for (final entry in rawAttributes.entries) {
-      final key = entry.key.trim();
-      if (key.isEmpty || !seen.add(key)) {
-        continue;
-      }
-      if (entry.value is Map<String, dynamic>) {
-        affectedUnits.add(
-          _AffectedUnitChipData(
-            label: _formatUnitLabel(entry.key),
-            assetCandidates: unitIconAssetCandidates(entry.key),
-          ),
-        );
-      }
-    }
-
-    return affectedUnits;
-  }
-
-  String _formatUnitLabel(String unitKey) {
-    final rawLabel = getUnitValue(unitKey).replaceAll('_', ' ').trim();
-    return rawLabel.replaceAllMapped(
-      RegExp(r'(?<=[a-z])(?=[A-Z])'),
-      (_) => ' ',
-    );
-  }
-
-  /// Vista previa de stats por unidad. Debe listar **todas** las unidades afectadas;
-  /// antes se cortaba tras 3 líneas en total y solo se veía la primera unidad.
-  List<_PreviewStatGroup> _buildPreviewGroups(dynamic rawAttributes) {
-    if (rawAttributes is! Map<String, dynamic>) {
-      return const [];
-    }
-
-    final groups = <_PreviewStatGroup>[];
-    for (final entry in rawAttributes.entries) {
-      final unitName = _formatUnitLabel(entry.key);
-      final value = entry.value;
-
-      if (value is Map<String, dynamic>) {
-        final lines = <_PreviewStatLine>[];
-        for (final attrEntry in value.entries) {
-          final amount = '${attrEntry.value}';
-          lines.add(
-            _PreviewStatLine(
-              amount: amount.startsWith('-') ? amount : '+$amount',
-              attribute: getAttributeValue(attrEntry.key),
-            ),
-          );
-        }
-        if (lines.isNotEmpty) {
-          groups.add(_PreviewStatGroup(unit: unitName, lines: lines));
-        }
-      } else {
-        groups.add(
-          _PreviewStatGroup(
-            unit: unitName,
-            lines: [
-              _PreviewStatLine(
-                amount: '$value',
-                attribute: '',
-              ),
-            ],
-          ),
-        );
-      }
-    }
-    return groups;
-  }
 }
 
 class ItemCompleteFrame extends StatelessWidget {
@@ -694,6 +740,179 @@ class _SelectActionChip extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Bottom-sheet body: same information as an expanded [ExpandableCard] (summary + [ItemDescription]).
+class ItemCatalogDetailSheetBody extends StatelessWidget {
+  const ItemCatalogDetailSheetBody({
+    super.key,
+    required this.name,
+    required this.map,
+    required this.rarity,
+    required this.obtainedFrom,
+    required this.itemData,
+    this.onPrimaryAction,
+    this.primaryActionLabel = 'Equip',
+  });
+
+  final String name;
+  final String map;
+  final String rarity;
+  final String obtainedFrom;
+  final Map<String, dynamic> itemData;
+  final VoidCallback? onPrimaryAction;
+  final String primaryActionLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    final rarityColor = getRarityColor(itemData['rarity']);
+    final readableAccent = _itemCatalogReadableAccent(rarityColor);
+    final previewGroups = _itemCatalogPreviewGroups(itemData['attributes']);
+    final affectedUnits = _itemCatalogAffectedUnits(itemData['attributes']);
+    final sourceText = _itemCatalogSourceText(map, itemData);
+    final hasSourceText = sourceText.isNotEmpty;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ItemCompleteFrame(
+              slot: itemData['slot'],
+              rarity: itemData['rarity'],
+              size: 56,
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    name,
+                    style: TextStyle(
+                      color: readableAccent,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 20,
+                      height: 1.1,
+                      letterSpacing: 0.2,
+                    ),
+                  ),
+                  if (onPrimaryAction != null) ...[
+                    const SizedBox(height: 10),
+                    _SelectActionChip(
+                      label: primaryActionLabel,
+                      onPressed: onPrimaryAction!,
+                    ),
+                  ],
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      _InfoChip(
+                        label: rarityToString(rarity),
+                        color: rarityColor,
+                        icon: Icons.stars_rounded,
+                      ),
+                      _InfoChip(
+                        label: getSlotValueOrDescription(itemData['slot']),
+                        color: const Color(0xFF5E6678),
+                        icon: Icons.category_outlined,
+                      ),
+                    ],
+                  ),
+                  if (affectedUnits.isNotEmpty) ...[
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: affectedUnits
+                          .map(
+                            (unit) => _UnitInfoChip(
+                              label: unit.label,
+                              color: const Color(0xFF5E6678),
+                              assetCandidates: unit.assetCandidates,
+                            ),
+                          )
+                          .toList(),
+                    ),
+                  ],
+                  if (hasSourceText) ...[
+                    const SizedBox(height: 10),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(
+                          Icons.place_outlined,
+                          size: 16,
+                          color: Colors.grey.shade600,
+                        ),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            sourceText,
+                            maxLines: 4,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: Color(0xFF525A69),
+                              fontSize: 13,
+                              fontWeight: FontWeight.w700,
+                              height: 1.2,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                  if (previewGroups.isNotEmpty) ...[
+                    const SizedBox(height: 12),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF6F7FB),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: Colors.grey.shade200,
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: previewGroups
+                            .map(
+                              (group) => Padding(
+                                padding: const EdgeInsets.only(bottom: 6),
+                                child: _PreviewStatGroupRow(group: group),
+                              ),
+                            )
+                            .toList(),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: Colors.grey.shade200),
+          ),
+          padding: const EdgeInsets.all(8),
+          child: ItemDescription(
+            itemName: itemData['name'],
+            rarity: itemData['rarity'],
+            slot: itemData['slot'],
+            obtainedFrom: obtainedFrom,
+            attributes: itemData['attributes'],
+          ),
+        ),
+      ],
     );
   }
 }

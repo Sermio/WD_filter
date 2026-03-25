@@ -364,7 +364,7 @@ Future<void> uploadItemsToFirebase(List<Item> items) async {
       print('Item uploaded: ${item.id}');
     }
   } catch (e) {
-    print('Error subiendo los items: $e');
+    print('Error uploading items: $e');
   }
 }
 
@@ -553,7 +553,7 @@ Future<String> downloadItemsExcel(List<Item> items) async {
   if (Platform.isAndroid) {
     final status = await Permission.manageExternalStorage.request();
     if (!status.isGranted) {
-      throw Exception('No se otorgaron permisos de almacenamiento.');
+      throw Exception('Storage permission was not granted.');
     }
     downloadsDirectory = Directory('/storage/emulated/0/Download');
   } else {
@@ -561,7 +561,7 @@ Future<String> downloadItemsExcel(List<Item> items) async {
   }
 
   if (downloadsDirectory == null) {
-    throw Exception('No se pudo acceder al directorio de descargas.');
+    throw Exception('Could not access the downloads directory.');
   }
 
   const fileName = 'items_history.xlsx';

@@ -15,6 +15,7 @@ import 'package:worldshift_assistant/utils/catalog_item_filter.dart';
 import 'package:worldshift_assistant/utils/human_spec_build_summary.dart';
 import 'package:worldshift_assistant/utils/unit_icon_candidates.dart';
 import 'package:worldshift_assistant/utils/utils.dart';
+import 'package:worldshift_assistant/widgets/catalog_info_eye_button.dart';
 import 'package:worldshift_assistant/widgets/expandable_card.dart';
 import 'package:worldshift_assistant/widgets/item_catalog_filters_panel.dart';
 import 'package:worldshift_assistant/widgets/rarity_indicator.dart';
@@ -46,10 +47,12 @@ class _BuilderScreenState extends State<BuilderScreen> {
 
   /// Legacy flat map (slot → item id). Migrated to [_prefsEquipKeyV2] on load/save.
   static const _prefsEquipKeyV1 = 'builder_equipped_slots_v1';
+
   /// One equipment set per race (Humans / Tribes / Aliens). Skill tree can use the same split later.
   static const _prefsEquipKeyV2 = 'builder_equipped_by_race_v2';
   static const _prefsRaceKey = 'builder_selected_race_v1';
-  /// Asignación de estrellas por repo (Humans / Tribes / Aliens); misma persistencia que equipamiento.
+
+  /// Stars per repo (Humans / Tribes / Aliens); same persistence as equipment.
   static const _prefsSpecStarsKey = 'builder_spec_stars_by_race_v1';
 
   late final Future<List<Item>> _itemsFuture;
@@ -60,12 +63,13 @@ class _BuilderScreenState extends State<BuilderScreen> {
     for (final r in _races) r: <String, Item>{},
   };
 
-  /// Estrellas de especialización por raza (`repo` → puntos invertidos). Máx. 10 por raza en total.
+  /// Specialization stars per race (`repo` → invested points). Max 10 per race total.
   final Map<String, Map<String, int>> _specStarsByRace = {
     for (final r in _races) r: <String, int>{},
   };
 
-  Map<String, Item> get _equipForSelectedRace => _equippedByRace[_selectedRace]!;
+  Map<String, Item> get _equipForSelectedRace =>
+      _equippedByRace[_selectedRace]!;
 
   static String? _raceForSlotKey(String slotKey) {
     for (final e in _racePrefix.entries) {
@@ -225,8 +229,7 @@ class _BuilderScreenState extends State<BuilderScreen> {
     await prefs.remove(_prefsEquipKeyV1);
     await prefs.setString(_prefsRaceKey, _selectedRace);
     final specPayload = {
-      for (final r in _races)
-        r: {..._specStarsByRace[r]!},
+      for (final r in _races) r: {..._specStarsByRace[r]!},
     };
     await prefs.setString(_prefsSpecStarsKey, jsonEncode(specPayload));
   }
@@ -378,8 +381,7 @@ class _BuilderScreenState extends State<BuilderScreen> {
           if (parsed == null) {
             continue;
           }
-          sc.totalsItems[ae.key] =
-              (sc.totalsItems[ae.key] ?? 0) + parsed.value;
+          sc.totalsItems[ae.key] = (sc.totalsItems[ae.key] ?? 0) + parsed.value;
           sc.itemPercentHints
               .putIfAbsent(ae.key, _PercentHintAgg.new)
               .add(parsed.isPercent);
@@ -696,7 +698,8 @@ class _BuilderEquipItemPicker extends StatefulWidget {
   final Object unequipToken;
 
   @override
-  State<_BuilderEquipItemPicker> createState() => _BuilderEquipItemPickerState();
+  State<_BuilderEquipItemPicker> createState() =>
+      _BuilderEquipItemPickerState();
 }
 
 class _BuilderEquipItemPickerState extends State<_BuilderEquipItemPicker> {
@@ -854,12 +857,10 @@ class _BuilderEquipItemPickerState extends State<_BuilderEquipItemPicker> {
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(20),
-                                border:
-                                    Border.all(color: Colors.grey.shade200),
+                                border: Border.all(color: Colors.grey.shade200),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black
-                                        .withValues(alpha: 0.05),
+                                    color: Colors.black.withValues(alpha: 0.05),
                                     blurRadius: 18,
                                     offset: const Offset(0, 8),
                                   ),
@@ -897,25 +898,22 @@ class _BuilderEquipItemPickerState extends State<_BuilderEquipItemPicker> {
                             ),
                           )
                         : ListView.separated(
-                            padding:
-                                const EdgeInsets.only(top: 10, bottom: 20),
+                            padding: const EdgeInsets.only(top: 10, bottom: 20),
                             itemCount: items.length,
                             separatorBuilder: (_, __) =>
                                 const SizedBox(height: 4),
                             itemBuilder: (context, index) {
                               final item = items[index];
                               final itemData = item.toMap();
-                              final rarity = item.rarity.isEmpty
-                                  ? 'unknown'
-                                  : item.rarity;
+                              final rarity =
+                                  item.rarity.isEmpty ? 'unknown' : item.rarity;
                               return ExpandableCard(
                                 name: item.name,
                                 map: item.map,
                                 rarity: rarity,
                                 obtainedFrom: item.obtainedFrom,
                                 itemData: itemData,
-                                onSelect: () =>
-                                    Navigator.of(context).pop(item),
+                                onSelect: () => Navigator.of(context).pop(item),
                               );
                             },
                           ),
@@ -972,9 +970,11 @@ class _BuilderRaceHudTheme {
   final Color inkSplash;
   final Color inkHighlight;
   final Color frameShadow;
-  /// Tinte suave en cards de stats por unidad del resumen (Humans mantiene el violeta del listado).
+
+  /// Soft tint on per-unit summary stat cards (Humans keeps the list violet).
   final Color summaryUnitCardAccent;
-  /// Opacidad del segundo color del gradiente en esas cards (Humans ≈ listado original).
+
+  /// Second gradient color opacity on those cards (Humans ≈ original list).
   final double summaryUnitCardGradientEndAlpha;
 
   static _BuilderRaceHudTheme forRace(String race) {
@@ -1093,8 +1093,8 @@ class _BuilderRaceHudTheme {
   }
 }
 
-({List<String> center, List<String> left, List<String> right})? _zigzagKeysForRace(
-    String race) {
+({List<String> center, List<String> left, List<String> right})?
+    _zigzagKeysForRace(String race) {
   switch (race) {
     case 'Humans':
       return (
@@ -1269,7 +1269,7 @@ class _EquipmentPanel extends StatelessWidget {
     );
   }
 
-  /// Items / Skill tree con el HUD de la raza activa.
+  /// Items / Skill tree with the active race HUD.
   static Widget _panelModeSegmentedBar({
     required _BuilderPanelTab tab,
     required ValueChanged<_BuilderPanelTab> onChanged,
@@ -1389,15 +1389,6 @@ class _EquipmentPanel extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                'Equipment Builder',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w800,
-                  color: hud.titleColor,
-                ),
-              ),
-              const SizedBox(height: 8),
               _EquipmentPanel._darkRaceSegmentedBar(
                 races: races,
                 selectedRace: selectedRace,
@@ -1485,11 +1476,45 @@ class _EquipmentPanel extends StatelessWidget {
                             padding: const EdgeInsets.all(10),
                             child: Row(
                               children: [
-                                ItemCompleteFrame(
-                                  slot: slotKey,
-                                  rarity: equipped?.rarity ?? '1',
-                                  size: 42,
-                                  showInteriorIcon: equipped != null,
+                                SizedBox(
+                                  width: 42,
+                                  height: 42,
+                                  child: Stack(
+                                    clipBehavior: Clip.none,
+                                    children: [
+                                      ItemCompleteFrame(
+                                        slot: slotKey,
+                                        rarity: equipped?.rarity ?? '1',
+                                        size: 42,
+                                        showInteriorIcon: equipped != null,
+                                      ),
+                                      if (equipped != null)
+                                        Positioned(
+                                          top: 3,
+                                          right: 3,
+                                          child: CatalogInfoEyeButton(
+                                            frameSize: 42,
+                                            tooltip: 'View item details',
+                                            onPressed: () {
+                                              final e = equippedBySlot[slotKey];
+                                              if (e == null) {
+                                                return;
+                                              }
+                                              showItemCatalogDetailSheet(
+                                                context,
+                                                name: e.name,
+                                                map: e.map,
+                                                rarity: e.rarity.isEmpty
+                                                    ? 'unknown'
+                                                    : e.rarity,
+                                                obtainedFrom: e.obtainedFrom,
+                                                itemData: e.toMap(),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                    ],
+                                  ),
                                 ),
                                 const SizedBox(width: 8),
                                 Expanded(
@@ -1636,7 +1661,7 @@ class _BuilderEquipmentZigzag extends StatelessWidget {
             hud: hud,
             slotKey: slotKey,
             slotLabel: slotLabel,
-            equippedName: equipped?.name,
+            equipped: equipped,
             rarity: rarity,
             frameSize: frameSize,
             onTap: () => onPickItem(slotKey, slotLabel),
@@ -1703,7 +1728,7 @@ class _BuilderHudSlotCell extends StatelessWidget {
     required this.hud,
     required this.slotKey,
     required this.slotLabel,
-    required this.equippedName,
+    required this.equipped,
     required this.rarity,
     required this.frameSize,
     required this.onTap,
@@ -1712,7 +1737,7 @@ class _BuilderHudSlotCell extends StatelessWidget {
   final _BuilderRaceHudTheme hud;
   final String slotKey;
   final String slotLabel;
-  final String? equippedName;
+  final Item? equipped;
   final String rarity;
   final double frameSize;
   final VoidCallback onTap;
@@ -1742,13 +1767,45 @@ class _BuilderHudSlotCell extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: ItemCompleteFrame(
-                  slot: slotKey,
-                  rarity: rarity,
-                  size: frameSize,
-                  darkInterior: true,
-                  builderHudInterior: hud.hudInterior,
-                  showInteriorIcon: equippedName != null,
+                child: SizedBox(
+                  width: frameSize,
+                  height: frameSize,
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      ItemCompleteFrame(
+                        slot: slotKey,
+                        rarity: rarity,
+                        size: frameSize,
+                        darkInterior: true,
+                        builderHudInterior: hud.hudInterior,
+                        showInteriorIcon: equipped != null,
+                      ),
+                      if (equipped != null)
+                        Positioned(
+                          top: (frameSize * 0.06).clamp(3.0, 8.0),
+                          right: (frameSize * 0.06).clamp(3.0, 8.0),
+                          child: CatalogInfoEyeButton(
+                            frameSize: frameSize,
+                            tooltip: 'View item details',
+                            onPressed: () {
+                              final e = equipped;
+                              if (e == null) {
+                                return;
+                              }
+                              showItemCatalogDetailSheet(
+                                context,
+                                name: e.name,
+                                map: e.map,
+                                rarity: e.rarity.isEmpty ? 'unknown' : e.rarity,
+                                obtainedFrom: e.obtainedFrom,
+                                itemData: e.toMap(),
+                              );
+                            },
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: 8),
@@ -1764,10 +1821,10 @@ class _BuilderHudSlotCell extends StatelessWidget {
                   height: 1.15,
                 ),
               ),
-              if (equippedName != null) ...[
+              if (equipped != null) ...[
                 const SizedBox(height: 2),
                 Text(
-                  equippedName!,
+                  equipped!.name,
                   textAlign: TextAlign.center,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -1817,11 +1874,11 @@ Map<String, bool> _summaryPercentFlags(
 String _summaryInfoTooltip(_BuildSummaryViewTab tab) {
   switch (tab) {
     case _BuildSummaryViewTab.all:
-      return 'Fuentes: ítems y nodos de especialización';
+      return 'Sources: items and specialization nodes';
     case _BuildSummaryViewTab.items:
-      return 'Ranuras que aportan stats a esta unidad';
+      return 'Slots that grant stats to this unit';
     case _BuildSummaryViewTab.skills:
-      return 'Nodos de especialización que aportan stats';
+      return 'Specialization nodes that grant stats';
   }
 }
 
@@ -1894,9 +1951,8 @@ class _SummaryPanel extends StatelessWidget {
                 final sel = summaryViewTab == tab;
                 return Expanded(
                   child: Material(
-                    color: sel
-                        ? const Color(0xFFEEF2FF)
-                        : const Color(0xFFF8FAFC),
+                    color:
+                        sel ? const Color(0xFFEEF2FF) : const Color(0xFFF8FAFC),
                     child: InkWell(
                       onTap: () => onSummaryViewTabChanged(tab),
                       splashColor: Colors.black12,
@@ -1917,7 +1973,8 @@ class _SummaryPanel extends StatelessWidget {
                             _tabLabels[i],
                             maxLines: 1,
                             style: TextStyle(
-                              fontWeight: sel ? FontWeight.w800 : FontWeight.w600,
+                              fontWeight:
+                                  sel ? FontWeight.w800 : FontWeight.w600,
                               fontSize: 13,
                               color: sel
                                   ? const Color(0xFF4338CA)
@@ -1953,16 +2010,17 @@ class _SummaryPanel extends StatelessWidget {
       if (visible.isEmpty) {
         final msg = switch (summaryViewTab) {
           _BuildSummaryViewTab.all =>
-            'No hay stats que mostrar. Equipa ítems o asigna especialización (Humans).',
+            'Nothing to show. Equip items or assign specialization (Humans).',
           _BuildSummaryViewTab.items =>
-            'No hay bonos numéricos desde ítems para las unidades del resumen.',
+            'No numeric bonuses from items for the units in this summary.',
           _BuildSummaryViewTab.skills => summary.specAppliesToSummary
-              ? 'No hay bonos numéricos desde el árbol de especialización.'
-              : 'El árbol de especialización aún no está en el resumen para esta raza.',
+              ? 'No numeric bonuses from the specialization tree.'
+              : 'The specialization tree is not included in the summary for this race yet.',
         };
         return Text(
           msg,
-          style: TextStyle(color: Colors.grey.shade600, fontSize: 13, height: 1.35),
+          style: TextStyle(
+              color: Colors.grey.shade600, fontSize: 13, height: 1.35),
         );
       }
 
@@ -2042,9 +2100,10 @@ class _SheetSpecRankStars extends StatelessWidget {
   final int invested;
   final int maxRanks;
 
-  /// Dorado legible sobre gradiente claro de la card.
+  /// Readable gold on the card’s light gradient.
   static const Color _active = Color(0xFFFBBF24);
-  /// Gris pizarra sólido (alto contraste); el gris muy claro se perdía en el fondo.
+
+  /// Solid slate gray (high contrast); very light gray was lost on the background.
   static const Color _inactive = Color(0xFF57534E);
 
   @override
@@ -2306,8 +2365,7 @@ List<Widget> _statValueRowsFromNumeric(
     final pct = e.value.isPercent;
     final sign = v >= 0 ? '+' : '';
     final isNeg = v < 0;
-    final amtColor =
-        isNeg ? const Color(0xFFC75A5A) : const Color(0xFF2E9B62);
+    final amtColor = isNeg ? const Color(0xFFC75A5A) : const Color(0xFF2E9B62);
     return Padding(
       padding: EdgeInsets.only(top: me.key == 0 ? 0 : 4),
       child: Row(
@@ -2346,14 +2404,14 @@ void _showUnitStatSourcesSheet(
   required String raceLabel,
   required String Function(double value, bool isPercent) formatAttrDisplay,
 }) {
-  final itemBlock = tab == _BuildSummaryViewTab.all ||
-          tab == _BuildSummaryViewTab.items
-      ? unit.itemSources
-      : const <_BuildStatSource>[];
-  final skillBlock = tab == _BuildSummaryViewTab.all ||
-          tab == _BuildSummaryViewTab.skills
-      ? unit.skillSources
-      : const <_BuildStatSource>[];
+  final itemBlock =
+      tab == _BuildSummaryViewTab.all || tab == _BuildSummaryViewTab.items
+          ? unit.itemSources
+          : const <_BuildStatSource>[];
+  final skillBlock =
+      tab == _BuildSummaryViewTab.all || tab == _BuildSummaryViewTab.skills
+          ? unit.skillSources
+          : const <_BuildStatSource>[];
 
   showModalBottomSheet<void>(
     context: context,
@@ -2644,12 +2702,12 @@ class _UnitTotalsCard extends StatelessWidget {
                           children: sortedAttrs.asMap().entries.map((me) {
                             final e = me.value;
                             final v = e.value;
-                            final isPct =
-                                percentByAttrKey[e.key] ?? false;
+                            final isPct = percentByAttrKey[e.key] ?? false;
                             final sign = v >= 0 ? '+' : '';
                             final isNeg = v < 0;
                             return Padding(
-                              padding: EdgeInsets.only(top: me.key == 0 ? 0 : 4),
+                              padding:
+                                  EdgeInsets.only(top: me.key == 0 ? 0 : 4),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [

@@ -77,6 +77,29 @@ void main(List<String> args) {
     '${itemsDir.path}${Platform.pathSeparator}drop.tsv',
     '$_sourceGameItemsDir${Platform.pathSeparator}drop.tsv',
   );
+  for (final name in [
+    'humansspecs.dt',
+    'mutantsspecs.dt',
+    'aliensspecs.dt',
+  ]) {
+    _copyFile(
+      '${itemsDir.path}${Platform.pathSeparator}$name',
+      '$_sourceGameItemsDir${Platform.pathSeparator}$name',
+    );
+  }
+  final techgridLua = File(
+    '${dbDir.path}${Platform.pathSeparator}ui${Platform.pathSeparator}techgrid.lua',
+  );
+  if (techgridLua.existsSync()) {
+    _copyFile(
+      techgridLua.path,
+      '$_sourceGameRefsDir${Platform.pathSeparator}techgrid.lua',
+    );
+  } else {
+    stderr.writeln(
+      'Aviso: no existe ${techgridLua.path}; el generador del skill tree puede fallar sin techgrid.',
+    );
+  }
   _copyFile(
     '${textsEnDir.path}${Platform.pathSeparator}missions.tsv',
     '$_sourceGameTextsDir${Platform.pathSeparator}missions.tsv',
@@ -130,7 +153,8 @@ void main(List<String> args) {
   }
   _runDartScript('tool/generate_worldshift_assets.dart', [unitsDir.path]);
   _runDartScript('tool/generate_status_effect_icon_index.dart', [dbDir.path]);
-  _runDartScript('tool/generate_ui_icon_name_indexes.dart');
+  _runDartScript('tool/generate_ui_icon_name_indexes.dart', [worldshiftRoot.path]);
+  _runDartScript('tool/generate_skill_tree_data.dart', [worldshiftRoot.path]);
   _runDartScript('tool/rebuild_data_dart.dart');
 
   stdout.writeln(

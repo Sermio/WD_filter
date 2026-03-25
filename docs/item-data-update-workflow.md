@@ -24,6 +24,7 @@ La app usa estos datos locales:
 - `lib/data/item_list_generated.dart`
 - `lib/data/data.dart`
 - `lib/data/item.dart`
+- Árbol de especialización: `lib/data/spec_tree_node.dart`, `lib/data/human_skill_tree_data.dart` + `generated/skill_tree_humans.g.dart` (y datos Mutant/Alien generados del mismo modo)
 
 Además, se guarda una copia más fiel de las fuentes originales en:
 
@@ -72,7 +73,7 @@ dart run tool/refresh_worldshift_item_data.dart "C:\Users\sergi\Desktop\Proyecto
 
 `tool/refresh_worldshift_item_data.dart` hace esto:
 
-1. Copia desde `Worldshift` los TSV fuente a `assets/loot/source_game/`.
+1. Copia desde `Worldshift` los TSV fuente a `assets/loot/source_game/`, más `humansspecs.dt`, `mutantsspecs.dt`, `aliensspecs.dt` y `data/db/ui/techgrid.lua` (en `refs/`) para regenerar el árbol de specs sin depender de una ruta fija.
 2. Copia también los archivos necesarios a `assets/tsvFiles/` para mantener compatibilidad con el runtime actual de la app.
 3. Regenera:
    - `assets/loot/source_game/refs/map_drop_refs.tsv`
@@ -84,7 +85,8 @@ dart run tool/refresh_worldshift_item_data.dart "C:\Users\sergi\Desktop\Proyecto
    - `dart run tool/extract_worldshift_ui_icons.dart`
    - `dart run tool/generate_worldshift_assets.dart`
    - `dart run tool/generate_status_effect_icon_index.dart`
-   - `dart run tool/generate_ui_icon_name_indexes.dart`
+   - `dart run tool/generate_ui_icon_name_indexes.dart` (acepta la ruta base de Worldshift como argumento)
+   - `dart run tool/generate_skill_tree_data.dart` (misma ruta; ver `docs/spec-tree-data-workflow.md`)
    - `dart run tool/rebuild_data_dart.dart`
 
 Con eso quedan actualizados:
@@ -202,6 +204,7 @@ Para una comprobación rápida, revisa estos archivos:
 - `lib/data/item.dart`
 - `assets/generated/item_icons/named/item_icon_name_index.json`
 - `assets/data/units.json` si también hubo cambios de unidades
+- `lib/data/generated/skill_tree_*.g.dart` y `tool/skill_tree_overrides.json` si tocaste specs o el árbol (véase `docs/spec-tree-data-workflow.md`)
 
 ## Qué esperar del índice de orígenes
 
@@ -220,6 +223,7 @@ Después de actualizar:
 4. Comprueba un item sin origen directo.
 5. Abre el filtro por slot y unidad para ver que siguen funcionando.
 6. Prueba algún stat nuevo en el filtro de atributos.
+7. Si cambiaron `*specs.dt` o `techgrid.lua`, abre el panel de árbol de Humans y comprueba iconos y textos.
 
 ## Comandos de referencia
 

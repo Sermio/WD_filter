@@ -3,9 +3,12 @@ import 'dart:io';
 
 const _unitsJsonPath = 'assets/data/units.json';
 const _outRoot = 'assets/generated/ui_icons';
-const _worldshiftDbRoot = r'C:\Users\sergi\Desktop\Proyectos\Worldshift\data\db';
+const _defaultWorldshiftDbRoot =
+    r'C:\Users\sergi\Desktop\Proyectos\Worldshift\data\db';
 
-void main() {
+/// Primer argumento: ruta a `Worldshift` o a `Worldshift/data/db`.
+void main(List<String> args) {
+  final dbRoot = _resolveDbRoot(args);
   final outDir = Directory(_outRoot);
   outDir.createSync(recursive: true);
 
@@ -18,14 +21,33 @@ void main() {
   };
 
   _collectFromUnits(units, byAtlas);
-  _collectSpecTreeNames(byAtlas['spec_tree_icons']!);
-  _collectBuffCandidates(byAtlas['buff_icons']!, byAtlas);
+  _collectSpecTreeNames(byAtlas['spec_tree_icons']!, dbRoot);
+  _collectBuffCandidates(byAtlas['buff_icons']!, byAtlas, dbRoot);
 
   for (final entry in byAtlas.entries) {
     _writeAtlasNameIndex(entry.key, entry.value);
   }
 
-  stdout.writeln('Indices de nombre generados en $_outRoot');
+  stdout.writeln('Indices de nombre generados en $_outRoot (db: $dbRoot)');
+}
+
+String _resolveDbRoot(List<String> args) {
+  if (args.isEmpty) {
+    return _defaultWorldshiftDbRoot;
+  }
+  final raw = args.first.replaceAll('/', Platform.pathSeparator);
+  final endsWithDb = raw.toLowerCase().endsWith(
+        '${Platform.pathSeparator}data${Platform.pathSeparator}db'.toLowerCase(),
+      );
+  if (endsWithDb && Directory(raw).existsSync()) {
+    return raw;
+  }
+  final joined =
+      '$raw${Platform.pathSeparator}data${Platform.pathSeparator}db';
+  if (Directory(joined).existsSync()) {
+    return joined;
+  }
+  return _defaultWorldshiftDbRoot;
 }
 
 List<Map<String, dynamic>> _loadUnits() {
@@ -96,17 +118,18 @@ void _collectAbilityList(
   }
 }
 
-void _collectSpecTreeNames(Map<String, _IconNameBucket> bucket) {
-  final techgrid = File('$_worldshiftDbRoot${Platform.pathSeparator}ui${Platform.pathSeparator}techgrid.lua');
+void _collectSpecTreeNames(Map<String, _IconNameBucket> bucket, String dbRoot) {
+  final techgrid =
+      File('$dbRoot${Platform.pathSeparator}ui${Platform.pathSeparator}techgrid.lua');
   if (!techgrid.existsSync()) {
     return;
   }
 
   final repoToName = <String, String>{};
   for (final nameFile in [
-    '$_worldshiftDbRoot${Platform.pathSeparator}items${Platform.pathSeparator}humansspecs.dt',
-    '$_worldshiftDbRoot${Platform.pathSeparator}items${Platform.pathSeparator}mutantsspecs.dt',
-    '$_worldshiftDbRoot${Platform.pathSeparator}items${Platform.pathSeparator}aliensspecs.dt',
+    '$dbRoot${Platform.pathSeparator}items${Platform.pathSeparator}humansspecs.dt',
+    '$dbRoot${Platform.pathSeparator}items${Platform.pathSeparator}mutantsspecs.dt',
+    '$dbRoot${Platform.pathSeparator}items${Platform.pathSeparator}aliensspecs.dt',
   ]) {
     final f = File(nameFile);
     if (!f.existsSync()) {
@@ -160,8 +183,9 @@ void _collectSpecTreeNames(Map<String, _IconNameBucket> bucket) {
 void _collectBuffCandidates(
   Map<String, _IconNameBucket> buffBucket,
   Map<String, Map<String, _IconNameBucket>> byAtlas,
+  String dbRoot,
 ) {
-  final unitsDir = Directory('$_worldshiftDbRoot${Platform.pathSeparator}units');
+  final unitsDir = Directory('$dbRoot${Platform.pathSeparator}units');
   if (!unitsDir.existsSync()) {
     return;
   }

@@ -307,9 +307,9 @@ class GameUnit {
       case 'unit':
         return 'units-70x70.dds';
       case 'commander':
-        return 'units consolidado';
+        return 'Consolidated units atlas';
       default:
-        return 'desconocido';
+        return 'Unknown';
     }
   }
 
