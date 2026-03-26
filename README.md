@@ -59,13 +59,6 @@
   Here you can see images and a demo video showcasing the application's functionalities:
 </p>
 
-
-Items list made with a custom component similar to Cards and a Dialog displayed when clicin the 'info' icon.
-<div style="display: flex; justify-content: space-around;">
-  <img src="https://github.com/user-attachments/assets/5d90ea04-7076-4e89-9a03-f24fdef05bd4" alt="Registro 2" width="200" hspace="30"/>
-  <img src="https://github.com/user-attachments/assets/aaca7879-1879-4133-aeb8-016fd2d54d3c" alt="Registro 1" width="200" hspace="30"/>
-</div>
-
 Items, Units and Abilities.
 <div style="display: flex; justify-content: space-around;">
   <img src="https://github.com/user-attachments/assets/c4956953-3a05-4381-816d-8ca57f9083cc" alt="Registro 2" width="200" hspace="30"/>
