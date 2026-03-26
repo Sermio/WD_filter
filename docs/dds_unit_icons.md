@@ -18,7 +18,7 @@ La fuente de verdad está en `Worldshift/data/db/ui/consts.lua`:
 - `unit_70` usa `data/textures/ui/units-70x70.dds` con celdas `70x70`
 - `commander` usa `data/textures/ui/faction_leaders.dds` con celdas `77x98`
 
-Para la ficha de detalle de `WD_filter` se usa el atlas `*_70`, porque es el tamaño más adecuado visualmente.
+Para la ficha de detalle de `WD_filter` se usa el atlas `*_70` (officers → `officers-70x70.dds`, units → `units-70x70.dds`), por tamaño visual en la app.
 
 ### 2. Qué celda corresponde a cada unidad
 
@@ -48,7 +48,7 @@ La app parsea esos campos en:
 
 Para la pantalla de detalle:
 
-- Si `unitIconClass == officer` -> `assets/generated/unit_icons/officers_70/r{row}_c{col}.png`
+- Si `unitIconClass == officer` -> `assets/generated/unit_icons/officers_70/r{row}_c{col}.png` (desde `officers-70x70.dds`)
 - Si `unitIconClass == unit` -> `assets/generated/unit_icons/units_70/r{row}_c{col}.png`
 - Si `unitIconClass == commander` -> fallback actual a `conversation_icons.dds` si se extrae en el futuro
 
@@ -74,7 +74,7 @@ El script:
 
 ## Cómo obtener iconos con nombre de unidad
 
-Una vez extraídos los atlas 70x70, se puede generar una copia nombrada por unidad
+Una vez extraídos los atlas 70×70, se puede generar una copia nombrada por unidad
 leyendo `assets/data/units.json`, que ya contiene:
 
 - `unitIconClass`

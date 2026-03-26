@@ -238,7 +238,7 @@
 42370	3	Aliens	ALIEN_ARBITER	Astral Genetic Adhesion	Arbiter	Arbiter hp_gen = 19Arbiter fear_shock_power = -3%		
 42380	4	Aliens	ALIEN_DOGMA	Astral Plasmoid Photofusion	Master	Master hp_gen = 72		
 42390	4	Tribes	MUTANT_GUARDIAN	Sacred Paw of the Bear	GuardianWarrior	Guardian hp = 8%Guardian psi = 7%Warrior armor = 2		
-42400	5	Humans	HUMAN_SURGEON	Cure Virus	Surgeon	Surgeon healing_taken_mod = 45%Surgeon relief_healpersec = 7		
+42400	5	Humans	HUMAN_SURGEON	Cure Virus	Surgeon	Surgeon healing_taken_mod = 45%Surgeon relief_healpersec = 27Surgeon bandage_amount = 37Surgeon hp = 22%Surgeon psi_gen = 78		
 42410	1	Aliens	ALIEN_ARBITER	Runic Chromatic Synthesis	Arbiter	Arbiter healing_taken_mod = 1%		
 42420	3	Aliens	ALIEN_MASTER	Sub Zero Enigma Shield	MasterOverseer	Master shield_regen = 9%Overseer damage = 2		
 42430	2	Aliens	ALIEN_POWER	Matrix Rune Protector	TrisatHarvester	Trisat armor = 2Harvester armor = 1		
@@ -253,7 +253,7 @@
 42520	1	Humans	HUMAN_CONSTRUCTOR	Proton Unit 	Constructor	Constructor psi = 3%		
 42530	2	Aliens	ALIEN_HARVESTER	Thar’Kyn Prayer 	Harvester	Harvester harvest_damage = 14Harvester hp = 2%		
 42540	1	Tribes	MUTANT_BLOOD	Greater Step of Protection	Guardian	Guardian fortify_armor_add_perc = 1		
-42550	5	Humans	HUMAN_WEAPONS	Next-gen Servitior	RipperTrooper	Ripper hp_gen = 53Ripper healing_taken_mod = 16%Ripper armor = 2Trooper throw_grenade_chance = 1Trooper hp_gen = 5		
+42550	5	Humans	HUMAN_WEAPONS	Next-gen Servitor	RipperTrooper	Ripper hp_gen = 53Ripper healing_taken_mod = 16%Ripper armor = 2Trooper throw_grenade_chance = 1Trooper hp_gen = 5		
 42560	3	Tribes	MUTANT_HIGHPRIEST	Sacred Step of the Behemoth	HighPriestShaman	HighPriest hp_gen = 28Shaman crit_chance = 3		
 42570	3	Tribes	MUTANT_HIGHPRIEST	Sacred Surge of Power	HighPriest	HighPriest lightning_power = -8%		
 42580	1	Aliens	ALIEN_DOGMA	Runic Psionic Claws	Harvester	Harvester damage = 3		
@@ -269,7 +269,7 @@
 42680	3	Tribes	MUTANT_HIGHPRIEST	Chant of Infinite Prayer	HighPriestSorcerer	HighPriest psi = 9%Sorcerer damage = 4Sorcerer chill_duration = 1		
 42690	2	Humans	HUMAN_CONSTRUCTOR	Rare Charged Core	Constructor	Constructor psi = 8%Constructor healing_taken_mod = 1%		
 42700	4	Tribes	MUTANT_GUARDIAN	Sacred Charm of Evasion	GuardianBrute	Guardian armor = 4Brute ignite_duration = 2		
-42710	5	Tribes	MUTANT_SPIRIT	Healing Spirit	ShamanAncientShadeStoneGhost	Shaman drain_life_boost = 16Shaman drain_life_chance = 8AncientShade healing_taken_mod = 20%AncientShade damage = 6StoneGhost healing_taken_mod = 18%		
+42710	5	Tribes	MUTANT_SPIRIT	Healing Spirit	ShamanAncientShadeStoneGhost	Shaman damage = 4Shaman drain_life_boost = 16Shaman drain_life_chance = 8AncientShade healing_taken_mod = 20%AncientShade damage = 8StoneGhost healing_taken_mod = 18%StoneGhost hp = 27%StoneGhost damage = 10StoneGhost hatch_chance = 10		
 42720	1	Aliens	ALIEN_CORRUPTION	Black Enigma 	Master	Master nether_nova_damage = 11		
 42730	1	Humans	HUMAN_SURGEON	Stabilized Sigma Guns	Surgeon	Surgeon damage = 1		
 42740	2	Aliens	ALIEN_DOMINATOR	Astral Deacon’s Event	Dominator	Dominator stasis_shot_chance = 3Dominator damage = 2		
@@ -317,7 +317,7 @@
 43160	4	Tribes	MUTANT_GUARDIAN	Sacred Flow of Power	GuardianWarrior	Guardian illusion_power_cost = -11%Warrior hp_gen = 19		
 43170	1	Humans	HUMAN_DEFENCE	Proton Cell 	Hellfire	Hellfire psi = 3%		
 43180	1	Aliens	ALIEN_ARBITER	Runic Biolytic Photofusion	Arbiter	Arbiter hp = 1%		
-43190	5	Tribes	MUTANT_STONEGHOST	Eternal Fate Link	StoneGhostAncientShade	StoneGhost armor = 5AncientShade hp_gen = 37		
+43190	5	Tribes	MUTANT_STONEGHOST	Eternal Fate Link	StoneGhostAncientShade	StoneGhost hp = 26%StoneGhost unholy_aura_heal = 34StoneGhost drain_psi_chance = 19StoneGhost hatch_chance = 29StoneGhost damage = 6AncientShade hp = 23%AncientShade hp_gen = 37AncientShade damage = 12		
 43200	4	Aliens	ALIEN_HARVESTER	Black Fever 	Harvester	Harvester harvest_duration = 1		
 43210	2	Aliens	ALIEN_DOGMA	Thar’Kyn Flame 	Harvester	Harvester vitality_surge_gain = 6		
 43220	2	Humans	HUMAN_DEFENCE	Rare Titanium Plating	Commander	Commander armor = 3Commander hp = 6%		
@@ -332,7 +332,7 @@
 43310	3	Aliens	ALIEN_POWER	Sub Zero Torsion Matrix	MasterHarvester	Master shield_regen = 11%Master armor = 1Harvester psi = 3%		
 43320	1	Tribes	MUTANT_NATURE	Claw of the Eternal Behemoth	Brute	Brute hp = 1%		
 43330	4	Tribes	MUTANT_HIGHPRIEST	Chant of Swift Invocation	HighPriest	HighPriest crit_chance = 7		
-43340	5	Tribes	MUTANT_HIGHPRIEST	Undying Force	HighPriestSorcerer	HighPriest holy_aura_heal = 19HighPriest holyshock_power = -7%Sorcerer damage = 12		
+43340	5	Tribes	MUTANT_HIGHPRIEST	Undying Force	HighPriestSorcerer	HighPriest holy_aura_heal = 19HighPriest holyshock_power = -7%Sorcerer damage = 12Sorcerer chainlightning_add_damage = 2Sorcerer chainlightning_chance = 15Sorcerer chainlightning_psi_cost = -20%		
 43350	1	Humans	HUMAN_CONSTRUCTOR	Field Raider’s Shells	Constructor	Constructor overcharge_chance = 1		
 43360	5	Aliens	ALIEN_MASTER	Arch Lord Endless Greed	MasterOverseer	Master feed_psi_cost = -15%Master nether_nova_psi_cost = -5%Master psi_gen = 10Overseer armor = 2Overseer psi_gen = 27		
 43370	2	Aliens	ALIEN_DOMINATOR	Thar’Kyn Power Shard	Dominator	Dominator psi = 8%Dominator stasis_shot_chance = 2		
@@ -836,7 +836,7 @@
 48350	3	Tribes	MUTANT_SHAMAN	Chant of Gripping Mind	Shaman	Shaman psi = 12%		
 48360	3	Aliens	ALIEN_DOGMA	Astral Contour Screen	TritechDominator	Tritech armor = 3Dominator stasis_shot_chance = 4		
 48370	4	Humans	HUMAN_IMPLANTS	Judgment Hour	JudgeCommander	Judge voiceofcommand_damage_perc = 15Judge voiceofcommand_duration = 1Commander damage = 3Commander confuse_duration = 1		
-48380	5	Tribes	MUTANT_BLOOD	Creators Gift	ShamanHighPriestGuardian	Shaman drain_life_chance = 13Shaman armor = 2HighPriest psi_gen = 10Guardian fortify_power_cost = -5%		
+48380	5	Tribes	MUTANT_BLOOD	Creators Gift	ShamanHighPriestStoneGhost	Shaman drain_life_chance = 13Shaman armor = 2HighPriest psi_gen = 10StoneGhost unholy_aura_heal = 20StoneGhost drain_psi_amount = 23StoneGhost hatch_chance = 17StoneGhost hatch_worms = 1		
 48390	5	Aliens	ALIEN_MANIPULATOR	Cursed Hole of Life	Manipulator	Manipulator damage = 11Manipulator healing_taken_mod = 26%Manipulator life_leech_boost = 22Manipulator hp = +16%Manipulator armor = 2
 48400	3	Humans	HUMAN_CONSTRUCTOR	Improved Tachyon Shells	ConstructorHellfire	Constructor overcharge_chance = 3Constructor repairdrones_heal_radius = 5%Hellfire healing_taken_mod = 1%		
 48410	4	Aliens	ALIEN_CORRUPTION	Sub Zero Energy Module	Master	Master psi = 14%Master shield_hull = 12%		
@@ -897,7 +897,7 @@
 48960	2	Humans	HUMAN_WEAPONS	Maintenance Module 	AssaultBotCommander	AssaultBot healing_taken_mod = 13%Commander armor = 2		
 48970	2	Aliens	ALIEN_HARVESTER	Sphere Rune Screen	Harvester	Harvester armor = 2		
 48980	1	Aliens	ALIEN_ARBITER	Subcrystal Power Infuser	Arbiter	Arbiter psi = 4%		
-48990	5	Humans	HUMAN_SURGEON	Living Unit “Pro”	Surgeon	Surgeon mend_heal = 49Surgeon bandage_amount = 14		
+48990	5	Humans	HUMAN_SURGEON	Living Unit “Pro”	Surgeon	Surgeon mend_heal = 49Surgeon bandage_amount = 24Surgeon hp = 24%		
 49000	2	Humans	HUMAN_IMPLANTS	Xenoforged Time Splicing Phasers	Commander	Commander damage = 6Commander hp = 4%		
 49010	1	Humans	HUMAN_COMMANDER	Cortex Channeler 	Commander	Commander psi = 1%		
 49020	2	Humans	HUMAN_CONSTRUCTOR	Maintenance Nanokit 	ConstructorRipper	Constructor healing_taken_mod = 7%Ripper armor = 1		
@@ -915,7 +915,7 @@
 49140	3	Aliens	ALIEN_POWER	Sub Zero Sidereal Shield	Shifter	Shifter shield_hull = 10%Shifter crit_chance = 3		
 49150	1	Aliens	ALIEN_HARVESTER	Titanium Blades 	Harvester	Harvester damage = 2		
 49160	2	Tribes	MUTANT_STONEGHOST	Rope of Ghostly Shadow	StoneGhost	StoneGhost corruption_damage = 3StoneGhost corruption_duration = 1		
-49170	5	Tribes	MUTANT_MIND	Divine Touch	HighPriestShamanBrute	HighPriest holy_aura_heal = 24HighPriest crit_chance = 9HighPriest pyrowave_chance = 5HighPriest hp = +18%HighPriest damage = 15Shaman psi_gen = 94Shaman drain_life_chance = 11Shaman drain_life_boost = 30Shaman hp = 23%Shaman damage = 3Brute healing_taken_mod = 28%Brute ignite_duration = 10Brute growl_chance = 8Brute hp = 24%Brute armor = 3		
+49170	5	Tribes	MUTANT_MIND	Divine Touch	HighPriestShamanBrute	HighPriest holy_aura_heal = 240HighPriest crit_chance = 9HighPriest pyrowave_chance = 50HighPriest hp = +88%HighPriest damage = 150Shaman psi_gen = 94Shaman drain_life_chance = 14Shaman drain_life_boost = 90Shaman hp = 73%Shaman damage = 30Brute healing_taken_mod = 88%Brute ignite_duration = 10Brute growl_chance = 50Brute hp = 94%Brute armor = 8		
 49180	1	Aliens	ALIEN_DOMINATOR	Hive Deep Barrier	Dominator	Dominator armor = 1		
 49190	4	Humans	HUMAN_COMMANDER	Enemy Distractor Pro	Commander	Commander confuse_power = -12%Commander confuse_armor_perc_buff = 8		
 49200	2	Humans	HUMAN_JUDGE	Bacterial DNA Kit “Pro”	Judge	Judge healing_taken_mod = 15%Judge voiceofcommand_duration = 1		
@@ -930,14 +930,14 @@
 49290	5	Tribes	MUTANT_PSYCHIC	Moonlight Force	Psychic	Psychic hp = 22%Psychic psi = 28%Psychic psi_gen = 80Psychic healing_taken_mod = 37%		
 49300	1	Humans	HUMAN_SURGEON	Barrier Helmets 	Surgeon	Surgeon armor = 1		
 49310	1	Tribes	MUTANT_SHAMAN	Greater Aura of Survival	Shaman	Shaman armor = 1		
-49320	5	Tribes	MUTANT_GUARDIAN	Song of Mending Wind	GuardianWarrior	Guardian healing_taken_mod = 44%Guardian illusion_power_cost = -7%Warrior damage = 2Warrior hp = +26%	
+49320	5	Tribes	MUTANT_GUARDIAN	Song of Mending Wind	GuardianWarrior	Guardian healing_taken_mod = 44%Guardian illusion_power_cost = -7%Warrior damage = 200Warrior hp = +56%	
 49330	5	Humans	HUMAN_WEAPONS	Regenerating DNA Kit	TrooperConstructor	Trooper healing_taken_mod = 42%Trooper damage = 1Constructor damage = 4Constructor armor = 2		
 49340	4	Tribes	MUTANT_HIGHPRIEST	Chant of Powerful Casting	HighPriestSorcerer	HighPriest crit_chance = 11Sorcerer crit_chance = 5		
 49350	5	Tribes	MUTANT_GUARDIAN	Thunderblade	GuardianBrute	Guardian crit_chance = 10Brute hp_gen = 45		
 49360	4	Humans	HUMAN_IMPLANTS	Field Injector “Pro”	SurgeonCommander	Surgeon relief_healpersec = 7Surgeon relief_duration = 1Commander psi = 1%Commander damage = 3		
 49370	1	Humans	HUMAN_IMPLANTS	Emergency DNA Kit 	Commander	Commander inject_hp = 15		
 49380	4	Humans	HUMAN_DEFENCE	Cellular Irradiation	SurgeonAssassin	Surgeon hp_gen = 41Surgeon healing_taken_mod = 17%Assassin crit_chance = 3		
-49390	5	Humans	HUMAN_CONSTRUCTOR	Proton Rich Cyberskin	Constructor	Constructor armor = 5		
+49390	5	Humans	HUMAN_ENGINEER	Proton Rich Cyberskin	Engineer	Engineer hp = 112%Engineer shield_dome_duration = 18Engineer shield_dome_radius = 200%Engineer repair_field_heal = 80		
 49400	1	Tribes	MUTANT_MIND	Infinite Will 	Sorcerer	Sorcerer psi = 4%		
 49410	4	Humans	HUMAN_IMPLANTS	Bacterium Osmosis	Assassin	Assassin hp_gen = 43Assassin crit_chance = 4		
 49420	3	Tribes	MUTANT_HIGHPRIEST	Frozen Song	HighPriest	HighPriest freeze_power = -6%HighPriest lightning_damage = 25		
@@ -1045,7 +1045,7 @@
 50440	3	Humans	HUMAN_COMMANDER	Improved Target Distractor	Commander	Commander confuse_power = -8%Commander armor = 3		
 50450	2	Aliens	ALIEN_HARVESTER	Runic Osmotic Exoskin	Harvester	Harvester hp = 4%		
 50460	2	Aliens	ALIEN_CORRUPTION	Runic Titanium Blades	TrisatTritech	Trisat damage = 1Tritech feedback_heal = 3		
-50470	5	Humans	HUMAN_WEAPONS	 Warp Ray Rifle	CommanderAssassinAssaultBot	Commander healing_taken_mod = 26%Commander hp = 23%Commander psi_gen = 64Commander inject_hp = 50Commander armor = 8Assassin expose_target_armor_duration = 10Assassin expose_target_chance = 17Assassin crit_chance = 15Assassin hp = 18%Assassin damage = 20AssaultBot rocket_precision_chance = 10AssaultBot rocket_precision_damage_perc = 5AssaultBot crit_chance = 12AssaultBot hp_gen = 76AssaultBot damage = 4
+50470	5	Humans	HUMAN_WEAPONS	 Warp Ray Rifle	CommanderAssassinAssaultBot	Commander healing_taken_mod = 56%Commander hp = 83%Commander psi_gen = 64Commander inject_hp = 50Commander armor = 8Assassin expose_target_armor_duration = 10Assassin expose_target_chance = 17Assassin crit_chance = 15Assassin hp = 58%Assassin damage = 500AssaultBot rocket_precision_chance = 10AssaultBot rocket_precision_damage_perc = 5AssaultBot crit_chance = 22AssaultBot hp_gen = 76AssaultBot damage = 40
 50480	3	Humans	HUMAN_JUDGE	Rare Barrier Armor	Judge	Judge armor = 3		
 50490	3	Aliens	ALIEN_CORRUPTION	Astral Ritual Infuser	TritechManipulator	Tritech healing_taken_mod = 23%Manipulator armor = 2		
 50500	4	Aliens	ALIEN_MASTER	Seeker Stream of Pain	MasterShifter	Master damage = 15Master healing_taken_mod = 1%Shifter shield_percentabsorbtion = 2Shifter shield_hull = 3%		
@@ -1061,7 +1061,7 @@
 50600	1	Humans	HUMAN_ASSASSIN	Tachyon Shells 	Assassin	Assassin expose_target_chance = 1		
 50610	2	Aliens	ALIEN_ARBITER	Contour Rune Armor	Arbiter	Arbiter armor = 2		
 50620	3	Tribes	MUTANT_HIGHPRIEST	Sacred Breath of the Brute	HighPriestSorcerer	HighPriest hp = 5%HighPriest armor = 1Sorcerer armor = 1		
-50630	5	Aliens	ALIEN_MANIPULATOR	Greater Cosmic Chant	Manipulator	Manipulator damage = 30Manipulator healing_taken_mod = 50%Manipulator hp = +50%Manipulator armor = 30	
+50630	5	Aliens	ALIEN_MANIPULATOR	Greater Cosmic Chant	Manipulator	Manipulator damage = 13Manipulator life_leech_boost = 26Manipulator healing_taken_mod = 50%Manipulator hp = +50%Manipulator armor = 30	
 50640	2	Aliens	ALIEN_HARVESTER	Thar’Kyn Fever 	Harvester	Harvester vitality_surge_gain = 5		
 50650	3	Aliens	ALIEN_MANIPULATOR	Blight Ritual Ray	Manipulator	Manipulator damage = 6Manipulator crit_chance = 3		
 50660	2	Tribes	MUTANT_ADEPT	Storm of Flames 	Sorcerer	Sorcerer incinerate_damage = 3Sorcerer damage = 2		
@@ -1083,7 +1083,7 @@
 50820	4	Humans	HUMAN_ASSASSIN	Supreme Ion-Core Bullets	Assassin	Assassin expose_target_armor_duration = 4		
 50830	4	Tribes	MUTANT_STONEGHOST	Skin of Dismal Darkness	StoneGhost	StoneGhost unholy_power_cooldown = -8StoneGhost unholy_aura_heal = 12		
 50840	1	Tribes	MUTANT_GUARDIAN	Paw of the Youth 	Guardian	Guardian hp = 2%		
-50850	5	Humans	HUMAN_NEUROSCIENCE	Damage Dissipator	CommanderSurgeonTrooper	Commander confuse_duration = 3Commander psi_gen = 86Commander healing_taken_mod = 32%Commander hp = 24%Commander armor = 8Surgeon psi_gen = 128Surgeon hp = 19%Surgeon bandage_amount = 18Surgeon bandage_crit = 16Surgeon bandage_cooldown = -25%Trooper healing_taken_mod = 39%Trooper hp = 36%Trooper damage = 3Trooper armor = 2		
+50850	5	Humans	HUMAN_NEUROSCIENCE	Damage Dissipator	CommanderSurgeonTrooper	Commander confuse_duration = 5Commander psi_gen = 86Commander healing_taken_mod = 62%Commander hp = 64%Commander armor = 8Surgeon psi_gen = 128Surgeon hp = 59%Surgeon bandage_amount = 58Surgeon bandage_crit = 46Surgeon bandage_cooldown = -25%Trooper healing_taken_mod = 39%Trooper hp = 86%Trooper damage = 150Trooper armor = 8		
 50860	2	Humans	HUMAN_DEFENCE	Xenoforged Subcarbon Hull	Ripper	Ripper armor = 2		
 50870	3	Aliens	ALIEN_MANIPULATOR	Torsion Psionic Reactor	Manipulator	Manipulator psi = 9%Manipulator vortex_heal = 11%		
 50880	3	Humans	HUMAN_SURGEON	Tactical Treatment “Pro”	Surgeon	Surgeon relief_psicost = -8%Surgeon healing_taken_mod = 16%		
@@ -1093,7 +1093,7 @@
 50920	3	Humans	HUMAN_DEFENCE	Intelligent Alloy Nanobots	Hellfire	Hellfire healing_taken_mod = 17%Hellfire shield_regen = 6%		
 50930	3	Aliens	ALIEN_POWER	Astral Grid Barrier	TritechHarvester	Tritech armor = 3Harvester hp = 3%		
 50940	1	Tribes	MUTANT_ADEPT	Touch of Light 	Sorcerer	Sorcerer healing_taken_mod = 5%		
-50950	5	Tribes	MUTANT_HIGHPRIEST	Flame of Deadly Wish	HighPriestShaman	HighPriest damage = 20HighPriest holyshock_power = -5%Shaman armor = 3		
+50950	5	Tribes	MUTANT_HIGHPRIEST	Flame of Deadly Wish	HighPriestBrute	HighPriest damage = 20HighPriest pyrowave_chance = 10HighPriest pyrowave_amount = 2HighPriest holy_aura_heal = 26Brute armor = 3Brute hp = 18%Brute ignite_on_strike_chance = 16Brute ignite_duration = 8Brute growl_chance = 19		
 50960	2	Tribes	MUTANT_STONEGHOST	Rope of Ghostly Gloom	StoneGhostHowlingHorror	StoneGhost unholy_aura_heal = 8HowlingHorror psi = 1%		
 50970	1	Tribes	MUTANT_STONEGHOST	Skin of Myst 	StoneGhost	StoneGhost hp = 1%		
 50980	2	Humans	HUMAN_COMMANDER	Stabilized Ion Rifles	Commander	Commander damage = 8Commander armor = 1		
@@ -1361,7 +1361,7 @@
 53600	3	Aliens	ALIEN_MASTER	Thar’Kyn Cryptic Matrix	Master	Master shield_regen = 10%Master healing_taken_mod = 18%		
 53610	2	Humans	HUMAN_IMPLANTS	Swift DNA Kit “Pro”	SurgeonTrooper	Surgeon healing_taken_mod = 11%Trooper grenade_damage = 1		
 53620	4	Aliens	ALIEN_MASTER	Thar’Kyn Nether Knot	MasterOverseer	Master nether_nova_radius = 12%Master shield_hull = 6%Overseer armor = 2		
-53630	5	Aliens	ALIEN_ENIGMA	Warped Bolt of the Cult	MasterManipulatorShifter	Master healing_taken_mod = 37%Master damage = 26Master hp = 27%Master hp_gen = 67Master psi_gen = 83Manipulator healing_taken_mod = 32%Manipulator damage = 12Manipulator hp = 22%Manipulator life_leech_boost = 37Manipulator psi_gen = 93Shifter healing_taken_mod = 18%Shifter infestation_chance = 13Shifter damage = 5Shifter hp = 28%Shifter armor = 8		
+53630	5	Aliens	ALIEN_ENIGMA	Warped Bolt of the Cult	MasterManipulatorShifter	Master healing_taken_mod = 37%Master damage = 426Master hp = 27%Master hp_gen = 67Master psi_gen = 83Manipulator healing_taken_mod = 32%Manipulator damage = 112Manipulator hp = 22%Manipulator life_leech_boost = 37Manipulator psi_gen = 93Shifter healing_taken_mod = 18%Shifter infestation_chance = 13Shifter damage = 500Shifter hp = 28%Shifter armor = 8		
 53640	2	Aliens	ALIEN_POWER	Contour Rune Deflector	Tritech	Tritech armor = 2		
 53650	3	Aliens	ALIEN_ARBITER	Astral Torsion Dice	Arbiter	Arbiter chain_shot_chance = 4Arbiter fear_shock_duration = 1		
 53660	2	Tribes	MUTANT_HIGHPRIEST	Rhyme of Infinite Will	HighPriestSorcerer	HighPriest psi_gen = 28Sorcerer hp = 1%		
@@ -1501,7 +1501,7 @@
 55000	3	Aliens	ALIEN_DOGMA	Astral Ritual Biopool	Tritech	Tritech hp = 6%		
 55010	2	Tribes	MUTANT_STONEGHOST	Chain of Ghostly Gloom	StoneGhostHowlingHorror	StoneGhost corruption_damage = 3HowlingHorror armor = 1		
 55020	4	Tribes	MUTANT_GUARDIAN	Sacred Oath of the Bear	Guardian	Guardian hp_gen = 54		
-55030	5	Humans	HUMAN_IMPLANTS	Infused Bandages	Surgeon	Surgeon mend_heal = 49Surgeon psi = 12%Surgeon relief_duration = 2		
+55030	5	Humans	HUMAN_IMPLANTS	Infused Bandages	Surgeon	Surgeon mend_heal = 119Surgeon psi = 32%Surgeon bandage_amount = 33Surgeon bandage_crit = 19Surgeon relief_duration = 12		
 55040	5	Aliens	ALIEN_DOGMA	Chromatic Essence of Space	Tritech	Tritech feedback_heal = 13		
 55050	4	Tribes	MUTANT_STONEGHOST	Skin of Dismal Gloom	StoneGhost	StoneGhost corruption_duration = 7		
 55060	2	Humans	HUMAN_CONSTRUCTOR	Xenoforged Subcarbon Armor	ConstructorRipper	Constructor hp = 4%Ripper hp = 2%		
@@ -1599,7 +1599,7 @@
 55980	2	Aliens	ALIEN_MANIPULATOR	Runic Acolyte Flux	Manipulator	Manipulator vortex_heal = 11%Manipulator armor = 1		
 55990	2	Aliens	ALIEN_CORRUPTION	Endless Hunger 	Tritech	Tritech feedback_heal = 4		
 56000	5	Humans	HUMAN_ASSASSIN	Elite Training Program	Assassin	Assassin hp = 26%Assassin damage = 22Assassin crit_chance = 18Assassin expose_target_armor_duration = 10Assassin expose_target_chance = 20		
-56010	5	Tribes	MUTANT_NATURE	Prayer of the Ancient Warrior	WarriorStoneGhostShaman	Warrior armor = 5Warrior crit_chance = 4StoneGhost damage = 3Shaman psi_gen = 16		
+56010	5	Tribes	MUTANT_NATURE	Prayer of the Ancient Warrior	WarriorStoneGhostShaman	Warrior hp = 28%Warrior damage = 4Warrior armor = 3Warrior crit_chance = 4StoneGhost damage = 8StoneGhost hatch_chance = 14StoneGhost hatch_worms = 1StoneGhost drain_psi_chance = 18Shaman damage = 6Shaman drain_life_boost = 26Shaman psi_gen = 66Shaman psi = 34%		
 56020	2	Tribes	MUTANT_ADEPT	Rhyme of Ethereal Focus	Sorcerer	Sorcerer psi_gen = 30		
 56030	2	Humans	HUMAN_JUDGE	Rare Ion-Charged Armor	Judge	Judge armor = 2Judge healing_taken_mod = 6%		
 56040	1	Humans	HUMAN_ASSASSIN	Charged Shells 	Assassin	Assassin expose_target_chance = 2		
@@ -2188,7 +2188,7 @@
 61870	1	Tribes	MUTANT_ADEPT	Powerful Invocation 	Sorcerer	Sorcerer damage = 3		
 61880	3	Tribes	MUTANT_GUARDIAN	Lucky Step 	Guardian	Guardian whirlwind_chance = 2Guardian fortify_power_cost = -5%		
 61890	5	Tribes	MUTANT_NATURE	Secret Cape of a Ghost	HowlingHorrorGuardian	HowlingHorror hollow_voice_damage = 18HowlingHorror hollow_voice_chance = 2HowlingHorror hollow_voice_area = 5%Guardian shift_stun_duration = 1Guardian crit_chance = 3		
-61900	5	Humans	HUMAN_IMPLANTS	Hypnoadsorbtion	Trooper	Trooper hp_gen = 54Trooper healing_taken_mod = 39%		
+61900	5	Humans	HUMAN_IMPLANTS	Hypnoabsorption	Trooper	Trooper hp_gen = 54Trooper healing_taken_mod = 39%		
 61910	3	Tribes	MUTANT_SHAMAN	Holy Flash of Nature	Shaman	Shaman rejuvenation_amount = 31		
 61920	1	Tribes	MUTANT_NATURE	Drums of Memories 	HowlingHorror	HowlingHorror healing_taken_mod = 1%		
 61930	1	Tribes	MUTANT_ADEPT	Step of the Youth 	Sorcerer	Sorcerer hp = 2%		
@@ -2281,7 +2281,7 @@
 62800	2	Aliens	ALIEN_POWER	Warden’s Pulse 	Arbiter	Arbiter fear_shock_power = -2%		
 62810	1	Aliens	ALIEN_DOGMA	Exothermic Adhesion 	Dominator	Dominator hp = 1%		
 62820	2	Tribes	MUTANT_BLOOD	Lash of Nature 	BruteShaman	Brute healing_taken_mod = 3%Shaman drain_life_boost = 6		
-62830	5	Aliens	ALIEN_ARBITER	Arch Lord Astrodice	Arbiter	Arbiter chain_shot_hops = 2Arbiter hp = +23%Arbiter damage = 20Arbiter chain_shot_chance = 15Arbiter crit_chance = 5		
+62830	5	Aliens	ALIEN_ARBITER	Arch Lord Astrodice	Arbiter	Arbiter chain_shot_hops = 5Arbiter hp = +123%Arbiter damage = 720Arbiter chain_shot_chance = 45Arbiter crit_chance = 25		
 62840	2	Aliens	ALIEN_HARVESTER	Runic Vortex Blades	Harvester	Harvester damage = 6		
 62850	2	Humans	HUMAN_CONSTRUCTOR	Intelligent Precision Core	Constructor	Constructor damage = 4		
 62860	2	Aliens	ALIEN_DOGMA	Runic Ritual Bioboost	ShifterArbiter	Shifter hp = 4%Arbiter healing_taken_mod = 5%		
@@ -2998,3 +2998,8 @@
 69970	4	Humans	HUMAN_ASSASSIN	Rare Bioactive Covers	Assassin	Assassin armor = 4		
 69980	2	Humans	HUMAN_COMMANDER	Stabilized Particle Phasers	Commander	Commander damage = 8		
 69990	1	Aliens	ALIEN_POWER	Saturated Pulsation 	Harvester	Harvester hp = 2%		
+70000	5	Humans	HUMAN_ENGINEER	Shard of Claudius	Engineer	Engineer shield_dome_duration = 5Engineer shield_dome_radius = 30%Engineer repair_field_heal = 15	An ancient fragment, warm to the touch yet impossibly cold at its core. It was never meant to be found — only to assist. Scholars debate whether it thinks. The units it empowers do not care. They simply win.	
+70010	5	Tribes	MUTANT_HIGHPRIEST	Infinite Codex	HighPriestShaman	HighPriest holy_aura_heal = 30Shaman drain_life_chance = 15Shaman rejuvenation_amount = 30	Recovered from a collapsed data node at the edge of the Worldshift. It speaks in logic, sees through walls of code, and remembers every limit ever written — even the ones no one documented. Some say it has no origin. Others say it was never truly offline.	
+70020	5	Aliens	ALIEN_MANIPULATOR	Thar'Kyn Resonance Fragment	Manipulator	Manipulator hp = 150%Manipulator damage = 120Manipulator crit_chance = 15	Not crafted. Not found. Arrived. It resonates at a frequency that has no name in any human language, a vibration that predates the Worldshift itself. The Manipulators do not wield it — they harmonize with it. What it wants in return has never been asked. No one has been brave enough to wonder.	
+70030	5	Humans	HUMAN_NEUROSCIENCE	Crimson Protocol	Trooper	Trooper damage = 5
+70040	5	Aliens	ALIEN_DEFILER	Thar'Kyn Blood Pact	Defiler	Defiler damage = 180Defiler hp = 120%Defiler armor = 20Defiler leech_chance = 30Defiler leech_heal = 300	A covenant sealed in ichor, not ink. The Harvester does not feed — it consecrates. Every wound it inflicts is an offering. Every drop reclaimed is a tithe paid to something older than the Worldshift.	abilities {DefilerLeechAbi {active = 1}}		

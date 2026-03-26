@@ -135,8 +135,8 @@
     "movementType": "hover",
     "tags": "unit, lowrank",
     "unitIconClass": "unit",
-    "mainIconCol": 1,
-    "mainIconRow": 6,
+    "mainIconCol": null,
+    "mainIconRow": null,
     "conversationIconCol": null,
     "conversationIconRow": null,
     "stats": {},
@@ -155,7 +155,7 @@
     "statusEffects": []
   },
   {
-    "id": "dave",
+    "id": "defiler",
     "raceFolder": "aliens",
     "displayName": "Defiler",
     "race": "aliens",
@@ -169,32 +169,39 @@
     "stats": {
       "hp": "680",
       "psi": "220",
-      "armor": "8",
-      "range": "1200",
-      "damage": "30",
-      "healing_taken_debuff_amount": "2",
-      "healing_taken_debuff_duration": "15",
+      "armor": "0",
+      "range": "150",
+      "damage": "50",
       "shield_hull": "100",
       "shield_regen": "120",
       "shield_fullabsorbchance": "10",
-      "shield_percentabsorbtion": "25"
+      "shield_percentabsorbtion": "25",
+      "leech_chance": "0",
+      "leech_heal": "0"
     },
     "auraNames": [
       "RestorationCoreAura"
     ],
-    "passiveAbilities": [],
-    "activeAbilities": [],
-    "statusEffects": [
+    "passiveAbilities": [
       {
-        "name": "Plagued Corrosion",
-        "description": "Reduces the amount of healing taken by [stat:healing_taken_debuff_ammount]% per application",
-        "isDebuff": true,
-        "iconAtlas": null,
-        "iconCol": null,
-        "iconRow": null,
-        "iconAssetPath": null
+        "name": "Blood Harvest",
+        "description": "The Harvester has a [stat:leech_chance]% chance on each attack to drain life from its target, healing itself for [stat:leech_heal] hit points.",
+        "iconAtlas": "passive_abilities",
+        "iconCol": 5,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c5.png"
+      },
+      {
+        "name": "Consume Hatchling",
+        "description": "The Defiler will consume a nearby Hatchling to restore its health when below 70% HP.",
+        "iconAtlas": "passive_abilities",
+        "iconCol": 5,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c5.png"
       }
-    ]
+    ],
+    "activeAbilities": [],
+    "statusEffects": []
   },
   {
     "id": "dominator",
@@ -367,7 +374,7 @@
     "displayName": "Field Overseer",
     "race": "aliens",
     "movementType": null,
-    "tags": "unit, organic",
+    "tags": "unit, organic, clonable",
     "unitIconClass": "unit",
     "mainIconCol": 1,
     "mainIconRow": 3,
@@ -467,6 +474,7 @@
       "shield_fullabsorbchance": "10",
       "shield_percentabsorbtion": "25",
       "feed_chance": "100",
+      "feed_hp_threshold": "70  -- feed when HP drops below this % of max",
       "vitality_surge_gain": "40",
       "vitality_surge_power": "300",
       "vitality_surge_cooldown": "45",
@@ -490,25 +498,9 @@
         "iconCol": 6,
         "iconRow": 0,
         "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c6.png"
-      },
-      {
-        "name": "Consume Hatchling",
-        "description": "The Harvester will consume a nearby Hatchling to restore its health",
-        "iconAtlas": "passive_abilities",
-        "iconCol": 5,
-        "iconRow": 0,
-        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c5.png"
       }
     ],
     "activeAbilities": [
-      {
-        "name": "Harvest",
-        "description": "Harvester has [stat:harvest_chance]% chance on hit to do special strike that hits all targets arround him and stuns them.",
-        "iconAtlas": "buttons",
-        "iconCol": 5,
-        "iconRow": 0,
-        "iconAssetPath": "assets/generated/ui_icons/buttons/r0_c5.png"
-      },
       {
         "name": "Vitality Surge",
         "description": "Instantly heals the Harvester for [stat:vitality_surge_gain]% health.",
@@ -617,7 +609,6 @@
       "manipulate_duration": "10",
       "manipulate_cooldown": "30",
       "manipulate_area": "600",
-      "manipulate_power_perc": "5",
       "manipulate_hp_perc": "10",
       "life_leech_boost": "10"
     },
@@ -744,8 +735,8 @@
     "raceFolder": "aliens",
     "displayName": "Psi Detonator",
     "race": null,
-    "movementType": "hover",
-    "tags": "unit",
+    "movementType": null,
+    "tags": "unit, clonable",
     "unitIconClass": "unit",
     "mainIconCol": 7,
     "mainIconRow": 6,
@@ -796,7 +787,7 @@
     "displayName": "Shifter",
     "race": "aliens",
     "movementType": null,
-    "tags": "unit, organic",
+    "tags": "unit, organic, clonable",
     "unitIconClass": "unit",
     "mainIconCol": 4,
     "mainIconRow": 3,
@@ -891,8 +882,8 @@
     "movementType": null,
     "tags": null,
     "unitIconClass": "unit",
-    "mainIconCol": null,
-    "mainIconRow": null,
+    "mainIconCol": 3,
+    "mainIconRow": 12,
     "conversationIconCol": null,
     "conversationIconRow": null,
     "stats": {
@@ -913,7 +904,7 @@
     "displayName": "Trisat",
     "race": "aliens",
     "movementType": null,
-    "tags": "unit, organic, lowrank",
+    "tags": "unit, organic, lowrank, clonable",
     "unitIconClass": "unit",
     "mainIconCol": 3,
     "mainIconRow": 3,
@@ -985,17 +976,17 @@
     "displayName": "Tritech",
     "race": "aliens",
     "movementType": null,
-    "tags": "unit, organic, lowrank",
+    "tags": "unit, organic, lowrank, clonable",
     "unitIconClass": "unit",
     "mainIconCol": 2,
     "mainIconRow": 3,
     "conversationIconCol": null,
     "conversationIconRow": null,
     "stats": {
-      "hp": "220",
+      "hp": "260",
       "armor": "1",
-      "range": "1700",
-      "damage": "15",
+      "range": "1200",
+      "damage": "20",
       "shield_hull": "100",
       "shield_regen": "120",
       "shield_fullabsorbchance": "10",
@@ -1017,7 +1008,16 @@
         "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c3.png"
       }
     ],
-    "activeAbilities": [],
+    "activeAbilities": [
+      {
+        "name": "Blink",
+        "description": "When wounded the Tritech teleports to the Master while in combat.",
+        "iconAtlas": "buttons",
+        "iconCol": 0,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r0_c0.png"
+      }
+    ],
     "statusEffects": []
   },
   {
@@ -5549,7 +5549,7 @@
     "displayName": "Assault Bot",
     "race": "humans",
     "movementType": null,
-    "tags": "location",
+    "tags": "unit, clonable, bot, repairable_unit",
     "unitIconClass": "unit",
     "mainIconCol": 4,
     "mainIconRow": 1,
@@ -5695,7 +5695,7 @@
     "displayName": "Defender",
     "race": "humans",
     "movementType": null,
-    "tags": "unit",
+    "tags": "unit, clonable, bot, repairable_unit",
     "unitIconClass": "unit",
     "mainIconCol": 6,
     "mainIconRow": 5,
@@ -5742,7 +5742,7 @@
     "tags": "unit, organic",
     "unitIconClass": "commander",
     "mainIconCol": 1,
-    "mainIconRow": 2,
+    "mainIconRow": 1,
     "conversationIconCol": null,
     "conversationIconRow": null,
     "stats": {
@@ -5793,7 +5793,7 @@
     "tags": "unit, organic",
     "unitIconClass": "commander",
     "mainIconCol": 1,
-    "mainIconRow": 2,
+    "mainIconRow": 1,
     "conversationIconCol": null,
     "conversationIconRow": null,
     "stats": {
@@ -5849,27 +5849,47 @@
     "conversationIconRow": null,
     "stats": {
       "armor": "0",
-      "hp": "400",
+      "hp": "380",
+      "psi": "340",
       "range": "1600",
-      "damage": "8",
-      "attack_rate": "1",
-      "attack_proximity": "10",
-      "attack_precision": "1"
+      "damage": "16",
+      "repair_field_heal": "20",
+      "repair_field_area": "600",
+      "shield_dome_psicost": "120",
+      "shield_dome_radius": "800",
+      "shield_dome_duration": "12"
     },
     "auraNames": [
       "RestorationCoreAura"
     ],
     "passiveAbilities": [
       {
-        "name": "Repair",
-        "description": "Repairs buildings.",
-        "iconAtlas": null,
-        "iconCol": null,
-        "iconRow": null,
-        "iconAssetPath": null
+        "name": "Repair Field",
+        "description": "The Engineer automatically emits a repair field pulse every 5 seconds, restoring [stat:repair_field_heal] hit points to all friendly machines within range.",
+        "iconAtlas": "passive_abilities",
+        "iconCol": 2,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c2.png"
       }
     ],
-    "activeAbilities": [],
+    "activeAbilities": [
+      {
+        "name": "Turrets",
+        "description": "The Engineer deploys Proton Turrets nearby to assist in combat.",
+        "iconAtlas": "buttons",
+        "iconCol": 0,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r0_c0.png"
+      },
+      {
+        "name": "Shield Dome",
+        "description": "The Engineer activates a personal Shield Dome. All units within range are protected for [stat:shield_dome_duration] seconds â crowd control effects are continuously purged.",
+        "iconAtlas": "buttons",
+        "iconCol": 6,
+        "iconRow": 7,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r7_c6.png"
+      }
+    ],
     "statusEffects": []
   },
   {
@@ -5920,7 +5940,7 @@
     "displayName": "Hellfire",
     "race": "humans",
     "movementType": null,
-    "tags": null,
+    "tags": "unit, bot, clonable, repairable_unit",
     "unitIconClass": "unit",
     "mainIconCol": 2,
     "mainIconRow": 1,
@@ -6273,14 +6293,14 @@
     "displayName": "Ripper",
     "race": "humans",
     "movementType": null,
-    "tags": "unit, bot, lowrank",
+    "tags": "unit, bot, lowrank, clonable, repairable_unit",
     "unitIconClass": "unit",
     "mainIconCol": 3,
     "mainIconRow": 1,
     "conversationIconCol": null,
     "conversationIconRow": null,
     "stats": {
-      "hp": "180",
+      "hp": "320",
       "armor": "8",
       "range": "80",
       "damage": "12",
@@ -6412,7 +6432,7 @@
     "displayName": "Trooper",
     "race": "humans",
     "movementType": "crawl",
-    "tags": "unit, organic, lowrank",
+    "tags": "unit, organic, lowrank, clonable",
     "unitIconClass": "unit",
     "mainIconCol": 1,
     "mainIconRow": 1,
@@ -6624,7 +6644,7 @@
     "displayName": "AncientShade",
     "race": "mutants",
     "movementType": null,
-    "tags": "ally",
+    "tags": "unit, underworld, clonable",
     "unitIconClass": "unit",
     "mainIconCol": 7,
     "mainIconRow": 2,
@@ -6633,7 +6653,7 @@
     "stats": {
       "hp": "350",
       "psi": "280",
-      "damage": "15",
+      "damage": "25",
       "penetration": "100",
       "range": "1800",
       "fatelink_duration": "10",
@@ -6699,7 +6719,7 @@
     "displayName": "Brute",
     "race": "mutants",
     "movementType": null,
-    "tags": "unit, organic, lowrank",
+    "tags": "unit, organic, lowrank, clonable",
     "unitIconClass": "unit",
     "mainIconCol": 2,
     "mainIconRow": 2,
@@ -6816,7 +6836,7 @@
     "displayName": "Elite Kai Rider",
     "race": "mutants",
     "movementType": null,
-    "tags": "unit, organic",
+    "tags": "unit, organic, clonable",
     "unitIconClass": "unit",
     "mainIconCol": 6,
     "mainIconRow": 6,
@@ -6961,6 +6981,7 @@
       "holy_aura_tick": "1",
       "holy_aura_heal": "10",
       "pyrowave_chance": "5",
+      "pyrowave_amount": "2",
       "lightning_power": "80",
       "lightning_damage": "300",
       "holyshock_power": "80",
@@ -7030,7 +7051,7 @@
     "displayName": "HowlingHorror",
     "race": "mutants",
     "movementType": null,
-    "tags": null,
+    "tags": "unit, underworld, clonable",
     "unitIconClass": "unit",
     "mainIconCol": 4,
     "mainIconRow": 2,
@@ -7182,14 +7203,6 @@
         "iconCol": 3,
         "iconRow": 0,
         "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c3.png"
-      },
-      {
-        "name": "Full Restoration",
-        "description": "Completely heals nearby units. Requires full concentration.",
-        "iconAtlas": "passive_abilities",
-        "iconCol": 3,
-        "iconRow": 0,
-        "iconAssetPath": "assets/generated/ui_icons/passive_abilities/r0_c3.png"
       }
     ],
     "activeAbilities": [
@@ -7200,6 +7213,22 @@
         "iconCol": null,
         "iconRow": null,
         "iconAssetPath": null
+      },
+      {
+        "name": "Full Restoration",
+        "description": "Completely heals nearby units. Requires full concentration.",
+        "iconAtlas": "buttons",
+        "iconCol": 2,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r0_c2.png"
+      },
+      {
+        "name": "Clone",
+        "description": "Creates a copy of any allied unit. Cannot clone officers or commanders.",
+        "iconAtlas": "buttons",
+        "iconCol": 0,
+        "iconRow": 0,
+        "iconAssetPath": "assets/generated/ui_icons/buttons/r0_c0.png"
       }
     ],
     "statusEffects": []
@@ -7287,11 +7316,11 @@
       "incinerate_psi_cost": "120",
       "incinerate_duration": "10",
       "incinerate_damage": "10",
-      "chainlightning_duration": "6",
-      "chainlightning_psi_cost": "55",
-      "chainlightning_tick": "0.1",
+      "chainlightning_duration": "5",
+      "chainlightning_psi_cost": "75",
+      "chainlightning_tick": "0.2",
       "chainlightning_chance": "25",
-      "chainlightning_add_damage": "8"
+      "chainlightning_add_damage": "2"
     },
     "auraNames": [
       "xp_boost;",
@@ -7489,7 +7518,7 @@
     "displayName": "Warrior",
     "race": "mutants",
     "movementType": null,
-    "tags": "unit, organic, lowrank",
+    "tags": "unit, organic, lowrank, clonable",
     "unitIconClass": "unit",
     "mainIconCol": 5,
     "mainIconRow": 2,

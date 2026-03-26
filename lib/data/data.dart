@@ -281,6 +281,14 @@ List<String> attributesList = [
   "vortex_power",
   "vortex_range",
   "whirlwind_chance",
+  "leech_chance",
+  "leech_heal",
+  "pyrowave_amount",
+  "repair_field_area",
+  "repair_field_heal",
+  "shield_dome_duration",
+  "shield_dome_psicost",
+  "shield_dome_radius",
 ];
 List<Map<String, String>> units = [
   {'key': 'Commander', 'value': 'Commander'},
@@ -469,10 +477,7 @@ List<Map<String, String>> attributeList = [
   {'key': 'chainlightning_psi_cost', 'value': 'Chain Lightning Power Cost'},
   {'key': 'chainlightning_tick', 'value': 'Chain Lightning Tick Rate'},
   {'key': 'charging_field_area', 'value': 'Charging Field Size'},
-  {
-    'key': 'charging_field_psi_perc',
-    'value': 'Charging Field Power Generation'
-  },
+  {'key': 'charging_field_psi_perc', 'value': 'Charging Field Power Generation'},
   {'key': 'charging_field_tick', 'value': 'Charging Field Tick Rate'},
   {'key': 'chill_duration', 'value': 'Chill Duration'},
   {'key': 'chill_perc', 'value': 'Chill Slow'},
@@ -519,10 +524,7 @@ List<Map<String, String>> attributeList = [
   {'key': 'elusion', 'value': 'Evasion'},
   {'key': 'energy', 'value': 'Energy'},
   {'key': 'enfeeble_chance', 'value': 'Enfeeble Chance'},
-  {
-    'key': 'enfeeble_damage_reduction_perc',
-    'value': 'Enfeeble Damage Reduction'
-  },
+  {'key': 'enfeeble_damage_reduction_perc', 'value': 'Enfeeble Damage Reduction'},
   {'key': 'enfeeble_duration', 'value': 'Enfeeble Duration'},
   {'key': 'expose_target_armor_duration', 'value': 'Expose Duration'},
   {'key': 'expose_target_armor_perc', 'value': 'Expose Armor Reduction'},
@@ -570,15 +572,9 @@ List<Map<String, String>> attributeList = [
   {'key': 'hatch_chance', 'value': 'Hatch Chance'},
   {'key': 'hatch_worms', 'value': 'Hatch Worms'},
   {'key': 'head_damage', 'value': 'Head Damage'},
-  {
-    'key': 'healing_taken_debuff_ammount',
-    'value': 'Healing Received Debuff (Legacy Typo)'
-  },
+  {'key': 'healing_taken_debuff_ammount', 'value': 'Healing Received Debuff (Legacy Typo)'},
   {'key': 'healing_taken_debuff_amount', 'value': 'Healing Received Debuff'},
-  {
-    'key': 'healing_taken_debuff_duration',
-    'value': 'Healing Received Debuff Duration'
-  },
+  {'key': 'healing_taken_debuff_duration', 'value': 'Healing Received Debuff Duration'},
   {'key': 'healing_taken_mod', 'value': 'Healing Taken'},
   {'key': 'hollow_voice_area', 'value': 'Hollow Voice Size'},
   {'key': 'hollow_voice_chance', 'value': 'Hollow Voice Chance'},
@@ -635,19 +631,10 @@ List<Map<String, String>> attributeList = [
   {'key': 'overclock_perc', 'value': 'Overclock Bonus'},
   {'key': 'overtraining', 'value': 'Overtraining'},
   {'key': 'paralyzing_field_range', 'value': 'Paralyzing Field Range'},
-  {
-    'key': 'paralyzing_field_speed_reduction_perc',
-    'value': 'Paralyzing Field Slow'
-  },
-  {
-    'key': 'plasma_shield_fullabsorbchance',
-    'value': 'Plasma Shield Full Absorb Chance'
-  },
+  {'key': 'paralyzing_field_speed_reduction_perc', 'value': 'Paralyzing Field Slow'},
+  {'key': 'plasma_shield_fullabsorbchance', 'value': 'Plasma Shield Full Absorb Chance'},
   {'key': 'plasma_shield_hull', 'value': 'Plasma Shield Durability'},
-  {
-    'key': 'plasma_shield_percentabsorbtion',
-    'value': 'Plasma Shield Mitigation'
-  },
+  {'key': 'plasma_shield_percentabsorbtion', 'value': 'Plasma Shield Mitigation'},
   {'key': 'plasma_shield_regen', 'value': 'Plasma Shield Regeneration'},
   {'key': 'poison_shot_cooldown', 'value': 'Poison Shot Cooldown'},
   {'key': 'poison_shot_damage', 'value': 'Poison Shot Damage'},
@@ -690,10 +677,7 @@ List<Map<String, String>> attributeList = [
   {'key': 'restore_amount', 'value': 'Restore Amount'},
   {'key': 'rocket_damage', 'value': 'Rocket Damage'},
   {'key': 'rocket_precision_chance', 'value': 'Concussion Rocket Chance'},
-  {
-    'key': 'rocket_precision_damage_perc',
-    'value': 'Concussion Rocket Effectiveness'
-  },
+  {'key': 'rocket_precision_damage_perc', 'value': 'Concussion Rocket Effectiveness'},
   {'key': 'rocket_precision_duration', 'value': 'Concussion Rocket Duration'},
   {'key': 'rocket_radius', 'value': 'Rocket Radius'},
   {'key': 'rupture_chance', 'value': 'Rupture Chance'},
@@ -718,7 +702,7 @@ List<Map<String, String>> attributeList = [
   {'key': 'stasis_shot_duration', 'value': 'Stasis Shot Duration'},
   {'key': 'sweep_damage', 'value': 'Fire Sweep Damage'},
   {'key': 'sweep_power_cost', 'value': 'Fire Sweep Power Cost'},
-  {'key': 'terrify_area', 'value': 'Terrify Area'},
+  {'key': 'terrify_area', 'value': 'Terrify Size'},
   {'key': 'terrify_chance', 'value': 'Terrify Chance'},
   {'key': 'terrify_cooldown', 'value': 'Terrify Cooldown'},
   {'key': 'terrify_duration', 'value': 'Terrify Duration'},
@@ -737,10 +721,7 @@ List<Map<String, String>> attributeList = [
   {'key': 'vitality_surge_cooldown', 'value': 'Vitality Surge Cooldown'},
   {'key': 'vitality_surge_gain', 'value': 'Vitality Surge Healing'},
   {'key': 'vitality_surge_power', 'value': 'Vitality Surge Power Cost'},
-  {
-    'key': 'voiceofcommand_damage_perc',
-    'value': 'Voice of Command Damage Increase'
-  },
+  {'key': 'voiceofcommand_damage_perc', 'value': 'Voice of Command Damage Increase'},
   {'key': 'voiceofcommand_duration', 'value': 'Voice of Command Duration'},
   {'key': 'voiceofcommand_power', 'value': 'Voice of Command Power Cost'},
   {'key': 'vortex_area', 'value': 'Vortex Area'},
@@ -750,6 +731,14 @@ List<Map<String, String>> attributeList = [
   {'key': 'vortex_power', 'value': 'Vortex Power Cost'},
   {'key': 'vortex_range', 'value': 'Vortex Range'},
   {'key': 'whirlwind_chance', 'value': 'Whirlwind Chance'},
+  {'key': 'leech_chance', 'value': 'Leech Chance'},
+  {'key': 'leech_heal', 'value': 'Leech Healing'},
+  {'key': 'pyrowave_amount', 'value': 'Pyroblast Amount'},
+  {'key': 'repair_field_area', 'value': 'Repair Field Area'},
+  {'key': 'repair_field_heal', 'value': 'Repair Field Healing'},
+  {'key': 'shield_dome_duration', 'value': 'Shield Dome Duration'},
+  {'key': 'shield_dome_psicost', 'value': 'Shield Dome Power Cost'},
+  {'key': 'shield_dome_radius', 'value': 'Shield Dome Size'},
 ];
 
 Map<String, String> attributeFilter = {
@@ -1006,7 +995,7 @@ Map<String, String> attributeFilter = {
   'Stasis Shot Duration': 'stasis_shot_duration',
   'Fire Sweep Damage': 'sweep_damage',
   'Fire Sweep Power Cost': 'sweep_power_cost',
-  'Terrify Area': 'terrify_area',
+  'Terrify Size': 'terrify_area',
   'Terrify Chance': 'terrify_chance',
   'Terrify Cooldown': 'terrify_cooldown',
   'Terrify Duration': 'terrify_duration',
@@ -1035,6 +1024,14 @@ Map<String, String> attributeFilter = {
   'Vortex Power Cost': 'vortex_power',
   'Vortex Range': 'vortex_range',
   'Whirlwind Chance': 'whirlwind_chance',
+  'Leech Chance': 'leech_chance',
+  'Leech Healing': 'leech_heal',
+  'Pyroblast Amount': 'pyrowave_amount',
+  'Repair Field Area': 'repair_field_area',
+  'Repair Field Healing': 'repair_field_heal',
+  'Shield Dome Duration': 'shield_dome_duration',
+  'Shield Dome Power Cost': 'shield_dome_psicost',
+  'Shield Dome Size': 'shield_dome_radius',
 };
 
 //// Generic item descriptions	',
@@ -1067,20 +1064,17 @@ List<Map<String, String>> slots = [
   {
     'key': 'HUMAN_DEFENCE',
     'value': 'Xenotronics',
-    'description':
-        'This item is related to Xenotronics, one of the scientific disciplines of the Humans.'
+    'description': 'This item is related to Xenotronics, one of the scientific disciplines of the Humans.'
   },
   {
     'key': 'HUMAN_IMPLANTS',
     'value': 'Nanotechnology',
-    'description':
-        'This item is related to Nanotechnology, one of the scientific disciplines of the Humans.'
+    'description': 'This item is related to Nanotechnology, one of the scientific disciplines of the Humans.'
   },
   {
     'key': 'HUMAN_WEAPONS',
     'value': 'Metachemistry',
-    'description':
-        'This item is related to Metachemistry, one of the scientific disciplines of the Humans.'
+    'description': 'This item is related to Metachemistry, one of the scientific disciplines of the Humans.'
   },
   {
     'key': 'HUMAN_ENGINEER',
@@ -1090,8 +1084,7 @@ List<Map<String, String>> slots = [
   {
     'key': 'HUMAN_NEUROSCIENCE',
     'value': 'Neuroscience',
-    'description':
-        'This item enhances psionic and mental abilities (Neuroscience slot).'
+    'description': 'This item enhances psionic and mental abilities (Neuroscience slot).'
   },
   {
     'key': 'MUTANT_HIGHPRIEST',
@@ -1121,20 +1114,17 @@ List<Map<String, String>> slots = [
   {
     'key': 'MUTANT_BLOOD',
     'value': 'Blood',
-    'description':
-        'This item is related to Blood, one of the aspects of the Tribes.'
+    'description': 'This item is related to Blood, one of the aspects of the Tribes.'
   },
   {
     'key': 'MUTANT_MIND',
     'value': 'Mind',
-    'description':
-        'This item is related to Mind, one of the aspects of the Tribes.'
+    'description': 'This item is related to Mind, one of the aspects of the Tribes.'
   },
   {
     'key': 'MUTANT_NATURE',
     'value': 'Nature',
-    'description':
-        'This item is related to Nature, one of the aspects of the Tribes.'
+    'description': 'This item is related to Nature, one of the aspects of the Tribes.'
   },
   {
     'key': 'MUTANT_PSYCHIC',
@@ -1174,20 +1164,17 @@ List<Map<String, String>> slots = [
   {
     'key': 'ALIEN_POWER',
     'value': 'Power',
-    'description':
-        'This item is related to Power, one of the aspects of the Cult.'
+    'description': 'This item is related to Power, one of the aspects of the Cult.'
   },
   {
     'key': 'ALIEN_CORRUPTION',
     'value': 'Corruption',
-    'description':
-        'This item is related to Corruption, one of the aspects of the Cult.'
+    'description': 'This item is related to Corruption, one of the aspects of the Cult.'
   },
   {
     'key': 'ALIEN_DOGMA',
     'value': 'Dogma',
-    'description':
-        'This item is related to Dogma, one of the aspects of the Cult.'
+    'description': 'This item is related to Dogma, one of the aspects of the Cult.'
   },
   {
     'key': 'ALIEN_DEFILER',

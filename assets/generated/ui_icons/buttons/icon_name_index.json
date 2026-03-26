@@ -5,35 +5,22 @@
     "key": "0:0",
     "file": "assets/generated/ui_icons/buttons/r0_c0.png",
     "names": [
-      "Death Rumble",
-      "Hollow Voice"
-    ],
-    "sources": [
-      {
-        "source": "unit:howlinghorror",
-        "context": "HowlingHorror",
-        "name": "Hollow Voice"
-      },
-      {
-        "source": "unit:howlinghorror",
-        "context": "HowlingHorror",
-        "name": "Death Rumble"
-      }
-    ]
-  },
-  {
-    "row": 0,
-    "col": 1,
-    "key": "0:1",
-    "file": "assets/generated/ui_icons/buttons/r0_c1.png",
-    "names": [
+      "Blink",
       "Chain Lightning",
       "Charge",
+      "Clone",
+      "Death Rumble",
+      "Hollow Voice",
       "Overclock",
       "Shift",
       "Turrets"
     ],
     "sources": [
+      {
+        "source": "unit:tritech",
+        "context": "Tritech",
+        "name": "Blink"
+      },
       {
         "source": "unit:technician2",
         "context": "Engineer",
@@ -55,6 +42,21 @@
         "name": "Shift"
       },
       {
+        "source": "unit:howlinghorror",
+        "context": "HowlingHorror",
+        "name": "Hollow Voice"
+      },
+      {
+        "source": "unit:howlinghorror",
+        "context": "HowlingHorror",
+        "name": "Death Rumble"
+      },
+      {
+        "source": "unit:eji2",
+        "context": "Psychic",
+        "name": "Clone"
+      },
+      {
         "source": "unit:sorcerer",
         "context": "Sorcerer",
         "name": "Chain Lightning"
@@ -63,9 +65,25 @@
   },
   {
     "row": 0,
-    "col": 4,
-    "key": "0:4",
-    "file": "assets/generated/ui_icons/buttons/r0_c4.png",
+    "col": 2,
+    "key": "0:2",
+    "file": "assets/generated/ui_icons/buttons/r0_c2.png",
+    "names": [
+      "Full Restoration"
+    ],
+    "sources": [
+      {
+        "source": "unit:eji2",
+        "context": "Psychic",
+        "name": "Full Restoration"
+      }
+    ]
+  },
+  {
+    "row": 0,
+    "col": 3,
+    "key": "0:3",
+    "file": "assets/generated/ui_icons/buttons/r0_c3.png",
     "names": [
       "Terrify"
     ],
@@ -79,14 +97,20 @@
   },
   {
     "row": 0,
-    "col": 5,
-    "key": "0:5",
-    "file": "assets/generated/ui_icons/buttons/r0_c5.png",
+    "col": 4,
+    "key": "0:4",
+    "file": "assets/generated/ui_icons/buttons/r0_c4.png",
     "names": [
+      "Barrage",
       "Chill",
       "Proton Rockets"
     ],
     "sources": [
+      {
+        "source": "unit:assaultbot",
+        "context": "Assault Bot",
+        "name": "Barrage"
+      },
       {
         "source": "unit:defender",
         "context": "Defender",
@@ -101,19 +125,13 @@
   },
   {
     "row": 0,
-    "col": 6,
-    "key": "0:6",
-    "file": "assets/generated/ui_icons/buttons/r0_c6.png",
+    "col": 5,
+    "key": "0:5",
+    "file": "assets/generated/ui_icons/buttons/r0_c5.png",
     "names": [
-      "Harvest",
       "Rupture"
     ],
     "sources": [
-      {
-        "source": "unit:harvester",
-        "context": "Harvester",
-        "name": "Harvest"
-      },
       {
         "source": "unit:ripper",
         "context": "Ripper",
@@ -122,26 +140,10 @@
     ]
   },
   {
-    "row": 1,
-    "col": 5,
-    "key": "1:5",
-    "file": "assets/generated/ui_icons/buttons/r1_c5.png",
-    "names": [
-      "Barrage"
-    ],
-    "sources": [
-      {
-        "source": "unit:assaultbot",
-        "context": "Assault Bot",
-        "name": "Barrage"
-      }
-    ]
-  },
-  {
-    "row": 1,
-    "col": 8,
-    "key": "1:8",
-    "file": "assets/generated/ui_icons/buttons/r1_c8.png",
+    "row": 0,
+    "col": 7,
+    "key": "0:7",
+    "file": "assets/generated/ui_icons/buttons/r0_c7.png",
     "names": [
       "Fire Sweep"
     ],
@@ -154,10 +156,10 @@
     ]
   },
   {
-    "row": 1,
-    "col": 9,
-    "key": "1:9",
-    "file": "assets/generated/ui_icons/buttons/r1_c9.png",
+    "row": 0,
+    "col": 8,
+    "key": "0:8",
+    "file": "assets/generated/ui_icons/buttons/r0_c8.png",
     "names": [
       "Relief"
     ],
@@ -170,10 +172,10 @@
     ]
   },
   {
-    "row": 1,
-    "col": 10,
-    "key": "1:10",
-    "file": "assets/generated/ui_icons/buttons/r1_c10.png",
+    "row": 0,
+    "col": 9,
+    "key": "0:9",
+    "file": "assets/generated/ui_icons/buttons/r0_c9.png",
     "names": [
       "Inject"
     ],
@@ -186,10 +188,10 @@
     ]
   },
   {
-    "row": 1,
-    "col": 11,
-    "key": "1:11",
-    "file": "assets/generated/ui_icons/buttons/r1_c11.png",
+    "row": 0,
+    "col": 10,
+    "key": "0:10",
+    "file": "assets/generated/ui_icons/buttons/r0_c10.png",
     "names": [
       "Sentinel Droid"
     ],
@@ -202,14 +204,26 @@
     ]
   },
   {
-    "row": 1,
-    "col": 13,
-    "key": "1:13",
-    "file": "assets/generated/ui_icons/buttons/r1_c13.png",
+    "row": 0,
+    "col": 12,
+    "key": "0:12",
+    "file": "assets/generated/ui_icons/buttons/r0_c12.png",
     "names": [
-      "Poison Flare"
+      "Nanofix",
+      "Poison Flare",
+      "Repair drones"
     ],
     "sources": [
+      {
+        "source": "unit:salingconstructor",
+        "context": "salingconstructor",
+        "name": "Repair drones"
+      },
+      {
+        "source": "unit:salingconstructor",
+        "context": "salingconstructor",
+        "name": "Nanofix"
+      },
       {
         "source": "unit:assassin",
         "context": "Assassin",
@@ -218,26 +232,10 @@
     ]
   },
   {
-    "row": 2,
-    "col": 2,
-    "key": "2:2",
-    "file": "assets/generated/ui_icons/buttons/r2_c2.png",
-    "names": [
-      "Brute"
-    ],
-    "sources": [
-      {
-        "source": "unit:brute",
-        "context": "Brute",
-        "name": "Brute"
-      }
-    ]
-  },
-  {
-    "row": 2,
-    "col": 12,
-    "key": "2:12",
-    "file": "assets/generated/ui_icons/buttons/r2_c12.png",
+    "row": 1,
+    "col": 11,
+    "key": "1:11",
+    "file": "assets/generated/ui_icons/buttons/r1_c11.png",
     "names": [
       "Dimension Chain"
     ],
@@ -250,10 +248,10 @@
     ]
   },
   {
-    "row": 2,
-    "col": 13,
-    "key": "2:13",
-    "file": "assets/generated/ui_icons/buttons/r2_c13.png",
+    "row": 1,
+    "col": 12,
+    "key": "1:12",
+    "file": "assets/generated/ui_icons/buttons/r1_c12.png",
     "names": [
       "Mend"
     ],
@@ -266,42 +264,10 @@
     ]
   },
   {
-    "row": 3,
-    "col": 1,
-    "key": "3:1",
-    "file": "assets/generated/ui_icons/buttons/r3_c1.png",
-    "names": [
-      "Eji"
-    ],
-    "sources": [
-      {
-        "source": "unit:eji",
-        "context": "Eji",
-        "name": "Eji"
-      }
-    ]
-  },
-  {
-    "row": 3,
-    "col": 5,
-    "key": "3:5",
-    "file": "assets/generated/ui_icons/buttons/r3_c5.png",
-    "names": [
-      "Hatchling"
-    ],
-    "sources": [
-      {
-        "source": "unit:hatchling",
-        "context": "Hatchling",
-        "name": "Hatchling"
-      }
-    ]
-  },
-  {
-    "row": 3,
-    "col": 9,
-    "key": "3:9",
-    "file": "assets/generated/ui_icons/buttons/r3_c9.png",
+    "row": 2,
+    "col": 8,
+    "key": "2:8",
+    "file": "assets/generated/ui_icons/buttons/r2_c8.png",
     "names": [
       "Nanofix"
     ],
@@ -314,10 +280,10 @@
     ]
   },
   {
-    "row": 3,
-    "col": 10,
-    "key": "3:10",
-    "file": "assets/generated/ui_icons/buttons/r3_c10.png",
+    "row": 2,
+    "col": 9,
+    "key": "2:9",
+    "file": "assets/generated/ui_icons/buttons/r2_c9.png",
     "names": [
       "Inject",
       "Renew"
@@ -356,10 +322,10 @@
     ]
   },
   {
-    "row": 3,
-    "col": 11,
-    "key": "3:11",
-    "file": "assets/generated/ui_icons/buttons/r3_c11.png",
+    "row": 2,
+    "col": 10,
+    "key": "2:10",
+    "file": "assets/generated/ui_icons/buttons/r2_c10.png",
     "names": [
       "Confuse"
     ],
@@ -397,10 +363,10 @@
     ]
   },
   {
-    "row": 3,
-    "col": 12,
-    "key": "3:12",
-    "file": "assets/generated/ui_icons/buttons/r3_c12.png",
+    "row": 2,
+    "col": 11,
+    "key": "2:11",
+    "file": "assets/generated/ui_icons/buttons/r2_c11.png",
     "names": [
       "Proton Shot"
     ],
@@ -413,10 +379,10 @@
     ]
   },
   {
-    "row": 3,
-    "col": 13,
-    "key": "3:13",
-    "file": "assets/generated/ui_icons/buttons/r3_c13.png",
+    "row": 2,
+    "col": 12,
+    "key": "2:12",
+    "file": "assets/generated/ui_icons/buttons/r2_c12.png",
     "names": [
       "Voice of Command"
     ],
@@ -429,10 +395,10 @@
     ]
   },
   {
-    "row": 4,
-    "col": 1,
-    "key": "4:1",
-    "file": "assets/generated/ui_icons/buttons/r4_c1.png",
+    "row": 3,
+    "col": 0,
+    "key": "3:0",
+    "file": "assets/generated/ui_icons/buttons/r3_c0.png",
     "names": [
       "Fate Link"
     ],
@@ -445,12 +411,11 @@
     ]
   },
   {
-    "row": 4,
-    "col": 4,
-    "key": "4:4",
-    "file": "assets/generated/ui_icons/buttons/r4_c4.png",
+    "row": 3,
+    "col": 3,
+    "key": "3:3",
+    "file": "assets/generated/ui_icons/buttons/r3_c3.png",
     "names": [
-      "Constructor",
       "manipulate"
     ],
     "sources": [
@@ -458,19 +423,14 @@
         "source": "unit:manipulator",
         "context": "Manipulator",
         "name": "manipulate"
-      },
-      {
-        "source": "unit:constructor",
-        "context": "Constructor",
-        "name": "Constructor"
       }
     ]
   },
   {
-    "row": 4,
-    "col": 10,
-    "key": "4:10",
-    "file": "assets/generated/ui_icons/buttons/r4_c10.png",
+    "row": 3,
+    "col": 9,
+    "key": "3:9",
+    "file": "assets/generated/ui_icons/buttons/r3_c9.png",
     "names": [
       "Nether Nova"
     ],
@@ -483,10 +443,10 @@
     ]
   },
   {
-    "row": 4,
-    "col": 13,
-    "key": "4:13",
-    "file": "assets/generated/ui_icons/buttons/r4_c13.png",
+    "row": 3,
+    "col": 12,
+    "key": "3:12",
+    "file": "assets/generated/ui_icons/buttons/r3_c12.png",
     "names": [
       "Feed"
     ],
@@ -499,10 +459,10 @@
     ]
   },
   {
-    "row": 5,
-    "col": 1,
-    "key": "5:1",
-    "file": "assets/generated/ui_icons/buttons/r5_c1.png",
+    "row": 4,
+    "col": 0,
+    "key": "4:0",
+    "file": "assets/generated/ui_icons/buttons/r4_c0.png",
     "names": [
       "Freeze"
     ],
@@ -515,10 +475,10 @@
     ]
   },
   {
-    "row": 5,
-    "col": 2,
-    "key": "5:2",
-    "file": "assets/generated/ui_icons/buttons/r5_c2.png",
+    "row": 4,
+    "col": 1,
+    "key": "4:1",
+    "file": "assets/generated/ui_icons/buttons/r4_c1.png",
     "names": [
       "Lightning"
     ],
@@ -531,10 +491,10 @@
     ]
   },
   {
-    "row": 5,
-    "col": 3,
-    "key": "5:3",
-    "file": "assets/generated/ui_icons/buttons/r5_c3.png",
+    "row": 4,
+    "col": 2,
+    "key": "4:2",
+    "file": "assets/generated/ui_icons/buttons/r4_c2.png",
     "names": [
       "Holy Shock",
       "Mount Up"
@@ -553,42 +513,10 @@
     ]
   },
   {
-    "row": 5,
-    "col": 5,
-    "key": "5:5",
-    "file": "assets/generated/ui_icons/buttons/r5_c5.png",
-    "names": [
-      "Psychic"
-    ],
-    "sources": [
-      {
-        "source": "unit:eji2",
-        "context": "Psychic",
-        "name": "Psychic"
-      }
-    ]
-  },
-  {
-    "row": 5,
-    "col": 6,
-    "key": "5:6",
-    "file": "assets/generated/ui_icons/buttons/r5_c6.png",
-    "names": [
-      "Defender"
-    ],
-    "sources": [
-      {
-        "source": "unit:defender",
-        "context": "Defender",
-        "name": "Defender"
-      }
-    ]
-  },
-  {
-    "row": 5,
-    "col": 8,
-    "key": "5:8",
-    "file": "assets/generated/ui_icons/buttons/r5_c8.png",
+    "row": 4,
+    "col": 7,
+    "key": "4:7",
+    "file": "assets/generated/ui_icons/buttons/r4_c7.png",
     "names": [
       "Fortify"
     ],
@@ -601,10 +529,10 @@
     ]
   },
   {
-    "row": 5,
-    "col": 10,
-    "key": "5:10",
-    "file": "assets/generated/ui_icons/buttons/r5_c10.png",
+    "row": 4,
+    "col": 9,
+    "key": "4:9",
+    "file": "assets/generated/ui_icons/buttons/r4_c9.png",
     "names": [
       "Power Fuse"
     ],
@@ -617,10 +545,10 @@
     ]
   },
   {
-    "row": 6,
-    "col": 3,
-    "key": "6:3",
-    "file": "assets/generated/ui_icons/buttons/r6_c3.png",
+    "row": 5,
+    "col": 2,
+    "key": "5:2",
+    "file": "assets/generated/ui_icons/buttons/r5_c2.png",
     "names": [
       "Vitality Surge"
     ],
@@ -633,10 +561,10 @@
     ]
   },
   {
-    "row": 6,
-    "col": 4,
-    "key": "6:4",
-    "file": "assets/generated/ui_icons/buttons/r6_c4.png",
+    "row": 5,
+    "col": 3,
+    "key": "5:3",
+    "file": "assets/generated/ui_icons/buttons/r5_c3.png",
     "names": [
       "Dark Vortex"
     ],
@@ -649,10 +577,10 @@
     ]
   },
   {
-    "row": 6,
-    "col": 13,
-    "key": "6:13",
-    "file": "assets/generated/ui_icons/buttons/r6_c13.png",
+    "row": 5,
+    "col": 12,
+    "key": "5:12",
+    "file": "assets/generated/ui_icons/buttons/r5_c12.png",
     "names": [
       "Fear Shock"
     ],
@@ -665,10 +593,10 @@
     ]
   },
   {
-    "row": 7,
-    "col": 2,
-    "key": "7:2",
-    "file": "assets/generated/ui_icons/buttons/r7_c2.png",
+    "row": 6,
+    "col": 1,
+    "key": "6:1",
+    "file": "assets/generated/ui_icons/buttons/r6_c1.png",
     "names": [
       "Incinerate"
     ],
@@ -681,10 +609,10 @@
     ]
   },
   {
-    "row": 7,
-    "col": 3,
-    "key": "7:3",
-    "file": "assets/generated/ui_icons/buttons/r7_c3.png",
+    "row": 6,
+    "col": 2,
+    "key": "6:2",
+    "file": "assets/generated/ui_icons/buttons/r6_c2.png",
     "names": [
       "Frost Wave"
     ],
@@ -697,10 +625,10 @@
     ]
   },
   {
-    "row": 7,
-    "col": 4,
-    "key": "7:4",
-    "file": "assets/generated/ui_icons/buttons/r7_c4.png",
+    "row": 6,
+    "col": 3,
+    "key": "6:3",
+    "file": "assets/generated/ui_icons/buttons/r6_c3.png",
     "names": [
       "Purify"
     ],
@@ -713,10 +641,10 @@
     ]
   },
   {
-    "row": 7,
-    "col": 7,
-    "key": "7:7",
-    "file": "assets/generated/ui_icons/buttons/r7_c7.png",
+    "row": 6,
+    "col": 6,
+    "key": "6:6",
+    "file": "assets/generated/ui_icons/buttons/r6_c6.png",
     "names": [
       "Unholy Power"
     ],
@@ -729,10 +657,10 @@
     ]
   },
   {
-    "row": 7,
-    "col": 8,
-    "key": "7:8",
-    "file": "assets/generated/ui_icons/buttons/r7_c8.png",
+    "row": 6,
+    "col": 7,
+    "key": "6:7",
+    "file": "assets/generated/ui_icons/buttons/r6_c7.png",
     "names": [
       "Corruption"
     ],
@@ -745,10 +673,10 @@
     ]
   },
   {
-    "row": 7,
-    "col": 10,
-    "key": "7:10",
-    "file": "assets/generated/ui_icons/buttons/r7_c10.png",
+    "row": 6,
+    "col": 9,
+    "key": "6:9",
+    "file": "assets/generated/ui_icons/buttons/r6_c9.png",
     "names": [
       "Illusion"
     ],
@@ -761,10 +689,26 @@
     ]
   },
   {
-    "row": 7,
-    "col": 13,
-    "key": "7:13",
-    "file": "assets/generated/ui_icons/buttons/r7_c13.png",
+    "row": 6,
+    "col": 11,
+    "key": "6:11",
+    "file": "assets/generated/ui_icons/buttons/r6_c11.png",
+    "names": [
+      "Horrify"
+    ],
+    "sources": [
+      {
+        "source": "unit:arbitermob",
+        "context": "arbitermob",
+        "name": "Horrify"
+      }
+    ]
+  },
+  {
+    "row": 6,
+    "col": 12,
+    "key": "6:12",
+    "file": "assets/generated/ui_icons/buttons/r6_c12.png",
     "names": [
       "Breed"
     ],
@@ -777,10 +721,10 @@
     ]
   },
   {
-    "row": 8,
-    "col": 4,
-    "key": "8:4",
-    "file": "assets/generated/ui_icons/buttons/r8_c4.png",
+    "row": 7,
+    "col": 3,
+    "key": "7:3",
+    "file": "assets/generated/ui_icons/buttons/r7_c3.png",
     "names": [
       "Howl"
     ],
@@ -793,10 +737,10 @@
     ]
   },
   {
-    "row": 8,
-    "col": 6,
-    "key": "8:6",
-    "file": "assets/generated/ui_icons/buttons/r8_c6.png",
+    "row": 7,
+    "col": 5,
+    "key": "7:5",
+    "file": "assets/generated/ui_icons/buttons/r7_c5.png",
     "names": [
       "Repair Drones"
     ],
@@ -809,18 +753,46 @@
     ]
   },
   {
-    "row": 8,
-    "col": 7,
-    "key": "8:7",
-    "file": "assets/generated/ui_icons/buttons/r8_c7.png",
+    "row": 7,
+    "col": 6,
+    "key": "7:6",
+    "file": "assets/generated/ui_icons/buttons/r7_c6.png",
     "names": [
-      "Morph"
+      "Morph",
+      "Shield Dome"
     ],
     "sources": [
       {
         "source": "unit:overseer",
         "context": "Field Overseer",
         "name": "Morph"
+      },
+      {
+        "source": "unit:technician2",
+        "context": "Engineer",
+        "name": "Shield Dome"
+      }
+    ]
+  },
+  {
+    "row": 13,
+    "col": 6,
+    "key": "13:6",
+    "file": "assets/generated/ui_icons/buttons/r13_c6.png",
+    "names": [
+      "The Big One",
+      "Xelrad"
+    ],
+    "sources": [
+      {
+        "source": "unit:bigone",
+        "context": "The Big One",
+        "name": "The Big One"
+      },
+      {
+        "source": "unit:xelrad",
+        "context": "Xelrad",
+        "name": "Xelrad"
       }
     ]
   }

@@ -102,6 +102,43 @@
     ]
   },
   {
+    "name": "Blink",
+    "entries": [
+      {
+        "name": "Blink",
+        "description": "This unit has blinked to the Master.",
+        "isDebuff": null,
+        "iconRowRaw": 1,
+        "iconColRaw": 0,
+        "sourceFile": "effects/states.dt",
+        "sourceHeader": "dstate S_blink",
+        "resolved": {
+          "mode": "raw_row_col",
+          "row": 1,
+          "col": 0,
+          "file": "assets/generated/ui_icons/buff_icons/r1_c0.png",
+          "exists": true
+        },
+        "candidates": [
+          {
+            "mode": "raw_row_col",
+            "row": 1,
+            "col": 0,
+            "file": "assets/generated/ui_icons/buff_icons/r1_c0.png",
+            "exists": true
+          },
+          {
+            "mode": "raw_col_row",
+            "row": 0,
+            "col": 1,
+            "file": "assets/generated/ui_icons/buff_icons/r0_c1.png",
+            "exists": true
+          }
+        ]
+      }
+    ]
+  },
+  {
     "name": "Chain Lightning",
     "entries": [
       {
@@ -2997,17 +3034,6 @@
   {
     "name": "Plagued Corrosion",
     "entries": [
-      {
-        "name": "Plagued Corrosion",
-        "description": "Reduces the amount of healing taken by [stat:healing_taken_debuff_ammount]% per application",
-        "isDebuff": true,
-        "iconRowRaw": null,
-        "iconColRaw": null,
-        "sourceFile": "units/aliens/dave.dt",
-        "sourceHeader": "CBuffEffect E_PlaguedCorrosion",
-        "resolved": null,
-        "candidates": []
-      },
       {
         "name": "Plagued Corrosion",
         "description": "Reduces the amount of healing taken by [stat:healing_taken_debuff_ammount]% per application",

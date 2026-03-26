@@ -1,4 +1,4 @@
-0	GENERIC	0	GENERIC	100	1	1					
+﻿0	GENERIC	0	GENERIC	100	1	1					
 10	PVP GENERIC	10	PVP GENERIC	100	1	1					
 20	Common Boss	20	Common Hard Boss	100	1	1					
 30	Common Dungeon	30	Common Dungeon	100	1	1	100				
@@ -57,14 +57,14 @@
 210	Kharum - Ulf	20	Common Hard Boss	100	1	1					
 210	Kharum - Ulf	0	GENERIC	50	1	2					
 220	JY 3min Reward	220	JY 3min Reward	100	1	1		100			
-220	JY 3min Reward	220	JY 3min Reward	25	1	1	0	100	20	5	0
+220	JY 3min Reward	220	JY 3min Reward	25	1	1	0		50	20	
 230	JY 3rd Side	230	JY 3rd Side	100	1	1		100			
-230	JY 3rd Side	230	JY 3rd Side	25	1	1		100	20	5	
+230	JY 3rd Side	230	JY 3rd Side	25	1	1			50	20	
 240	JY Gorgar	240	JY Gorgar	100	1	1			100		
 240	JY Gorgar	240	JY Gorgar	25	1	1				50	10
 250	JY Gorgar Hard	250	JY Gorgar Hard	100	1	1				100	
 250	JY Gorgar Hard	250	JY Gorgar Hard	25	1	1					100
-260	JY Ditz Left Side Hard	260	JY Ditz Left Side Hard	100	1	1				100	10
+260	JY Ditz Left Side Hard	260	JY Ditz Left Side Hard	100	1	1				100	
 260	JY Ditz Left Side Hard	260	JY Ditz Left Side Hard	25	1	1					100
 260	JY Ditz Left Side Hard	20	Common Hard Boss	50	1	1				50	10
 270	JY Ditz	270	JY Ditz	100	1	1				100	
@@ -79,7 +79,7 @@
 300	CF 2nd encounter	320	CF 2nd encounter	100	1	1			100		
 300	CF 2nd encounter	320	CF 2nd encounter	50	1	1				100	10
 310	CF Village 1	330	CF Village 1	100	1	1		100			
-310	CF Village 1	340	CF Village 2	50	1	1			100	10	
+310	CF Village 1	330	CF Village 1	50	1	1			100	10	
 320	CF Village 2	340	CF Village 2	100	1	1		100			
 320	CF Village 2	340	CF Village 2	50	1	1			100	10	
 330	CF Boss	350	CF Boss	100	1	1			100		
@@ -121,9 +121,9 @@
 450	BRD Lan Zealot Hard	470	BRD Lan Zealot - Hard	25	1	1				100	
 450	BRD Lan Zealot Hard	20	Common Hard Boss	100	1	1					
 450	BRD Lan Zealot Hard 290	Common Low Boss	100	1	1			100	50	20
-460	Bodo	30	Common Dungeon	100	1	1	0	100	20	0	0
-460	Bodo	290	Common Low Boss	100	1	1			100	30	20
-460	Bodo	10	PVP GENERIC	100	1	1					100
+460	Bodo	30	Common Dungeon	100	1	1			100	20	5
+460	Bodo	290	Common Low Boss	50	1	1				100	50
+460	Bodo	20	Common Hard Boss	50	1	1					100
 470	DTB Hard	20	Common Hard Boss	100	1	1				100	25
 470	DTB Hard	0	GENERIC	100	1	1					100
 470	DTB Hard	10	PVP GENERIC	25	1	1					100

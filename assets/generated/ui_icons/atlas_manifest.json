@@ -1,7 +1,7 @@
 [
   {
     "id": "buttons",
-    "sourceFile": "C:\\Users\\sergi\\Desktop\\Proyectos\\Worldshift\\data\\textures\\ui\\buttons.dds",
+    "sourceFile": "C:\\Users\\sergi\\Desktop\\Proyectos\\Dot Worldshift\\Worldshift\\data\\textures\\ui\\buttons.dds",
     "cellWidth": 38,
     "cellHeight": 38,
     "imageWidth": 512,
@@ -11,7 +11,7 @@
   },
   {
     "id": "passive_abilities",
-    "sourceFile": "C:\\Users\\sergi\\Desktop\\Proyectos\\Worldshift\\data\\textures\\ui\\passive_abilities.dds",
+    "sourceFile": "C:\\Users\\sergi\\Desktop\\Proyectos\\Dot Worldshift\\Worldshift\\data\\textures\\ui\\passive_abilities.dds",
     "cellWidth": 16,
     "cellHeight": 16,
     "imageWidth": 256,
@@ -21,7 +21,7 @@
   },
   {
     "id": "buff_icons",
-    "sourceFile": "C:\\Users\\sergi\\Desktop\\Proyectos\\Worldshift\\data\\textures\\ui\\buff_icons.dds",
+    "sourceFile": "C:\\Users\\sergi\\Desktop\\Proyectos\\Dot Worldshift\\Worldshift\\data\\textures\\ui\\buff_icons.dds",
     "cellWidth": 16,
     "cellHeight": 16,
     "imageWidth": 256,
@@ -31,7 +31,7 @@
   },
   {
     "id": "spec_tree_icons",
-    "sourceFile": "C:\\Users\\sergi\\Desktop\\Proyectos\\Worldshift\\data\\textures\\ui\\spec_tree_icons.dds",
+    "sourceFile": "C:\\Users\\sergi\\Desktop\\Proyectos\\Dot Worldshift\\Worldshift\\data\\textures\\ui\\spec_tree_icons.dds",
     "cellWidth": 72,
     "cellHeight": 71,
     "imageWidth": 512,

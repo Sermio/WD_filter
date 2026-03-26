@@ -51,9 +51,10 @@ Si además cambian iconos o frames de items, también intervienen:
 
 - `data/db/items/globals.dt`
 - `data/db/ui/inventory.lua`
-- los atlas DDS que copies dentro del repo:
+- los atlas en `assets/ddsFiles/` (el script maestro los copia desde `data/textures/ui` cuando existen), por ejemplo:
   - `assets/ddsFiles/items.dds`
   - `assets/ddsFiles/item_frames.dds`
+  - `assets/ddsFiles/officers-70x70.dds` (iconos officer en la app; ver `docs/dds_unit_icons.md`)
 
 ## Script maestro
 
@@ -75,15 +76,18 @@ dart run tool/refresh_worldshift_item_data.dart "C:\Users\sergi\Desktop\Proyecto
 
 1. Copia desde `Worldshift` los TSV fuente a `assets/loot/source_game/`, más `humansspecs.dt`, `mutantsspecs.dt`, `aliensspecs.dt` y `data/db/ui/techgrid.lua` (en `refs/`) para regenerar el árbol de specs sin depender de una ruta fija.
 2. Copia también los archivos necesarios a `assets/tsvFiles/` para mantener compatibilidad con el runtime actual de la app.
-3. Regenera:
+3. Copia desde `data/textures/ui/` a `assets/ddsFiles/` los DDS/PNG listados en `tool/refresh_worldshift_item_data.dart` (`_gameUiAssetsToSync`) **si existen** en el juego (incluye `officers-70x70.dds`, `units-70x70.dds`, `items.dds`, `buff_icons.dds`, etc.).
+4. Ejecuta `dart run tool/extract_units_70_atlas.dart` (para recortar iconos de unidad desde los DDS copiados).
+5. Regenera:
    - `assets/loot/source_game/refs/map_drop_refs.tsv`
    - `assets/loot/source_game/refs/unit_drop_refs.tsv`
-4. Ejecuta:
+6. Ejecuta:
    - `dart run tool/generate_item_origin_index.dart`
    - `dart run tool/generate_item_list.dart`
    - `dart run tool/rebuild_attribute_list.dart`
    - `dart run tool/extract_worldshift_ui_icons.dart`
    - `dart run tool/generate_worldshift_assets.dart`
+   - `dart run tool/generate_unit_icon_lookup.dart`
    - `dart run tool/generate_status_effect_icon_index.dart`
    - `dart run tool/generate_ui_icon_name_indexes.dart` (acepta la ruta base de Worldshift como argumento)
    - `dart run tool/generate_skill_tree_data.dart` (misma ruta; ver `docs/spec-tree-data-workflow.md`)
@@ -97,6 +101,7 @@ Con eso quedan actualizados:
 - los iconos extraídos de atlas UI (`assets/generated/ui_icons/*`)
 - el índice de efectos de estado y resolución de iconos (`assets/generated/ui_icons/buff_icons/status_effect_icon_index.json`)
 - `assets/data/units.json`
+- `lib/data/unit_icon_lookup_generated.dart` (rutas a PNG de iconos de unidad)
 - las listas derivadas de `lib/data/data.dart` (`attributesList`, `attributeList`, `attributeFilter`, `units`, `races`, `maps`, `lootTable`, `slots`)
 - `lib/data/item.dart` para mantener `unitsFlat` sincronizado
 
@@ -177,22 +182,16 @@ Esto regenera:
 
 ## Caso opcional: cambian iconos o atlas de unidades
 
-Esto no siempre hace falta. Los datos de unidades ya se regeneran con el script maestro. Solo necesitas estos pasos extra si además cambian atlas DDS o iconos:
+El script maestro ya copia los DDS desde `data/textures/ui`, ejecuta `extract_units_70_atlas.dart` y `generate_unit_icon_lookup.dart`. Si necesitas **iconos nombrados** adicionales o flujos legacy:
 
 ```bash
-dart run tool/generate_worldshift_assets.dart
-dart run tool/generate_named_unit_icons.dart
 dart run tool/generate_named_commander_icons.dart
 dart run tool/generate_named_environment_unit_icons.dart
 dart run tool/rebuild_shared_named_units.dart
 flutter pub get
 ```
 
-Con eso se actualizan:
-
-- `assets/data/units.json`
-- iconos nombrados de unidades y officers
-- carpeta consolidada `assets/generated/unit_icons/named/units/`
+(`generate_named_unit_icons` está obsoleto; `generate_worldshift_assets` va dentro del refresh maestro.)
 
 ## Archivos que deberías revisar después de cada actualización
 

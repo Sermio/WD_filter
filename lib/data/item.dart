@@ -52,9 +52,7 @@ class Item {
           Map<String, Map<String, String>>.from(json['attributes'] ?? {}),
     );
   }
-}
-
-final List<String> unitsFlat = [
+}final List<String> unitsFlat = [
   'Commander',
   'Assassin',
   'Constructor',

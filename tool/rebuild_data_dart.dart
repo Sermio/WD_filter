@@ -135,8 +135,9 @@ void main() {
   );
 
   if (updatedDataSource == dataSource && updatedItemSource == itemSource) {
-    stderr.writeln('No se pudo actualizar data.dart o item.dart.');
-    exitCode = 2;
+    stdout.writeln(
+      'Sin cambios en data.dart e item.dart (ya estaban al día).',
+    );
     return;
   }
 

@@ -7,7 +7,27 @@ const _sourceGameItemsDir = r'assets\loot\source_game\items';
 const _sourceGameTextsDir = r'assets\loot\source_game\texts';
 const _sourceGameRefsDir = r'assets\loot\source_game\refs';
 const _legacyTsvDir = r'assets\tsvFiles';
+const _ddsAssetDir = r'assets\ddsFiles';
 const _defaultTexconvPath = r'C:\Tools\texconv\texconv.exe';
+
+/// Archivos en `Worldshift/data/textures/ui` que sincronizamos al repo (DDS usados por tools; PNG opcionales).
+const _gameUiAssetsToSync = <String>[
+  'officer_icons.dds',
+  'officers_icons_small.dds',
+  'officers-70x70.dds',
+  'units-70x70.dds',
+  'units.dds',
+  'conversation_icons.dds',
+  'items.dds',
+  'item_frames.dds',
+  'buff_icons.dds',
+  'buttons.dds',
+  'passive_abilities.dds',
+  'spec_tree_icons.dds',
+  'faction_leaders.dds',
+  'items.png',
+  'item_frames.png',
+];
 
 void main(List<String> args) {
   final worldshiftRoot = Directory(
@@ -134,6 +154,14 @@ void main(List<String> args) {
     '$_legacyTsvDir${Platform.pathSeparator}drop.tsv',
   );
 
+  _copyOptionalGameUiAssets(uiTexturesDir);
+
+  final texconvFile = File(_defaultTexconvPath);
+  _runDartScript(
+    'tool/extract_units_70_atlas.dart',
+    texconvFile.existsSync() ? [texconvFile.path] : const [],
+  );
+
   _writeMapRefs(missionsDir);
   _writeUnitRefs(unitsDir);
 
@@ -152,6 +180,7 @@ void main(List<String> args) {
     );
   }
   _runDartScript('tool/generate_worldshift_assets.dart', [unitsDir.path]);
+  _runDartScript('tool/generate_unit_icon_lookup.dart');
   _runDartScript('tool/generate_status_effect_icon_index.dart', [dbDir.path]);
   _runDartScript('tool/generate_ui_icon_name_indexes.dart', [worldshiftRoot.path]);
   _runDartScript('tool/generate_skill_tree_data.dart', [worldshiftRoot.path]);
@@ -161,6 +190,31 @@ void main(List<String> args) {
     'Sincronización de items Worldshift completada.\n'
     'Ruta base: ${worldshiftRoot.path}',
   );
+}
+
+void _copyOptionalGameUiAssets(Directory uiTexturesDir) {
+  if (!uiTexturesDir.existsSync()) {
+    stderr.writeln(
+      'Aviso: no existe ${uiTexturesDir.path}; se omite copia de DDS/PNG a $_ddsAssetDir.',
+    );
+    return;
+  }
+  Directory(_ddsAssetDir).createSync(recursive: true);
+  for (final name in _gameUiAssetsToSync) {
+    final src = File(
+      '${uiTexturesDir.path}${Platform.pathSeparator}$name',
+    );
+    if (!src.existsSync()) {
+      stderr.writeln(
+        'Aviso (opcional): no está en el juego, omitido: $name',
+      );
+      continue;
+    }
+    final dst = File('$_ddsAssetDir${Platform.pathSeparator}$name');
+    dst.parent.createSync(recursive: true);
+    dst.writeAsBytesSync(src.readAsBytesSync());
+    stdout.writeln('Copiado desde el juego: $name → ${dst.path}');
+  }
 }
 
 void _copyFile(String sourcePath, String targetPath) {

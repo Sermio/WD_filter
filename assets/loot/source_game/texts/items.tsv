@@ -44,12 +44,17 @@ stat.relief_healpersec	Relief Cell Healing
 stat.relief_psicost	Relief Power Cost
 stat.mend_power	Mend Power Cost
 stat.mend_heal	Mend Healing
+stat.repair_field_heal	Repair Field Healing
+stat.shield_dome_duration	Shield Dome Duration
+stat.shield_dome_psicost	Shield Dome Power Cost
+stat.shield_dome_radius	Shield Dome Size
 stat.throw_grenade_chance	Grenade Chance
 stat.grenade_damage	Grenade Damage
 stat.grenade_radius	Grenade Radius
 stat.growl_duration	Growl Duration
 stat.growl_chance	Growl Chance
 stat.ignite_duration	Ignite Duration
+stat.ignite_on_strike_chance	Ignite Chance
 stat.whirlwind_chance	Whirlwind Chance
 stat.illusion_power_cost	Illusions Power Cost
 stat.fortify_power_cost	Fortify Power Cost
@@ -58,6 +63,7 @@ stat.fortify_armor	Fortify Armor Addition
 stat.shift_stun_duration	Shift Stun Duration
 stat.holy_aura_heal	Holy Aura Healing
 stat.pyrowave_chance	Pyroblast Chance
+stat.pyrowave_amount	Pyroblast Amount
 stat.lightning_power	Lightning Power Cost
 stat.lightning_damage	Lightning Damage
 stat.holyshock_power	Holy Shock Power Cost
@@ -79,12 +85,24 @@ stat.chill_psi_cost	Frost Wave Power Cost
 stat.chill_duration	Chill Duration
 stat.incinerate_psi_cost	Incinerate Power Cost
 stat.incinerate_damage	Incinerate Damage
+stat.chainlightning_chance	Chain Lightning Chance
+stat.chainlightning_duration	Chain Lightning Duration
+stat.chainlightning_add_damage	Chain Lightning Damage
+stat.chainlightning_psi_cost	Chain Lightning Power Cost
 stat.drain_psi_amount	Drain Power Amount
 stat.drain_psi_chance	Drain Power Chance
 stat.unholy_aura_heal	Unholy Aura Healing
+stat.hatch_chance	Hatch Chance
+stat.hatch_worms	Hatch Worms
 stat.corruption_damage	Corruption Damage
 stat.corruption_duration	Corruption Duration
 stat.unholy_power_cooldown	Unholy Power Cooldown
+stat.fatelink_duration	Fatelink Duration
+stat.fatelink_power	Fatelink Power Cost
+stat.terrify_duration	Terrify Duration
+stat.terrify_cooldown	Terrify Cooldown
+stat.terrify_chance	Terrify Chance
+stat.terrify_area	Terrify Size
 stat.chain_shot_chance	Chain Shot Chance
 stat.chain_shot_hops	Chain Shot Chains
 stat.fear_shock_power	Fear Shock Power Cost
@@ -104,6 +122,8 @@ stat.harvest_damage	Harvest Damage
 stat.harvest_duration	Harvest Duration
 stat.harvest_cooldown	Harvest Cooldown
 stat.confuse_chance	Imminence Chance
+stat.leech_chance	Leech Chance
+stat.leech_heal	Leech Healing
 stat.life_leech_boost	Life Leech Rate
 stat.vortex_power	Vortex Power Cost
 stat.vortex_heal	Vortex Healing

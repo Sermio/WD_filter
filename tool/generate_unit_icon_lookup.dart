@@ -1,7 +1,7 @@
 // Genera `lib/data/unit_icon_lookup_generated.dart`: mapa de claves (id .dt, claves del builder, etc.)
 // → rutas únicas a PNG solo por coordenada en atlas.
 //
-// Reglas (Worldshift): personajes jugables de campaña → officers-70x70; tropas/NPC habituales → units-70x70;
+// Reglas (Worldshift): personajes jugables de campaña → officers-70x70; tropas/NPC → units-70x70;
 // conv_icon suelto → conversation_icons (49×49) si no hay main.
 //
 // Ejecutar tras:

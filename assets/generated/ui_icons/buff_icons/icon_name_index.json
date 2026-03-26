@@ -1,183 +1,73 @@
 [
   {
-    "row": 0,
-    "col": 7,
-    "key": "0:7",
-    "file": "assets/generated/ui_icons/buff_icons/r0_c7.png",
+    "row": 1,
+    "col": 1,
+    "key": "1:1",
+    "file": "assets/generated/ui_icons/buff_icons/r1_c1.png",
     "names": [
-      "Hatchlings"
+      "Lord Commander",
+      "Sizzle"
     ],
     "sources": [
       {
         "source": "units-dt",
         "context": "alienegg.dt",
-        "name": "Hatchlings"
+        "name": "Sizzle"
+      },
+      {
+        "source": "units-dt",
+        "context": "commander.dt",
+        "name": "Lord Commander"
       }
     ]
   },
   {
-    "row": 0,
-    "col": 8,
-    "key": "0:8",
-    "file": "assets/generated/ui_icons/buff_icons/r0_c8.png",
+    "row": 1,
+    "col": 2,
+    "key": "1:2",
+    "file": "assets/generated/ui_icons/buff_icons/r1_c2.png",
     "names": [
-      "Build Shrine",
-      "Repair Building"
+      "Expose Target",
+      "Hellfire",
+      "High Priest"
     ],
     "sources": [
       {
         "source": "units-dt",
-        "context": "worker.dt",
-        "name": "Repair Building"
+        "context": "assassin.dt",
+        "name": "Expose Target"
       },
       {
         "source": "units-dt",
-        "context": "worker.dt",
-        "name": "Build Shrine"
+        "context": "hellfire.dt",
+        "name": "Hellfire"
+      },
+      {
+        "source": "units-dt",
+        "context": "highpriest.dt",
+        "name": "High Priest"
       }
     ]
   },
   {
-    "row": 0,
-    "col": 13,
-    "key": "0:13",
-    "file": "assets/generated/ui_icons/buff_icons/r0_c13.png",
+    "row": 1,
+    "col": 3,
+    "key": "1:3",
+    "file": "assets/generated/ui_icons/buff_icons/r1_c3.png",
     "names": [
-      "Battle Yamu",
-      "Gorgar the Late",
-      "HF1337",
-      "Howling Horror",
-      "Nanofix",
-      "Nomad",
-      "Poison",
-      "Relief Cell",
-      "Repair drones",
-      "Slowing Poison",
-      "Spider Spawn",
-      "Spitting Scorpion",
-      "Threaten",
-      "Vasilii"
+      "Master",
+      "Ripper"
     ],
     "sources": [
       {
         "source": "units-dt",
-        "context": "bigone.dt",
-        "name": "Slowing Poison"
+        "context": "master.dt",
+        "name": "Master"
       },
       {
         "source": "units-dt",
-        "context": "bigone.dt",
-        "name": "Slowing Poison"
-      },
-      {
-        "source": "units-dt",
-        "context": "bigone.dt",
-        "name": "Poison"
-      },
-      {
-        "source": "units-dt",
-        "context": "bridgejudge.dt",
-        "name": "Relief Cell"
-      },
-      {
-        "source": "units-dt",
-        "context": "bsabattleyamu.dt",
-        "name": "Battle Yamu"
-      },
-      {
-        "source": "units-dt",
-        "context": "bsabattleyamu.dt",
-        "name": "Battle Yamu"
-      },
-      {
-        "source": "units-dt",
-        "context": "bsahowlinghorror.dt",
-        "name": "Howling Horror"
-      },
-      {
-        "source": "units-dt",
-        "context": "gorgar.dt",
-        "name": "Gorgar the Late"
-      },
-      {
-        "source": "units-dt",
-        "context": "hf1337.dt",
-        "name": "HF1337"
-      },
-      {
-        "source": "units-dt",
-        "context": "nomad.dt",
-        "name": "Nomad"
-      },
-      {
-        "source": "units-dt",
-        "context": "renegadehatchling.dt",
-        "name": "Threaten"
-      },
-      {
-        "source": "units-dt",
-        "context": "salingconstructor.dt",
-        "name": "Repair drones"
-      },
-      {
-        "source": "units-dt",
-        "context": "salingconstructor.dt",
-        "name": "Nanofix"
-      },
-      {
-        "source": "units-dt",
-        "context": "spiderspawn.dt",
-        "name": "Spider Spawn"
-      },
-      {
-        "source": "units-dt",
-        "context": "spittingscorpion.dt",
-        "name": "Spitting Scorpion"
-      },
-      {
-        "source": "units-dt",
-        "context": "spittingscorpion.dt",
-        "name": "Spitting Scorpion"
-      },
-      {
-        "source": "units-dt",
-        "context": "spittingscorpion.dt",
-        "name": "Poison"
-      },
-      {
-        "source": "units-dt",
-        "context": "vasilii.dt",
-        "name": "Vasilii"
-      },
-      {
-        "source": "units-dt",
-        "context": "venomousscorpion.dt",
-        "name": "Slowing Poison"
-      },
-      {
-        "source": "units-dt",
-        "context": "venomousscorpion.dt",
-        "name": "Slowing Poison"
-      },
-      {
-        "source": "units-dt",
-        "context": "venomousscorpion.dt",
-        "name": "Slowing Poison"
-      },
-      {
-        "source": "units-dt",
-        "context": "xelrad.dt",
-        "name": "Slowing Poison"
-      },
-      {
-        "source": "units-dt",
-        "context": "xelrad.dt",
-        "name": "Slowing Poison"
-      },
-      {
-        "source": "units-dt",
-        "context": "xelrad.dt",
-        "name": "Poison"
+        "context": "ripper.dt",
+        "name": "Ripper"
       }
     ]
   },
@@ -199,6 +89,28 @@
   },
   {
     "row": 1,
+    "col": 5,
+    "key": "1:5",
+    "file": "assets/generated/ui_icons/buff_icons/r1_c5.png",
+    "names": [
+      "Barrage",
+      "Shock Trooper"
+    ],
+    "sources": [
+      {
+        "source": "units-dt",
+        "context": "assaultbot.dt",
+        "name": "Barrage"
+      },
+      {
+        "source": "units-dt",
+        "context": "trooper.dt",
+        "name": "Shock Trooper"
+      }
+    ]
+  },
+  {
+    "row": 1,
     "col": 6,
     "key": "1:6",
     "file": "assets/generated/ui_icons/buff_icons/r1_c6.png",
@@ -210,6 +122,70 @@
         "source": "units-dt",
         "context": "technician.dt",
         "name": "Technician"
+      }
+    ]
+  },
+  {
+    "row": 1,
+    "col": 8,
+    "key": "1:8",
+    "file": "assets/generated/ui_icons/buff_icons/r1_c8.png",
+    "names": [
+      "Fire Sweep"
+    ],
+    "sources": [
+      {
+        "source": "units-dt",
+        "context": "hellfire.dt",
+        "name": "Fire Sweep"
+      }
+    ]
+  },
+  {
+    "row": 1,
+    "col": 9,
+    "key": "1:9",
+    "file": "assets/generated/ui_icons/buff_icons/r1_c9.png",
+    "names": [
+      "Relief"
+    ],
+    "sources": [
+      {
+        "source": "units-dt",
+        "context": "surgeon.dt",
+        "name": "Relief"
+      }
+    ]
+  },
+  {
+    "row": 1,
+    "col": 10,
+    "key": "1:10",
+    "file": "assets/generated/ui_icons/buff_icons/r1_c10.png",
+    "names": [
+      "Inject"
+    ],
+    "sources": [
+      {
+        "source": "units-dt",
+        "context": "commander.dt",
+        "name": "Inject"
+      }
+    ]
+  },
+  {
+    "row": 1,
+    "col": 13,
+    "key": "1:13",
+    "file": "assets/generated/ui_icons/buff_icons/r1_c13.png",
+    "names": [
+      "Poison Flare"
+    ],
+    "sources": [
+      {
+        "source": "units-dt",
+        "context": "assassin.dt",
+        "name": "Poison Flare"
       }
     ]
   },
@@ -232,6 +208,34 @@
         "source": "units-dt",
         "context": "worker.dt",
         "name": "Worker"
+      }
+    ]
+  },
+  {
+    "row": 2,
+    "col": 2,
+    "key": "2:2",
+    "file": "assets/generated/ui_icons/buff_icons/r2_c2.png",
+    "names": [
+      "Brute",
+      "Erkh Arul",
+      "Feed"
+    ],
+    "sources": [
+      {
+        "source": "units-dt",
+        "context": "master.dt",
+        "name": "Feed"
+      },
+      {
+        "source": "units-dt",
+        "context": "erkharul.dt",
+        "name": "Erkh Arul"
+      },
+      {
+        "source": "units-dt",
+        "context": "brute.dt",
+        "name": "Brute"
       }
     ]
   },
@@ -306,6 +310,44 @@
     ]
   },
   {
+    "row": 2,
+    "col": 13,
+    "key": "2:13",
+    "file": "assets/generated/ui_icons/buff_icons/r2_c13.png",
+    "names": [
+      "Mend"
+    ],
+    "sources": [
+      {
+        "source": "units-dt",
+        "context": "surgeon.dt",
+        "name": "Mend"
+      }
+    ]
+  },
+  {
+    "row": 3,
+    "col": 1,
+    "key": "3:1",
+    "file": "assets/generated/ui_icons/buff_icons/r3_c1.png",
+    "names": [
+      "Eji",
+      "Reduced Damage"
+    ],
+    "sources": [
+      {
+        "source": "units-dt",
+        "context": "assaultbot.dt",
+        "name": "Reduced Damage"
+      },
+      {
+        "source": "units-dt",
+        "context": "eji.dt",
+        "name": "Eji"
+      }
+    ]
+  },
+  {
     "row": 3,
     "col": 2,
     "key": "3:2",
@@ -336,34 +378,6 @@
         "source": "units-dt",
         "context": "sorcerer.dt",
         "name": "Chain Lightning"
-      }
-    ]
-  },
-  {
-    "row": 3,
-    "col": 3,
-    "key": "3:3",
-    "file": "assets/generated/ui_icons/buff_icons/r3_c3.png",
-    "names": [
-      "Charging field",
-      "Engineer",
-      "Trisat"
-    ],
-    "sources": [
-      {
-        "source": "units-dt",
-        "context": "overseer.dt",
-        "name": "Charging field"
-      },
-      {
-        "source": "units-dt",
-        "context": "trisat.dt",
-        "name": "Trisat"
-      },
-      {
-        "source": "units-dt",
-        "context": "technician2.dt",
-        "name": "Engineer"
       }
     ]
   },
@@ -406,6 +420,22 @@
   },
   {
     "row": 3,
+    "col": 5,
+    "key": "3:5",
+    "file": "assets/generated/ui_icons/buff_icons/r3_c5.png",
+    "names": [
+      "Hatchling"
+    ],
+    "sources": [
+      {
+        "source": "units-dt",
+        "context": "hatchling.dt",
+        "name": "Hatchling"
+      }
+    ]
+  },
+  {
+    "row": 3,
     "col": 6,
     "key": "3:6",
     "file": "assets/generated/ui_icons/buff_icons/r3_c6.png",
@@ -433,6 +463,111 @@
         "source": "units-dt",
         "context": "alienegg.dt",
         "name": "Egg"
+      }
+    ]
+  },
+  {
+    "row": 3,
+    "col": 10,
+    "key": "3:10",
+    "file": "assets/generated/ui_icons/buff_icons/r3_c10.png",
+    "names": [
+      "Frank N. Stein",
+      "Inject",
+      "Renew"
+    ],
+    "sources": [
+      {
+        "source": "units-dt",
+        "context": "frank.dt",
+        "name": "Frank N. Stein"
+      },
+      {
+        "source": "units-dt",
+        "context": "commanderboss.dt",
+        "name": "Inject"
+      },
+      {
+        "source": "units-dt",
+        "context": "denkar.dt",
+        "name": "Inject"
+      },
+      {
+        "source": "units-dt",
+        "context": "denkarh.dt",
+        "name": "Inject"
+      },
+      {
+        "source": "units-dt",
+        "context": "lancelot.dt",
+        "name": "Inject"
+      },
+      {
+        "source": "units-dt",
+        "context": "onk.dt",
+        "name": "Inject"
+      },
+      {
+        "source": "units-dt",
+        "context": "shaman.dt",
+        "name": "Renew"
+      }
+    ]
+  },
+  {
+    "row": 3,
+    "col": 11,
+    "key": "3:11",
+    "file": "assets/generated/ui_icons/buff_icons/r3_c11.png",
+    "names": [
+      "Confuse"
+    ],
+    "sources": [
+      {
+        "source": "units-dt",
+        "context": "commander.dt",
+        "name": "Confuse"
+      },
+      {
+        "source": "units-dt",
+        "context": "commanderboss.dt",
+        "name": "Confuse"
+      },
+      {
+        "source": "units-dt",
+        "context": "denkar.dt",
+        "name": "Confuse"
+      },
+      {
+        "source": "units-dt",
+        "context": "denkarh.dt",
+        "name": "Confuse"
+      },
+      {
+        "source": "units-dt",
+        "context": "lancelot.dt",
+        "name": "Confuse"
+      },
+      {
+        "source": "units-dt",
+        "context": "onk.dt",
+        "name": "Confuse"
+      }
+    ]
+  },
+  {
+    "row": 3,
+    "col": 13,
+    "key": "3:13",
+    "file": "assets/generated/ui_icons/buff_icons/r3_c13.png",
+    "names": [
+      "Voice of Command"
+    ],
+    "sources": [
+      {
+        "source": "units-dt",
+        "context": "judge.dt",
+        "name": "Voice of Command"
       }
     ]
   }
