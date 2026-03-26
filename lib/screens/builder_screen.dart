@@ -762,6 +762,7 @@ class _BuilderScreenState extends State<BuilderScreen> {
           hudChipBg: hud.chipBackground,
           hudInkSplash: hud.inkSplash,
           hudInkHighlight: hud.inkHighlight,
+          hudPanelBg: hud.panelBg,
           hudPanelBorder: hud.panelBorder,
           allocatedByRepo: allocated,
           onSpecAllocationChanged: commit,
@@ -773,6 +774,7 @@ class _BuilderScreenState extends State<BuilderScreen> {
           hudChipBg: hud.chipBackground,
           hudInkSplash: hud.inkSplash,
           hudInkHighlight: hud.inkHighlight,
+          hudPanelBg: hud.panelBg,
           hudPanelBorder: hud.panelBorder,
           allocatedByRepo: allocated,
           onSpecAllocationChanged: commit,
@@ -784,6 +786,7 @@ class _BuilderScreenState extends State<BuilderScreen> {
           hudChipBg: hud.chipBackground,
           hudInkSplash: hud.inkSplash,
           hudInkHighlight: hud.inkHighlight,
+          hudPanelBg: hud.panelBg,
           hudPanelBorder: hud.panelBorder,
           allocatedByRepo: allocated,
           onSpecAllocationChanged: commit,
@@ -1686,7 +1689,6 @@ class _BuilderRaceHudTheme {
     required this.chipSide,
     required this.footerDivider,
     required this.resetStyle,
-    required this.hudInterior,
     required this.slotLabelPrimary,
     required this.slotLabelSecondary,
     required this.inkSplash,
@@ -1708,7 +1710,6 @@ class _BuilderRaceHudTheme {
   final Color chipSide;
   final Color footerDivider;
   final ButtonStyle resetStyle;
-  final BuilderHudInterior hudInterior;
   final Color slotLabelPrimary;
   final Color slotLabelSecondary;
   final Color inkSplash;
@@ -1742,7 +1743,6 @@ class _BuilderRaceHudTheme {
             side: const BorderSide(color: Color(0xFF4A5568)),
             backgroundColor: const Color(0xFF1A1F28),
           ),
-          hudInterior: BuilderHudInterior.human,
           slotLabelPrimary: const Color(0xFFF2F5FA),
           slotLabelSecondary: const Color(0xFF7D8696),
           inkSplash: Colors.white24,
@@ -1770,7 +1770,6 @@ class _BuilderRaceHudTheme {
             side: const BorderSide(color: Color(0xFF5A4E42)),
             backgroundColor: const Color(0xFF161310),
           ),
-          hudInterior: BuilderHudInterior.mutant,
           slotLabelPrimary: const Color(0xFFF5EDE0),
           slotLabelSecondary: const Color(0xFF8F7D6B),
           inkSplash: const Color(0x33D4A574),
@@ -1798,7 +1797,6 @@ class _BuilderRaceHudTheme {
             side: const BorderSide(color: Color(0xFF255238)),
             backgroundColor: const Color(0xFF0A100C),
           ),
-          hudInterior: BuilderHudInterior.alien,
           slotLabelPrimary: const Color(0xFFE8F7EE),
           slotLabelSecondary: const Color(0xFF5E806E),
           inkSplash: const Color(0x4040FF88),
@@ -1824,7 +1822,6 @@ class _BuilderRaceHudTheme {
             foregroundColor: const Color(0xFF475569),
             side: BorderSide(color: Colors.grey.shade400),
           ),
-          hudInterior: BuilderHudInterior.human,
           slotLabelPrimary: const Color(0xFFF2F5FA),
           slotLabelSecondary: const Color(0xFF7D8696),
           inkSplash: Colors.black12,
@@ -2802,13 +2799,18 @@ class _BuilderHudSlotCell extends StatelessWidget {
                   child: Stack(
                     clipBehavior: Clip.none,
                     children: [
-                      ItemCompleteFrame(
-                        slot: slotKey,
-                        rarity: rarity,
-                        size: frameSize,
-                        darkInterior: true,
-                        builderHudInterior: hud.hudInterior,
-                        showInteriorIcon: equipped != null,
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(
+                          ItemCompleteFrame.cornerRadiusFor(frameSize),
+                        ),
+                        clipBehavior: Clip.hardEdge,
+                        child: ItemCompleteFrame(
+                          slot: slotKey,
+                          rarity: rarity,
+                          size: frameSize,
+                          showInteriorIcon: equipped != null,
+                          lightInteriorFill: Colors.transparent,
+                        ),
                       ),
                       if (equipped != null)
                         Positioned(

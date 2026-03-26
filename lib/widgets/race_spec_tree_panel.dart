@@ -22,6 +22,7 @@ class RaceSpecTreePanel extends StatelessWidget {
     required this.hudChipBg,
     required this.hudInkSplash,
     required this.hudInkHighlight,
+    required this.hudPanelBg,
     required this.hudPanelBorder,
     this.allocatedByRepo = const {},
     this.onSpecAllocationChanged,
@@ -35,6 +36,7 @@ class RaceSpecTreePanel extends StatelessWidget {
     required Color hudChipBg,
     required Color hudInkSplash,
     required Color hudInkHighlight,
+    required Color hudPanelBg,
     required Color hudPanelBorder,
     Map<String, int> allocatedByRepo = const {},
     void Function(Map<String, int> nextByRepo)? onSpecAllocationChanged,
@@ -49,6 +51,7 @@ class RaceSpecTreePanel extends StatelessWidget {
       hudChipBg: hudChipBg,
       hudInkSplash: hudInkSplash,
       hudInkHighlight: hudInkHighlight,
+      hudPanelBg: hudPanelBg,
       hudPanelBorder: hudPanelBorder,
       allocatedByRepo: allocatedByRepo,
       onSpecAllocationChanged: onSpecAllocationChanged,
@@ -63,6 +66,7 @@ class RaceSpecTreePanel extends StatelessWidget {
     required Color hudChipBg,
     required Color hudInkSplash,
     required Color hudInkHighlight,
+    required Color hudPanelBg,
     required Color hudPanelBorder,
     Map<String, int> allocatedByRepo = const {},
     void Function(Map<String, int> nextByRepo)? onSpecAllocationChanged,
@@ -77,6 +81,7 @@ class RaceSpecTreePanel extends StatelessWidget {
       hudChipBg: hudChipBg,
       hudInkSplash: hudInkSplash,
       hudInkHighlight: hudInkHighlight,
+      hudPanelBg: hudPanelBg,
       hudPanelBorder: hudPanelBorder,
       allocatedByRepo: allocatedByRepo,
       onSpecAllocationChanged: onSpecAllocationChanged,
@@ -91,6 +96,7 @@ class RaceSpecTreePanel extends StatelessWidget {
     required Color hudChipBg,
     required Color hudInkSplash,
     required Color hudInkHighlight,
+    required Color hudPanelBg,
     required Color hudPanelBorder,
     Map<String, int> allocatedByRepo = const {},
     void Function(Map<String, int> nextByRepo)? onSpecAllocationChanged,
@@ -105,6 +111,7 @@ class RaceSpecTreePanel extends StatelessWidget {
       hudChipBg: hudChipBg,
       hudInkSplash: hudInkSplash,
       hudInkHighlight: hudInkHighlight,
+      hudPanelBg: hudPanelBg,
       hudPanelBorder: hudPanelBorder,
       allocatedByRepo: allocatedByRepo,
       onSpecAllocationChanged: onSpecAllocationChanged,
@@ -120,6 +127,8 @@ class RaceSpecTreePanel extends StatelessWidget {
   final Color hudChipBg;
   final Color hudInkSplash;
   final Color hudInkHighlight;
+  /// Mismo tono que el panel del builder (evita halos junto al borde del icono).
+  final Color hudPanelBg;
   final Color hudPanelBorder;
 
   /// Stars assigned per `repo` (0 = no entry in the map).
@@ -229,6 +238,7 @@ class RaceSpecTreePanel extends StatelessWidget {
                           node: _n(visualRowRepos[i][j]),
                           frameSize: frameSize,
                           filledStars: allocatedByRepo[visualRowRepos[i][j]] ?? 0,
+                          hudPanelBg: hudPanelBg,
                           hudHintColor: hudHintColor,
                           hudTitleColor: hudTitleColor,
                           hudInkSplash: hudInkSplash,
@@ -877,6 +887,7 @@ class _SpecTreeCell extends StatelessWidget {
     required this.node,
     required this.frameSize,
     required this.filledStars,
+    required this.hudPanelBg,
     required this.hudHintColor,
     required this.hudTitleColor,
     required this.hudInkSplash,
@@ -888,6 +899,7 @@ class _SpecTreeCell extends StatelessWidget {
   final SpecTreeNode node;
   final double frameSize;
   final int filledStars;
+  final Color hudPanelBg;
   final Color hudHintColor;
   final Color hudTitleColor;
   final Color hudInkSplash;
@@ -915,12 +927,14 @@ class _SpecTreeCell extends StatelessWidget {
                 height: frameSize,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
+                  clipBehavior: Clip.hardEdge,
                   child: Stack(
                     clipBehavior: Clip.hardEdge,
                     fit: StackFit.expand,
                     children: [
                       DecoratedBox(
                         decoration: BoxDecoration(
+                          color: hudPanelBg,
                           border: Border.all(
                             color: hudHintColor.withValues(alpha: 0.25),
                           ),
