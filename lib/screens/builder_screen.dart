@@ -16,6 +16,8 @@ import 'package:worldshift_assistant/data/worldshift_assets.dart';
 import 'package:worldshift_assistant/models/item_filters_model.dart';
 import 'package:worldshift_assistant/utils/catalog_card_stripe.dart';
 import 'package:worldshift_assistant/utils/catalog_item_filter.dart';
+import 'package:worldshift_assistant/utils/item_origin_maps.dart'
+    show loadItemOriginDerived;
 import 'package:worldshift_assistant/utils/human_spec_build_summary.dart';
 import 'package:worldshift_assistant/utils/unit_icon_candidates.dart';
 import 'package:worldshift_assistant/utils/utils.dart';
@@ -122,6 +124,9 @@ class _BuilderScreenState extends State<BuilderScreen> {
     for (final r in _races) r: <String, int>{},
   };
 
+  /// Orígenes por mapa desde `item_origin_index.json` (mismo criterio que el catálogo).
+  final Map<int, Set<String>> _resolvedMapNamesByItem = {};
+
   Map<String, Item> get _equipForSelectedRace =>
       _equippedByRace[_selectedRace]!;
 
@@ -141,10 +146,16 @@ class _BuilderScreenState extends State<BuilderScreen> {
   }
 
   Future<List<Item>> _loadItemsAndRestorePrefs() async {
-    final items = await combineLootData(
+    final lootFuture = combineLootData(
       WorldshiftAssets.lootTableFile,
       WorldshiftAssets.itemsDefinitionFile,
     );
+    final derivedFuture = loadItemOriginDerived();
+    final items = await lootFuture;
+    final derived = await derivedFuture;
+    _resolvedMapNamesByItem
+      ..clear()
+      ..addAll(derived.mapNamesByItemId);
     await _restoreFromPrefs(items);
     return items;
   }
@@ -710,6 +721,7 @@ class _BuilderScreenState extends State<BuilderScreen> {
         slotLabel: slotLabel,
         lockedRace: _selectedRace,
         allItems: allItems,
+        resolvedMapNamesByItem: _resolvedMapNamesByItem,
         canUnequip: _equipForSelectedRace[slotKey] != null,
         unequipToken: _builderPickerUnequip,
       ),
@@ -1089,6 +1101,7 @@ class _BuilderScreenState extends State<BuilderScreen> {
           return LayoutBuilder(
             builder: (context, constraints) {
               final panelLeft = _EquipmentPanel(
+                resolvedMapNamesByItem: _resolvedMapNamesByItem,
                 selectedRace: _selectedRace,
                 races: _races,
                 onRaceChanged: (race) {
@@ -1412,6 +1425,7 @@ class _BuilderEquipItemPicker extends StatefulWidget {
     required this.slotLabel,
     required this.lockedRace,
     required this.allItems,
+    required this.resolvedMapNamesByItem,
     required this.canUnequip,
     required this.unequipToken,
   });
@@ -1420,6 +1434,7 @@ class _BuilderEquipItemPicker extends StatefulWidget {
   final String slotLabel;
   final String lockedRace;
   final List<Item> allItems;
+  final Map<int, Set<String>> resolvedMapNamesByItem;
   final bool canUnequip;
   final Object unequipToken;
 
@@ -1467,6 +1482,7 @@ class _BuilderEquipItemPickerState extends State<_BuilderEquipItemPicker> {
           (item) => catalogItemMatchesFilters(
             item: item,
             filterProvider: fp,
+            resolvedMapNamesByItem: widget.resolvedMapNamesByItem,
             lockedSlotKey: widget.slotKey,
             lockedRaceKey: widget.lockedRace,
           ),
@@ -1639,6 +1655,8 @@ class _BuilderEquipItemPickerState extends State<_BuilderEquipItemPicker> {
                                 rarity: rarity,
                                 obtainedFrom: item.obtainedFrom,
                                 itemData: itemData,
+                                resolvedMapNames:
+                                    widget.resolvedMapNamesByItem[item.id],
                                 onSelect: () => Navigator.of(context).pop(item),
                               );
                             },
@@ -1847,6 +1865,7 @@ class _BuilderRaceHudTheme {
 
 class _EquipmentPanel extends StatelessWidget {
   const _EquipmentPanel({
+    required this.resolvedMapNamesByItem,
     required this.selectedRace,
     required this.races,
     required this.onRaceChanged,
@@ -1861,6 +1880,7 @@ class _EquipmentPanel extends StatelessWidget {
     required this.skillTreeForHud,
   });
 
+  final Map<int, Set<String>> resolvedMapNamesByItem;
   final String selectedRace;
   final List<String> races;
   final ValueChanged<String> onRaceChanged;
@@ -2176,6 +2196,7 @@ class _EquipmentPanel extends StatelessWidget {
                   hud: hud,
                   slotsByKey: _slotsByKey(),
                   equippedBySlot: equippedBySlot,
+                  resolvedMapNamesByItem: resolvedMapNamesByItem,
                   onPickItem: onPickItem,
                   centerKeys: zig.center,
                   leftKeys: zig.left,
@@ -2265,6 +2286,9 @@ class _EquipmentPanel extends StatelessWidget {
                                                         : e.rarity,
                                                     obtainedFrom: e.obtainedFrom,
                                                     itemData: e.toMap(),
+                                                    resolvedMapNames:
+                                                        resolvedMapNamesByItem[
+                                                            e.id],
                                                   );
                                                 },
                                               ),
@@ -2624,6 +2648,7 @@ class _BuilderEquipmentZigzag extends StatelessWidget {
     required this.hud,
     required this.slotsByKey,
     required this.equippedBySlot,
+    required this.resolvedMapNamesByItem,
     required this.onPickItem,
     required this.centerKeys,
     required this.leftKeys,
@@ -2633,6 +2658,7 @@ class _BuilderEquipmentZigzag extends StatelessWidget {
   final _BuilderRaceHudTheme hud;
   final Map<String, Map<String, String>> slotsByKey;
   final Map<String, Item> equippedBySlot;
+  final Map<int, Set<String>> resolvedMapNamesByItem;
   final void Function(String slotKey, String slotLabel) onPickItem;
   final List<String> centerKeys;
   final List<String> leftKeys;
@@ -2666,6 +2692,7 @@ class _BuilderEquipmentZigzag extends StatelessWidget {
             equipped: equipped,
             rarity: rarity,
             frameSize: frameSize,
+            resolvedMapNamesByItem: resolvedMapNamesByItem,
             onTap: () => onPickItem(slotKey, slotLabel),
           );
         }
@@ -2733,6 +2760,7 @@ class _BuilderHudSlotCell extends StatelessWidget {
     required this.equipped,
     required this.rarity,
     required this.frameSize,
+    required this.resolvedMapNamesByItem,
     required this.onTap,
   });
 
@@ -2742,6 +2770,7 @@ class _BuilderHudSlotCell extends StatelessWidget {
   final Item? equipped;
   final String rarity;
   final double frameSize;
+  final Map<int, Set<String>> resolvedMapNamesByItem;
   final VoidCallback onTap;
 
   @override
@@ -2800,6 +2829,8 @@ class _BuilderHudSlotCell extends StatelessWidget {
                                 rarity: e.rarity.isEmpty ? 'unknown' : e.rarity,
                                 obtainedFrom: e.obtainedFrom,
                                 itemData: e.toMap(),
+                                resolvedMapNames:
+                                    resolvedMapNamesByItem[e.id],
                               );
                             },
                           ),

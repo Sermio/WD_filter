@@ -1,12 +1,11 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:worldshift_assistant/data/item.dart';
 import 'package:worldshift_assistant/data/worldshift_assets.dart';
 import 'package:worldshift_assistant/models/item_filters_model.dart';
 import 'package:provider/provider.dart';
 import 'package:worldshift_assistant/utils/catalog_item_filter.dart';
+import 'package:worldshift_assistant/utils/item_origin_maps.dart'
+    show loadItemOriginDerived;
 import 'package:worldshift_assistant/utils/utils.dart';
 import 'package:worldshift_assistant/widgets/expandable_card.dart';
 import 'package:worldshift_assistant/widgets/item_catalog_filters_panel.dart';
@@ -50,52 +49,16 @@ class _CardListScreenState extends State<CardListScreen> {
   }
 
   Future<List<Item>> _fetchItems() async {
-    await _loadResolvedMapNamesByItem();
+    final derived = await loadItemOriginDerived();
+    _resolvedMapNamesByItem
+      ..clear()
+      ..addAll(derived.mapNamesByItemId);
     final items = await combineLootData(
       WorldshiftAssets.lootTableFile,
       WorldshiftAssets.itemsDefinitionFile,
     );
     items.sort((a, b) => a.id.compareTo(b.id));
     return items;
-  }
-
-  Future<void> _loadResolvedMapNamesByItem() async {
-    _resolvedMapNamesByItem.clear();
-    final raw =
-        await rootBundle.loadString(WorldshiftAssets.itemOriginIndexFile);
-    final decoded = jsonDecode(raw);
-    if (decoded is! Map<String, dynamic>) {
-      return;
-    }
-    final items = decoded['items'];
-    if (items is! List) {
-      return;
-    }
-
-    for (final item in items) {
-      if (item is! Map<String, dynamic>) {
-        continue;
-      }
-      final itemId = item['id'];
-      final resolvedOrigins = item['resolvedOrigins'];
-      if (itemId is! int || resolvedOrigins is! List) {
-        continue;
-      }
-
-      final mapNames = <String>{};
-      for (final origin in resolvedOrigins) {
-        if (origin is! Map<String, dynamic>) {
-          continue;
-        }
-        final mapName = '${origin['mapName'] ?? ''}'.trim();
-        if (mapName.isNotEmpty) {
-          mapNames.add(mapName);
-        }
-      }
-      if (mapNames.isNotEmpty) {
-        _resolvedMapNamesByItem[itemId] = mapNames;
-      }
-    }
   }
 
   @override
@@ -276,6 +239,8 @@ class _CardListScreenState extends State<CardListScreen> {
                               rarity: rarity,
                               obtainedFrom: item.obtainedFrom,
                               itemData: itemData,
+                              resolvedMapNames:
+                                  _resolvedMapNamesByItem[item.id],
                             );
                           },
                         ),

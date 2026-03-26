@@ -66,10 +66,19 @@ bool catalogItemMatchesFilters({
     final selectedMap = filterProvider.selectedMap!;
     final directMap = '${itemData['map'] ?? ''}'.trim();
     final itemId = itemData['id'];
-    final resolvedMaps = itemId is int
-        ? (resolvedMapNamesByItem[itemId] ?? const <String>{})
+    final id = itemId is int
+        ? itemId
+        : itemId is num
+            ? itemId.toInt()
+            : int.tryParse('$itemId');
+    final resolvedMaps = id != null
+        ? (resolvedMapNamesByItem[id] ?? const <String>{})
         : const <String>{};
-    if (directMap != selectedMap && !resolvedMaps.contains(selectedMap)) {
+    if (!_mapFilterMatches(
+          selected: selectedMap,
+          directMap: directMap,
+          resolvedMaps: resolvedMaps,
+        )) {
       return false;
     }
   }
@@ -99,4 +108,48 @@ bool catalogItemMatchesFilters({
 
 String _normalizeCatalogFilterValue(String value) {
   return value.replaceAll(RegExp(r'[^A-Za-z0-9]+'), '').toLowerCase();
+}
+
+/// Compara nombres de mapa del dropdown con loot/índice (apóstrofos Unicode, mayúsculas).
+String normalizeMapLabelForFilter(String s) {
+  return s
+      .trim()
+      .replaceAll('\u2019', "'")
+      .replaceAll('\u2018', "'")
+      .replaceAll('\u02BC', "'")
+      .toLowerCase();
+}
+
+/// Valor que debe mostrar el desplegable de mapas (coincide con [maps] o null).
+String? canonicalMapDropdownValue(String? selected) {
+  if (selected == null) {
+    return null;
+  }
+  for (final m in maps) {
+    final v = m['value']!;
+    if (normalizeMapLabelForFilter(v) == normalizeMapLabelForFilter(selected)) {
+      return v;
+    }
+  }
+  return null;
+}
+
+bool _mapFilterMatches({
+  required String selected,
+  required String directMap,
+  required Set<String> resolvedMaps,
+}) {
+  final sel = normalizeMapLabelForFilter(selected);
+  if (sel.isEmpty) {
+    return true;
+  }
+  if (normalizeMapLabelForFilter(directMap) == sel) {
+    return true;
+  }
+  for (final r in resolvedMaps) {
+    if (normalizeMapLabelForFilter(r) == sel) {
+      return true;
+    }
+  }
+  return false;
 }

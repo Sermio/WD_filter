@@ -74,8 +74,10 @@ class FilterProvider with ChangeNotifier {
   }
 
   void setSelectedMap(String? map) {
-    if (_selectedMap != map) {
-      _selectedMap = map;
+    final next = map?.trim();
+    final normalized = next == null || next.isEmpty ? null : next;
+    if (_selectedMap != normalized) {
+      _selectedMap = normalized;
       notifyListeners();
     }
   }

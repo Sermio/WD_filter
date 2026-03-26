@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:worldshift_assistant/data/map_mission_meta.dart';
+
 const _itemsPath = r'assets\loot\source_game\items\items.tsv';
 const _lootPath = r'assets\loot\source_game\items\loot.tsv';
 const _lootIndexPath = r'assets\loot\source_game\items\loot index.tsv';
@@ -9,19 +11,6 @@ const _missionsPath = r'assets\loot\source_game\texts\missions.tsv';
 const _mapRefsPath = r'assets\loot\source_game\refs\map_drop_refs.tsv';
 const _unitRefsPath = r'assets\loot\source_game\refs\unit_drop_refs.tsv';
 const _outputPath = r'assets\data\item_origin_index.json';
-
-const _mapFileStemToMeta = <String, ({String key, String name, String mode})>{
-  'safari': (key: 'Safari', name: 'Deadly safari', mode: 'pve'),
-  'dtb': (key: 'DTB', name: 'Dunetown base', mode: 'pve'),
-  'bsa': (key: 'BSA', name: 'Bloodsport Arena', mode: 'pve'),
-  'rom': (key: 'ROM', name: 'ROM base', mode: 'pve'),
-  'esperanza': (key: 'AC', name: 'Ancient corridors', mode: 'pve'),
-  'kharum': (key: 'Kharum', name: 'Kharum', mode: 'pve'),
-  'junkyard': (key: 'JY', name: 'Junkyard', mode: 'pve'),
-  'cf': (key: 'CF', name: 'Corrupted fields', mode: 'pve'),
-  'rh': (key: 'RH', name: "The renegades' hideout", mode: 'pve'),
-  'bt': (key: 'BRD', name: 'Bridge of trial', mode: 'pve'),
-};
 
 void main() {
   final itemDefinitions = _parseItemDefinitions(File(_itemsPath));
@@ -355,10 +344,10 @@ Map<String, dynamic> _deriveContextMeta({
       mode = 'campaign';
       sourceKind = 'mission_map';
     } else {
-      final meta = _mapFileStemToMeta[stem.toLowerCase()];
+      final meta = mapMissionMetaByFileStem[stem.toLowerCase()];
       if (meta != null) {
         mapKey = meta.key;
-        mapName = meta.name;
+        mapName = meta.displayName;
         mode = meta.mode;
         sourceKind = 'map';
       }
@@ -366,10 +355,10 @@ Map<String, dynamic> _deriveContextMeta({
   }
 
   if (mapKey == null) {
-    for (final entry in _mapFileStemToMeta.values) {
+    for (final entry in mapMissionMetaByFileStem.values) {
       if (label.startsWith(entry.key)) {
         mapKey = entry.key;
-        mapName = entry.name;
+        mapName = entry.displayName;
         mode = entry.mode;
         sourceKind = 'table_label';
         break;

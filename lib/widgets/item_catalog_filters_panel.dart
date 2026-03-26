@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:worldshift_assistant/data/data.dart';
 import 'package:worldshift_assistant/models/item_filters_model.dart';
 import 'package:worldshift_assistant/utils/unit_icon_candidates.dart';
+import 'package:worldshift_assistant/utils/catalog_item_filter.dart';
 import 'package:worldshift_assistant/utils/utils.dart';
 import 'package:worldshift_assistant/widgets/catalog_filter_widgets.dart';
 import 'package:worldshift_assistant/widgets/multi_chip.dart';
@@ -469,53 +470,60 @@ class ItemCatalogFiltersPanel extends StatelessWidget {
                       ),
                       child: Material(
                         color: Colors.white,
-                        child: DropdownButton<String>(
-                          isExpanded: true,
-                          alignment: Alignment.centerLeft,
-                          menuMaxHeight: 300,
-                          dropdownColor: Colors.white,
-                          value: context.watch<FilterProvider>().selectedMap,
-                          hint: Text(
-                            'Select Map',
-                            style: TextStyle(
-                              color: Colors.grey.shade600,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          underline: const SizedBox(),
-                          icon: Icon(
-                            Icons.keyboard_arrow_down,
-                            color: Colors.grey.shade600,
-                          ),
-                          onChanged: (newValue) {
-                            context.read<FilterProvider>().setSelectedMap(
-                                  newValue,
-                                );
-                            onFiltersChanged();
-                          },
-                          items: [
-                            DropdownMenuItem<String>(
-                              value: null,
-                              child: Text(
-                                'All Maps',
+                        child: Consumer<FilterProvider>(
+                          builder: (context, fp, _) {
+                            final mapValue =
+                                canonicalMapDropdownValue(fp.selectedMap);
+                            return DropdownButton<String>(
+                              key: ValueKey<String?>(mapValue),
+                              isExpanded: true,
+                              alignment: Alignment.centerLeft,
+                              menuMaxHeight: 300,
+                              dropdownColor: Colors.white,
+                              value: mapValue,
+                              hint: Text(
+                                'Select Map',
                                 style: TextStyle(
                                   color: Colors.grey.shade600,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
-                            ),
-                            ...maps.map(
-                              (map) => DropdownMenuItem<String>(
-                                value: map['value'],
-                                child: Text(
-                                  map['value']!,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w500,
+                              underline: const SizedBox(),
+                              icon: Icon(
+                                Icons.keyboard_arrow_down,
+                                color: Colors.grey.shade600,
+                              ),
+                              onChanged: (newValue) {
+                                context.read<FilterProvider>().setSelectedMap(
+                                      newValue,
+                                    );
+                                onFiltersChanged();
+                              },
+                              items: [
+                                DropdownMenuItem<String>(
+                                  value: null,
+                                  child: Text(
+                                    'All Maps',
+                                    style: TextStyle(
+                                      color: Colors.grey.shade600,
+                                      fontWeight: FontWeight.w500,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ),
-                          ],
+                                ...maps.map(
+                                  (map) => DropdownMenuItem<String>(
+                                    value: map['value'],
+                                    child: Text(
+                                      map['value']!,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
                         ),
                       ),
                     ),

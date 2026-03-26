@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:worldshift_assistant/utils/catalog_card_stripe.dart';
+import 'package:worldshift_assistant/utils/item_origin_maps.dart'
+    show mapAbbreviationForDisplayName, sortedMapNamesList;
 import 'package:worldshift_assistant/utils/unit_icon_candidates.dart';
 import 'package:worldshift_assistant/utils/utils.dart';
 import 'package:worldshift_assistant/widgets/item_description_widget.dart';
@@ -55,21 +57,6 @@ Color _itemCatalogReadableAccent(Color base) {
     Colors.black.withValues(alpha: darkness),
     base,
   );
-}
-
-String _itemCatalogSourceText(String map, Map<String, dynamic> itemData) {
-  final m = map.trim();
-  final obtainedFrom = '${itemData['obtainedFrom'] ?? ''}'.trim();
-  if (m.isNotEmpty && obtainedFrom.isNotEmpty) {
-    return '$m · $obtainedFrom';
-  }
-  if (m.isNotEmpty) {
-    return m;
-  }
-  if (obtainedFrom.isNotEmpty) {
-    return obtainedFrom;
-  }
-  return '';
 }
 
 String _itemCatalogFormatUnitLabel(String unitKey) {
@@ -155,6 +142,8 @@ void showItemCatalogDetailSheet(
   required String rarity,
   required String obtainedFrom,
   required Map<String, dynamic> itemData,
+  /// Mapas donde puede obtenerse (índice de orígenes); opcional.
+  Set<String>? resolvedMapNames,
   VoidCallback? onPrimaryAction,
   String primaryActionLabel = 'Equip',
 }) {
@@ -177,6 +166,7 @@ void showItemCatalogDetailSheet(
               rarity: rarity,
               obtainedFrom: obtainedFrom,
               itemData: itemData,
+              resolvedMapNames: resolvedMapNames,
               onPrimaryAction: onPrimaryAction == null
                   ? null
                   : () {
@@ -198,6 +188,8 @@ class ExpandableCard extends StatefulWidget {
   final String rarity;
   final String obtainedFrom;
   final Map<String, dynamic> itemData;
+  /// Mapas conocidos desde `item_origin_index` (todos los orígenes de drop).
+  final Set<String>? resolvedMapNames;
   /// When set (e.g. Builder equip picker), shows a primary action without changing expand/collapse.
   final VoidCallback? onSelect;
   final String selectLabel;
@@ -209,6 +201,7 @@ class ExpandableCard extends StatefulWidget {
     required this.rarity,
     required this.obtainedFrom,
     required this.itemData,
+    this.resolvedMapNames,
     this.onSelect,
     this.selectLabel = 'Equip',
   }) : super(key: key);
@@ -228,8 +221,7 @@ class _ExpandableCardState extends State<ExpandableCard> {
     final affectedUnits = _itemCatalogAffectedUnits(
       widget.itemData['attributes'],
     );
-    final sourceText = _itemCatalogSourceText(widget.map, widget.itemData);
-    final hasSourceText = sourceText.isNotEmpty;
+    final mapNames = sortedMapNamesList(widget.resolvedMapNames);
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
@@ -379,32 +371,9 @@ class _ExpandableCardState extends State<ExpandableCard> {
                                   .toList(),
                             ),
                           ],
-                          if (hasSourceText) ...[
-                            const SizedBox(height: 10),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Icon(
-                                  Icons.place_outlined,
-                                  size: 16,
-                                  color: Colors.grey.shade600,
-                                ),
-                                const SizedBox(width: 6),
-                                Expanded(
-                                  child: Text(
-                                    sourceText,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      color: Color(0xFF525A69),
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w700,
-                                      height: 1.2,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                          if (mapNames.isNotEmpty) ...[
+                            const SizedBox(height: 8),
+                            _CatalogMapNamesChips(mapNames: mapNames),
                           ],
                           if (previewGroups.isNotEmpty) ...[
                             const SizedBox(height: 12),
@@ -606,6 +575,73 @@ class ItemCompleteFrame extends StatelessWidget {
   }
 }
 
+class _CatalogMapNamesChips extends StatelessWidget {
+  const _CatalogMapNamesChips({required this.mapNames});
+
+  final List<String> mapNames;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 2),
+          child: Icon(
+            Icons.map_outlined,
+            size: 16,
+            color: Colors.grey.shade600,
+          ),
+        ),
+        const SizedBox(width: 6),
+        Expanded(
+          child: Wrap(
+            spacing: 6,
+            runSpacing: 6,
+            children: mapNames.map((n) => _MapNameChip(fullName: n)).toList(),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _MapNameChip extends StatelessWidget {
+  const _MapNameChip({required this.fullName});
+
+  final String fullName;
+
+  @override
+  Widget build(BuildContext context) {
+    final abbr = mapAbbreviationForDisplayName(fullName);
+    final chip = Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: const Color(0xFFEEF1F6),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      child: Text(
+        abbr,
+        style: TextStyle(
+          color: Colors.grey.shade800,
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+          height: 1.2,
+        ),
+      ),
+    );
+    if (abbr == fullName) {
+      return chip;
+    }
+    return Tooltip(
+      message: fullName,
+      waitDuration: const Duration(milliseconds: 400),
+      child: chip,
+    );
+  }
+}
+
 class _UnitInfoChip extends StatelessWidget {
   const _UnitInfoChip({
     required this.label,
@@ -722,6 +758,7 @@ class ItemCatalogDetailSheetBody extends StatefulWidget {
     required this.rarity,
     required this.obtainedFrom,
     required this.itemData,
+    this.resolvedMapNames,
     this.onPrimaryAction,
     this.primaryActionLabel = 'Equip',
   });
@@ -731,6 +768,7 @@ class ItemCatalogDetailSheetBody extends StatefulWidget {
   final String rarity;
   final String obtainedFrom;
   final Map<String, dynamic> itemData;
+  final Set<String>? resolvedMapNames;
   final VoidCallback? onPrimaryAction;
   final String primaryActionLabel;
 
@@ -749,8 +787,7 @@ class _ItemCatalogDetailSheetBodyState extends State<ItemCatalogDetailSheetBody>
     final readableAccent = _itemCatalogReadableAccent(rarityColor);
     final previewGroups = _itemCatalogPreviewGroups(itemData['attributes']);
     final affectedUnits = _itemCatalogAffectedUnits(itemData['attributes']);
-    final sourceText = _itemCatalogSourceText(widget.map, itemData);
-    final hasSourceText = sourceText.isNotEmpty;
+    final mapNames = sortedMapNamesList(widget.resolvedMapNames);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -826,32 +863,9 @@ class _ItemCatalogDetailSheetBodyState extends State<ItemCatalogDetailSheetBody>
                 .toList(),
           ),
         ],
-        if (hasSourceText) ...[
-          const SizedBox(height: 10),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(
-                Icons.place_outlined,
-                size: 16,
-                color: Colors.grey.shade600,
-              ),
-              const SizedBox(width: 6),
-              Expanded(
-                child: Text(
-                  sourceText,
-                  maxLines: 4,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: Color(0xFF525A69),
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                    height: 1.2,
-                  ),
-                ),
-              ),
-            ],
-          ),
+        if (mapNames.isNotEmpty) ...[
+          const SizedBox(height: 8),
+          _CatalogMapNamesChips(mapNames: mapNames),
         ],
         if (previewGroups.isNotEmpty) ...[
           const SizedBox(height: 12),
