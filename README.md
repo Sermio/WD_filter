@@ -66,9 +66,26 @@ Items list made with a custom component similar to Cards and a Dialog displayed 
   <img src="https://github.com/user-attachments/assets/aaca7879-1879-4133-aeb8-016fd2d54d3c" alt="Registro 1" width="200" hspace="30"/>
 </div>
 
-Filters made with a scrollable widget.
+Items, Units and Abilities.
 <div style="display: flex; justify-content: space-around;">
-  <img src="https://github.com/user-attachments/assets/83b3575e-9aa5-4aaa-9471-14d93055aafc" alt="Registro 2" width="200" hspace="30"/>
-  <img src="https://github.com/user-attachments/assets/dcb8c23e-6f3e-464e-b4f1-94bc60bc8e6f" alt="Registro 1" width="200" hspace="30"/>
+  <img src="https://github.com/user-attachments/assets/c4956953-3a05-4381-816d-8ca57f9083cc" alt="Registro 2" width="200" hspace="30"/>
+  <img src="https://github.com/user-attachments/assets/4a8add07-7241-4670-9be6-f780d29d8ee5" alt="Registro 1" width="200" hspace="30"/>
+  <img src="https://github.com/user-attachments/assets/5dc69e54-10bb-4d98-8b40-dd5a7fb0c08c" alt="Registro 1" width="200" hspace="30"/>
 </div>
+
+Items and Skills Builder
+<div style="display: flex; justify-content: space-around;">
+  <img src="https://github.com/user-attachments/assets/534fa53c-f8af-471d-88a6-cc015f681a29" alt="Registro 2" width="200" hspace="30"/>
+  <img src="https://github.com/user-attachments/assets/4530f7ad-c151-43b3-aee1-5e6ab7065b8b" alt="Registro 1" width="200" hspace="30"/>
+  <img src="https://github.com/user-attachments/assets/72c4c583-e03b-483a-a6b7-ab6770eb46c6" alt="Registro 1" width="200" hspace="30"/>
+</div>
+
+Builder summary
+<div style="display: flex; justify-content: space-around;">
+  <img src="https://github.com/user-attachments/assets/da10dcc9-3f72-4ef5-a3a7-81d21e7dcc60" alt="Registro 2" width="200" hspace="30"/>
+  <img src="https://github.com/user-attachments/assets/ece92994-5702-41c4-b499-69f1c108d9e9" alt="Registro 1" width="200" hspace="30"/>
+</div>
+
+
+
 
