@@ -1259,6 +1259,7 @@ class _SaveBuilderConfigDialog extends StatefulWidget {
 
 class _SaveBuilderConfigDialogState extends State<_SaveBuilderConfigDialog> {
   late final TextEditingController _controller;
+  late final FocusNode _nameFocusNode;
   late bool _createNew;
   late int _overwriteIdx;
 
@@ -1268,8 +1269,18 @@ class _SaveBuilderConfigDialogState extends State<_SaveBuilderConfigDialog> {
     _controller = TextEditingController(
       text: _clampLoadoutName(widget.initialText),
     );
+    _nameFocusNode = FocusNode();
     _createNew = true;
     _overwriteIdx = 0;
+    // Tras montar el diálogo (y cualquier animación), enfocar el nombre para
+    // mostrar el teclado; antes [autofocus] estaba desactivado si ya había
+    // loadouts guardados y los radios podían impedir el foco en el campo.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      _nameFocusNode.requestFocus();
+    });
   }
 
   void _syncNameFromOverwriteSelection() {
@@ -1314,6 +1325,7 @@ class _SaveBuilderConfigDialogState extends State<_SaveBuilderConfigDialog> {
   @override
   void dispose() {
     _controller.dispose();
+    _nameFocusNode.dispose();
     super.dispose();
   }
 
@@ -1391,11 +1403,13 @@ class _SaveBuilderConfigDialogState extends State<_SaveBuilderConfigDialog> {
             ],
             TextField(
               controller: _controller,
+              focusNode: _nameFocusNode,
               decoration: const InputDecoration(
                 labelText: 'Name',
                 hintText: 'e.g. Mutant tank PvE',
               ),
-              autofocus: !canOverwrite,
+              keyboardType: TextInputType.text,
+              textInputAction: TextInputAction.done,
               maxLength: _kMaxLoadoutNameChars,
               maxLengthEnforcement: MaxLengthEnforcement.enforced,
               textCapitalization: TextCapitalization.sentences,

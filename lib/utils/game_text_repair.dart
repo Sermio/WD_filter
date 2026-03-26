@@ -5,16 +5,29 @@ String repairGameTextEncodingArtifacts(String s) {
     return s;
   }
   const mojibake = '\u00EF\u00BF\u00BD';
-  var o = s.contains(mojibake) ? s.replaceAll(mojibake, '\uFFFD') : s;
-  if (!o.contains('\uFFFD')) {
+  const replacement = '\uFFFD';
+  var o = s;
+
+  // "Achï¿½Lord" / "Ach�Lord" → apóstrofo entre trozos de palabra (típico U+2019 mal codificado).
+  final betweenWords = RegExp(
+    r'([A-Za-z]+)' + RegExp.escape(mojibake) + r'([A-Za-z]+)',
+  );
+  o = o.replaceAllMapped(betweenWords, (m) => "${m[1]}'${m[2]}");
+
+  o = o.contains(mojibake) ? o.replaceAll(mojibake, replacement) : o;
+  if (!o.contains(replacement)) {
     return o;
   }
   o = o.replaceAllMapped(
-    RegExp(r'([A-Za-z]+)\uFFFDs(?=[\s\.,;:!?\)\]]|$)'),
+    RegExp(r'([A-Za-z]+)' + replacement + r'([A-Za-z]+)'),
+    (m) => "${m[1]}'${m[2]}",
+  );
+  o = o.replaceAllMapped(
+    RegExp(r'([A-Za-z]+)' + replacement + r's(?=[\s\.,;:!?\)\]]|$)'),
     (m) => "${m[1]}'s",
   );
   o = o.replaceAllMapped(
-    RegExp(r'([A-Za-z]+)\uFFFD(?=\s)'),
+    RegExp(r'([A-Za-z]+)' + replacement + r'(?=\s)'),
     (m) => "${m[1]}' ",
   );
   return o;

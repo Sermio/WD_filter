@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 
@@ -11,6 +12,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:worldshift_assistant/data/data.dart';
 import 'package:worldshift_assistant/data/item.dart';
 import 'package:worldshift_assistant/data/worldshift_assets.dart';
+import 'package:worldshift_assistant/utils/game_text_repair.dart';
 
 List<Item> itemsFile1 = [];
 List<Item> itemsFile2 = [];
@@ -148,7 +150,7 @@ String getImagePath(String race) {
 Future<String> loadFileFromAssets(String path) async {
   final data = await rootBundle.load(path);
   final bytes = data.buffer.asUint8List();
-  return String.fromCharCodes(bytes);
+  return utf8.decode(bytes, allowMalformed: true);
 }
 
 Future<void> parseLootFile1(String path) async {
@@ -241,6 +243,26 @@ Map<String, Map<String, String>> parseAttributes(String attributeString) {
   return result;
 }
 
+Item _itemWithRepairedText(Item raw) {
+  return Item(
+    id: raw.id,
+    lootTable: raw.lootTable,
+    map: repairGameTextEncodingArtifacts(raw.map),
+    obtainedFrom: repairGameTextEncodingArtifacts(raw.obtainedFrom),
+    name: repairGameTextEncodingArtifacts(raw.name),
+    rarity: raw.rarity,
+    race: raw.race,
+    slot: raw.slot,
+    attributes: {
+      for (final u in raw.attributes.entries)
+        u.key: {
+          for (final kv in u.value.entries)
+            kv.key: repairGameTextEncodingArtifacts(kv.value),
+        },
+    },
+  );
+}
+
 Future<void> parseLootFile2(String path) async {
   String fileContent = await loadFileFromAssets(path);
   List<String> lines = fileContent.split(RegExp(r'\r?\n'));
@@ -303,7 +325,8 @@ Future<List<Item>> combineLootData(String pathFile1, String pathFile2) async {
         lootTable: item1.lootTable,
         map: item1.map,
         obtainedFrom: item1.obtainedFrom,
-        name: item1.name,
+        // El loot suele traer caracteres rotos; la definición en items.tsv es la canónica.
+        name: matchingItem.name,
         rarity: matchingItem.rarity,
         race: matchingItem.race,
         slot: matchingItem.slot,
@@ -340,7 +363,7 @@ Future<List<Item>> combineLootData(String pathFile1, String pathFile2) async {
     }
   }
 
-  return combinedItems;
+  return combinedItems.map(_itemWithRepairedText).toList();
 }
 
 Future<void> uploadItemsToFirebase(List<Item> items) async {
