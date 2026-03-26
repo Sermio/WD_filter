@@ -3,7 +3,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:worldshift_assistant/data/data.dart';
@@ -498,13 +497,10 @@ class _BuilderScreenState extends State<BuilderScreen> {
       return;
     }
     final snapshot = List<Map<String, dynamic>>.from(existing);
-    final initial = _clampLoadoutName(
-      'Build ${DateFormat('yyyy-MM-dd HH:mm').format(DateTime.now())}',
-    );
     final outcome = await showDialog<_SaveBuilderConfigOutcome>(
       context: context,
       builder: (ctx) => _SaveBuilderConfigDialog(
-        initialText: initial,
+        initialText: '',
         existingSaved: snapshot,
       ),
     );
